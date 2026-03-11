@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Withet | Equip Update</title>
+    <title>Withet | Account Update</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -19,7 +19,6 @@
         body { font-family: 'Nunito', sans-serif; margin: 0; background: var(--bg-gradient); background-size: 400% 400%; animation: gradientBG 15s ease infinite; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
-        /* ESTRUTURA */
         #auth-screen { background: white; padding: 40px; border-radius: 24px; box-shadow: 0 15px 0 rgba(0,0,0,0.2); width: 360px; text-align: center; }
         #game-screen { width: 95%; height: 90vh; background: var(--content-bg); border-radius: 30px; display: none; overflow: hidden; box-shadow: 0 20px 50px rgba(0,0,0,0.3); }
         .active-flex { display: flex !important; }
@@ -48,6 +47,10 @@
         .sell-btn { background: #ff7675; box-shadow: 0 3px 0 #d63031; }
         .equip-btn { background: var(--primary); box-shadow: 0 3px 0 #0d47a1; }
         .equipped-label { background: var(--equipped-color) !important; cursor: default; box-shadow: 0 3px 0 #27ae60; }
+
+        /* PERFIL / ACCOUNT */
+        .profile-card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 8px 0 #ddd; text-align: center; max-width: 400px; margin: 0 auto; }
+        .equipped-display { margin-top: 20px; padding: 20px; border-radius: 15px; background: #f8f9fa; border: 2px dashed #ccc; }
 
         /* CORES FRUTAS */
         .bg-orange { background: #ff9800; } 
@@ -82,7 +85,8 @@
             <div class="nav-item" onclick="switchTab('play', this)">🎮 Play</div>
             <div class="nav-item" onclick="switchTab('blooks', this)">🎒 Your Blooks</div>
             <div class="nav-item" onclick="switchTab('shop', this)">🛒 Shop</div>
-            <div style="margin-top:auto; padding:10px; color:#d63031; text-align:center; cursor:pointer;" onclick="logout()">Sair</div>
+            <div class="nav-item" onclick="switchTab('account', this)">👤 Account</div>
+            <div style="margin-top:auto; padding:10px; color:#d63031; text-align:center; cursor:pointer; font-weight:bold;" onclick="logout()">Sair</div>
         </div>
 
         <div class="main-content">
@@ -96,14 +100,14 @@
                 <div id="tab-news" class="tab-content">
                     <h1>Novidades</h1>
                     <div style="background:white; padding:20px; border-radius:20px; box-shadow: 0 6px 0 #ddd; border-left: 8px solid #ff4757;">
-                        <h3>🍓 Strawberry Update!</h3>
-                        <p>O Morango chegou à Fruit Box! Ele é uma raridade "Uncommon". Além disso, agora você pode <b>EQUIPAR</b> seus Blooks no inventário!</p>
+                        <h3>👤 Perfil Atualizado!</h3>
+                        <p>Agora você pode ver seu Blook equipado diretamente na aba <b>Account</b>. Mostre quem é o seu favorito!</p>
                     </div>
                 </div>
 
                 <div id="tab-play" class="tab-content hidden" style="text-align:center;">
                     <h1>ENTRAR NO JOGO</h1>
-                    <p>O Blook que você equipou aparecerá na partida!</p>
+                    <p>Prepare seu Blook para a batalha!</p>
                     <input type="text" placeholder="Game PIN" style="width:200px; font-size:1.5rem; text-align:center;">
                 </div>
 
@@ -120,6 +124,19 @@
                         <div style="background:var(--token-color); color:white; padding:5px; border-radius:8px; font-weight:bold;">15 Tokens</div>
                     </div>
                 </div>
+
+                <div id="tab-account" class="tab-content hidden">
+                    <h1>Meu Perfil</h1>
+                    <div class="profile-card">
+                        <h2 id="profile-name">USUÁRIO</h2>
+                        <div class="equipped-display">
+                            <p style="color: #666; font-size: 0.9rem; margin-bottom: 15px;">Blook Equipado:</p>
+                            <div id="profile-blook-container">
+                                </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </div>
     </div>
@@ -164,13 +181,14 @@
                 if (localStorage.getItem(`withet_user_${user}`) === pass) {
                     localStorage.setItem('withet_current_session', user);
                     showDashboard(user);
-                } else alert("Erro!");
+                } else alert("Usuário ou senha incorretos!");
             } else {
+                if(localStorage.getItem(`withet_user_${user}`)) return alert("Usuário já existe!");
                 localStorage.setItem(`withet_user_${user}`, pass);
                 localStorage.setItem(`withet_coins_${user}`, 200);
                 localStorage.setItem(`withet_blooks_${user}`, JSON.stringify([]));
-                localStorage.setItem(`withet_equipped_${user}`, ""); // Inicializa sem equipamento
-                alert("Criado!"); toggleAuthMode();
+                localStorage.setItem(`withet_equipped_${user}`, ""); 
+                alert("Conta criada!"); toggleAuthMode();
             }
         }
 
@@ -178,7 +196,10 @@
             currentUser = user;
             document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('game-screen').classList.add('active-flex');
-            updateTokens(); updateInventory();
+            document.getElementById('profile-name').innerText = user.toUpperCase();
+            updateTokens(); 
+            updateInventory();
+            updateProfileTab();
         }
 
         function updateTokens() {
@@ -208,6 +229,25 @@
                         <button class="btn-action sell-btn" onclick="sellBlook(${index})">VENDER (${b.value})</button>
                     </div>`;
             });
+            updateProfileTab(); // Atualiza o perfil também se mudar o inventário
+        }
+
+        function updateProfileTab() {
+            const container = document.getElementById('profile-blook-container');
+            const myBlooks = JSON.parse(localStorage.getItem(`withet_blooks_${currentUser}`) || "[]");
+            const equippedIndex = localStorage.getItem(`withet_equipped_${currentUser}`);
+
+            if (equippedIndex !== "" && myBlooks[equippedIndex]) {
+                const bID = myBlooks[equippedIndex];
+                const b = fruitBlooks.find(f => f.id === bID);
+                container.innerHTML = `
+                    <div class="blook-square ${b.colorClass}" style="width:120px; height:150px; font-size:4rem; cursor:default;">${b.emoji}</div>
+                    <h3 style="margin-top:10px;">${b.name}</h3>
+                    <span style="color:var(--primary); font-weight:bold;">${b.rarity}</span>
+                `;
+            } else {
+                container.innerHTML = `<p style="color:#999;">Nenhum Blook equipado.</p><button class="btn" onclick="switchTab('blooks', document.querySelectorAll('.nav-item')[2])">Ir para Coleção</button>`;
+            }
         }
 
         function equipBlook(index) {
@@ -220,11 +260,9 @@
             let coins = parseInt(localStorage.getItem(`withet_coins_${currentUser}`));
             const equippedIndex = localStorage.getItem(`withet_equipped_${currentUser}`);
 
-            // Se vender o equipado, remove o equipamento
             if (equippedIndex === index.toString()) {
                 localStorage.setItem(`withet_equipped_${currentUser}`, "");
             } else if (parseInt(equippedIndex) > index) {
-                // Ajusta o index do equipado se removermos alguém antes dele na lista
                 localStorage.setItem(`withet_equipped_${currentUser}`, parseInt(equippedIndex) - 1);
             }
 
@@ -248,10 +286,10 @@
 
             const rand = Math.random() * 100;
             let won;
-            if (rand <= 0.5) won = fruitBlooks[3]; // Pitaya
-            else if (rand <= 17) won = fruitBlooks[2]; // Strawberry (16.5%)
-            else if (rand <= 60) won = fruitBlooks[1]; // Lemon (43%)
-            else won = fruitBlooks[0]; // Orange (40%)
+            if (rand <= 0.5) won = fruitBlooks[3]; 
+            else if (rand <= 17) won = fruitBlooks[2]; 
+            else if (rand <= 60) won = fruitBlooks[1]; 
+            else won = fruitBlooks[0]; 
 
             let myBlooks = JSON.parse(localStorage.getItem(`withet_blooks_${currentUser}`));
             myBlooks.push(won.id);
