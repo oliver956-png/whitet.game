@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Withet | Fixes & Play Update</title>
+    <title>Withet | The Big Fix</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -46,12 +46,17 @@
         .equip-btn { background: var(--primary); box-shadow: 0 3px 0 #0d47a1; }
         .equipped-label { background: var(--equipped-color) !important; cursor: default; box-shadow: 0 3px 0 #27ae60; }
 
-        /* HOSTING & PLAY */
-        .host-screen { background: #2f3542; color: white; padding: 40px; border-radius: 25px; text-align: center; }
+        /* UNBOXING SUSPENSE */
+        #unboxing-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 1000; cursor: pointer; }
+        #anim-box { font-size: 8rem; animation: shake 0.5s infinite; }
+        @keyframes shake { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(8deg); } 75% { transform: rotate(-8deg); } }
+
+        /* LOBBY */
+        .lobby-screen { background: #2f3542; color: white; padding: 40px; border-radius: 25px; text-align: center; }
         .pin-display { font-size: 4rem; letter-spacing: 10px; color: var(--token-color); margin: 20px 0; }
 
         .bg-orange { background: #ff9800; } .bg-lemon { background: #8bc34a; } .bg-strawberry { background: #ff4757; }
-        .bg-pitaya { background: #e91e63; border: 3px solid #fce4ec; box-shadow: 0 0 15px rgba(233,30,99,0.5); }
+        .bg-pitaya { background: #e91e63; border: 3px solid #fce4ec; box-shadow: 0 0 20px rgba(233,30,99,0.8); }
 
         .btn { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 900; cursor: pointer; box-shadow: 0 5px 0 #0d47a1; margin-top: 10px; }
         input { width: 100%; padding: 12px; margin: 8px 0; border: 3px solid #eee; border-radius: 10px; font-size: 1rem; outline: none; }
@@ -90,19 +95,29 @@
             <div class="tab-body">
                 <div id="tab-news" class="tab-content">
                     <h1>Novidades</h1>
-                    <div style="background:white; padding:20px; border-radius:20px; box-shadow: 0 6px 0 #ddd; border-left: 8px solid var(--primary);">
-                        <h3>🛠️ Correções de Segurança</h3>
-                        <p>Nomes de usuário agora são únicos! Além disso, o sistema de PIN na aba <b>Play</b> agora está funcional.</p>
+                    <div style="background:white; padding:20px; border-radius:20px; box-shadow: 0 6px 0 #ddd; border-left: 8px solid var(--equipped-color);">
+                        <h3>✅ Tudo Consertado!</h3>
+                        <p>O PIN agora funciona entre abas e o suspense das caixas voltou. Divirta-se!</p>
                     </div>
                 </div>
 
                 <div id="tab-play" class="tab-content hidden" style="text-align:center;">
-                    <h1>ENTRAR NO JOGO</h1>
-                    <p>Digite o PIN da sala para começar</p>
-                    <input type="text" id="play-pin-input" placeholder="000000" maxlength="6" style="width:250px; font-size:2.5rem; text-align:center; letter-spacing:8px;">
-                    <br>
-                    <button class="btn" style="width:250px;" onclick="joinGame()">ENTRAR</button>
-                    <div id="play-feedback" style="margin-top: 20px; font-weight: bold;"></div>
+                    <div id="play-input-ui">
+                        <h1>ENTRAR NO JOGO</h1>
+                        <input type="text" id="play-pin-input" placeholder="000000" maxlength="6" style="width:250px; font-size:2.5rem; text-align:center; letter-spacing:8px;">
+                        <br>
+                        <button class="btn" style="width:250px;" onclick="joinGame()">ENTRAR</button>
+                        <p id="play-error" style="color:#ff4757; font-weight:bold; margin-top:15px;"></p>
+                    </div>
+
+                    <div id="play-lobby-ui" class="hidden">
+                        <div class="lobby-screen">
+                            <h2>Você está na sala!</h2>
+                            <p>Aguardando o Host começar...</p>
+                            <div id="lobby-blook-display" style="margin: 30px 0;"></div>
+                            <button class="btn" style="background:#ff4757; width:200px;" onclick="leaveLobby()">SAIR</button>
+                        </div>
+                    </div>
                 </div>
 
                 <div id="tab-blooks" class="tab-content hidden">
@@ -113,7 +128,7 @@
                 <div id="tab-shop" class="tab-content hidden">
                     <h1>Loja</h1>
                     <div style="background:white; padding:20px; border-radius:20px; text-align:center; cursor:pointer; width:220px; box-shadow: 0 8px 0 #ddd;" onclick="openFruitBox()">
-                        <span style="font-size:4rem;">🍎</span>
+                        <span style="font-size:4rem;">📦</span>
                         <h3>Fruit Box</h3>
                         <div style="background:var(--token-color); color:white; padding:5px; border-radius:8px; font-weight:bold;">15 Tokens</div>
                     </div>
@@ -130,11 +145,11 @@
                     </div>
 
                     <div id="host-lobby-ui" class="hidden">
-                        <div class="host-screen">
+                        <div class="lobby-screen">
                             <h2>PIN DA SALA:</h2>
                             <div class="pin-display" id="generated-pin">------</div>
-                            <p>Aguardando você entrar na aba "Play"...</p>
-                            <button class="btn" style="background:#ff4757; width:200px;" onclick="cancelHosting()">CANCELAR</button>
+                            <p>Pessoas podem entrar agora!</p>
+                            <button class="btn" style="background:#ff4757; width:200px;" onclick="cancelHosting()">FECHAR SALA</button>
                         </div>
                     </div>
                 </div>
@@ -150,8 +165,19 @@
         </div>
     </div>
 
+    <div id="unboxing-overlay" onclick="closeUnboxing()">
+        <div id="anim-box">📦</div>
+        <div id="anim-result" style="display:none; text-align:center;">
+            <div id="won-blook-container"></div>
+            <h2 id="won-blook-name" style="color:white; margin-top:20px;"></h2>
+            <p id="won-blook-rarity" style="color:#aaa;"></p>
+            <p style="color: white; font-size: 0.8rem; margin-top: 10px;">(Clique para fechar)</p>
+        </div>
+    </div>
+
     <script>
         let currentUser = "";
+        let isAnimating = false;
         const fruitBlooks = [
             { id: 'orange', name: 'Orange', emoji: '🍊', colorClass: 'bg-orange', rarity: 'Common', value: 10 },
             { id: 'lemon', name: 'Lemon', emoji: '🍋', colorClass: 'bg-lemon', rarity: 'Common', value: 10 },
@@ -166,14 +192,8 @@
 
         function toggleAuthMode() {
             const title = document.getElementById('auth-title');
-            const toggleText = document.getElementById('toggle-text');
-            if(title.innerText === "LOGIN") {
-                title.innerText = "CADASTRO";
-                toggleText.innerText = "Já tenho conta";
-            } else {
-                title.innerText = "LOGIN";
-                toggleText.innerText = "Criar conta";
-            }
+            title.innerText = title.innerText === "LOGIN" ? "CADASTRO" : "LOGIN";
+            document.getElementById('toggle-text').innerText = title.innerText === "LOGIN" ? "Criar conta" : "Já tenho conta";
         }
 
         function handleAuth() {
@@ -182,24 +202,18 @@
             if (!user || !pass) return;
 
             const userExists = localStorage.getItem(`withet_user_${user}`);
-
             if (document.getElementById('auth-title').innerText === "LOGIN") {
                 if (userExists === pass) {
                     localStorage.setItem('withet_current_session', user);
                     showDashboard(user);
-                } else alert("Usuário ou senha incorretos!");
+                } else alert("Erro no login!");
             } else {
-                // VERIFICAÇÃO DE USUÁRIO DUPLICADO
-                if (userExists) {
-                    alert("Este nome de usuário já está em uso! Escolha outro.");
-                    return;
-                }
+                if (userExists) return alert("Usuário já existe!");
                 localStorage.setItem(`withet_user_${user}`, pass);
                 localStorage.setItem(`withet_coins_${user}`, 200);
                 localStorage.setItem(`withet_blooks_${user}`, JSON.stringify([]));
                 localStorage.setItem(`withet_equipped_${user}`, "");
-                alert("Conta criada com sucesso!"); 
-                toggleAuthMode();
+                alert("Conta criada!"); toggleAuthMode();
             }
         }
 
@@ -220,7 +234,7 @@
             const grid = document.getElementById('inventory-grid');
             const myBlooks = JSON.parse(localStorage.getItem(`withet_blooks_${currentUser}`) || "[]");
             const equippedIndex = localStorage.getItem(`withet_equipped_${currentUser}`);
-            grid.innerHTML = myBlooks.length ? "" : "<p>Abra caixas para ganhar Blooks!</p>";
+            grid.innerHTML = myBlooks.length ? "" : "<p>Vazio...</p>";
             
             myBlooks.forEach((bID, index) => {
                 const b = fruitBlooks.find(f => f.id === bID);
@@ -234,18 +248,6 @@
                     </div>`;
             });
             updateProfileTab();
-        }
-
-        function updateProfileTab() {
-            const container = document.getElementById('profile-blook-container');
-            const myBlooks = JSON.parse(localStorage.getItem(`withet_blooks_${currentUser}`) || "[]");
-            const equippedIndex = localStorage.getItem(`withet_equipped_${currentUser}`);
-            if (equippedIndex !== "" && myBlooks[equippedIndex]) {
-                const b = fruitBlooks.find(f => f.id === myBlooks[equippedIndex]);
-                container.innerHTML = `<div class="blook-square ${b.colorClass}" style="width:100px; height:130px; font-size:3.5rem;">${b.emoji}</div><h3 style="margin-top:10px;">${b.name}</h3>`;
-            } else {
-                container.innerHTML = "<p>Nenhum Blook equipado.</p>";
-            }
         }
 
         function equipBlook(index) {
@@ -265,48 +267,102 @@
             updateTokens(); updateInventory();
         }
 
+        function updateProfileTab() {
+            const container = document.getElementById('profile-blook-container');
+            const myBlooks = JSON.parse(localStorage.getItem(`withet_blooks_${currentUser}`) || "[]");
+            const equippedIndex = localStorage.getItem(`withet_equipped_${currentUser}`);
+            if (equippedIndex !== "" && myBlooks[equippedIndex]) {
+                const b = fruitBlooks.find(f => f.id === myBlooks[equippedIndex]);
+                container.innerHTML = `<div class="blook-square ${b.colorClass}" style="width:100px; height:130px; font-size:3.5rem;">${b.emoji}</div><h3 style="margin-top:10px;">${b.name}</h3>`;
+            } else { container.innerHTML = "<p>Nenhum Blook equipado.</p>"; }
+        }
+
+        // UNBOXING LOGIC (THE SUSPENSE)
         function openFruitBox() {
+            if (isAnimating) return;
             let coins = parseInt(localStorage.getItem(`withet_coins_${currentUser}`));
             if (coins < 15) return alert("Tokens insuficientes!");
+            
             coins -= 15;
             localStorage.setItem(`withet_coins_${currentUser}`, coins);
+            updateTokens();
+
             const rand = Math.random() * 100;
             let won = (rand <= 0.5) ? fruitBlooks[3] : (rand <= 17) ? fruitBlooks[2] : (rand <= 60) ? fruitBlooks[1] : fruitBlooks[0];
+
             let myBlooks = JSON.parse(localStorage.getItem(`withet_blooks_${currentUser}`));
             myBlooks.push(won.id);
             localStorage.setItem(`withet_blooks_${currentUser}`, JSON.stringify(myBlooks));
-            updateTokens(); updateInventory();
-            alert(`Você conseguiu: ${won.name}!`);
+            
+            showUnboxingAnimation(won);
         }
 
-        // LÓGICA DE SALAS (HOST E PLAY)
+        function showUnboxingAnimation(blook) {
+            isAnimating = true;
+            const overlay = document.getElementById('unboxing-overlay');
+            const animBox = document.getElementById('anim-box');
+            const animResult = document.getElementById('anim-result');
+            
+            overlay.style.display = 'flex';
+            animBox.style.display = 'block';
+            animResult.style.display = 'none';
+
+            setTimeout(() => {
+                animBox.style.display = 'none';
+                document.getElementById('won-blook-container').innerHTML = `<div class="blook-square ${blook.colorClass}" style="width:140px; height:180px; font-size:5rem;">${blook.emoji}</div>`;
+                document.getElementById('won-blook-name').innerText = blook.name;
+                document.getElementById('won-blook-rarity').innerText = blook.rarity;
+                animResult.style.display = 'block';
+                isAnimating = false;
+                updateInventory();
+            }, 1500);
+        }
+
+        function closeUnboxing() { if (!isAnimating) document.getElementById('unboxing-overlay').style.display = 'none'; }
+
+        // PIN & ROOM LOGIC
         function startHosting() {
             const pin = Math.floor(100000 + Math.random() * 900000).toString();
-            sessionStorage.setItem('active_game_pin', pin); // Salva o PIN na sessão atual
+            localStorage.setItem('active_game_pin', pin); // Usando LocalStorage para persistir entre abas
             document.getElementById('generated-pin').innerText = pin;
             document.getElementById('create-main-ui').classList.add('hidden');
             document.getElementById('host-lobby-ui').classList.remove('hidden');
         }
 
         function cancelHosting() {
-            sessionStorage.removeItem('active_game_pin');
+            localStorage.removeItem('active_game_pin');
             document.getElementById('create-main-ui').classList.remove('hidden');
             document.getElementById('host-lobby-ui').classList.add('hidden');
         }
 
         function joinGame() {
             const typedPin = document.getElementById('play-pin-input').value;
-            const activePin = sessionStorage.getItem('active_game_pin');
-            const feedback = document.getElementById('play-feedback');
+            const activePin = localStorage.getItem('active_game_pin');
+            const error = document.getElementById('play-error');
 
-            if (typedPin === activePin) {
-                feedback.style.color = "var(--equipped-color)";
-                feedback.innerText = "✅ PIN Correto! Entrando na sala...";
-                // Aqui no futuro carregaremos o minigame
+            if (typedPin === activePin && activePin !== null) {
+                error.innerText = "";
+                document.getElementById('play-input-ui').classList.add('hidden');
+                document.getElementById('play-lobby-ui').classList.remove('hidden');
+                
+                // Mostrar Blook no Lobby
+                const myBlooks = JSON.parse(localStorage.getItem(`withet_blooks_${currentUser}`) || "[]");
+                const equippedIndex = localStorage.getItem(`withet_equipped_${currentUser}`);
+                const display = document.getElementById('lobby-blook-display');
+                if (equippedIndex !== "" && myBlooks[equippedIndex]) {
+                    const b = fruitBlooks.find(f => f.id === myBlooks[equippedIndex]);
+                    display.innerHTML = `<div class="blook-square ${b.colorClass}" style="width:120px; height:160px; font-size:4rem;">${b.emoji}</div><h3>Pronto para jogar!</h3>`;
+                } else {
+                    display.innerHTML = "<p>Você não equipou um Blook!</p>";
+                }
             } else {
-                feedback.style.color = "var(--ff4757)";
-                feedback.innerText = "❌ PIN Inválido ou Sala inexistente.";
+                error.innerText = "PIN INVÁLIDO OU SALA FECHADA!";
             }
+        }
+
+        function leaveLobby() {
+            document.getElementById('play-input-ui').classList.remove('hidden');
+            document.getElementById('play-lobby-ui').classList.add('hidden');
         }
 
         function switchTab(tab, el) {
