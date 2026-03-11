@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Withet | Friends & Host Update</title>
+    <title>Withet | Authentic Blook Design</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -12,10 +12,13 @@
             --content-bg: #f0f2f5;
             --token-color: #f1c40f;
             --equipped-color: #2ecc71;
+            --rarity-common: #bdc3c7;
+            --rarity-uncommon: #2ecc71;
+            --rarity-legendary: #e91e63;
             --bg-gradient: linear-gradient(-45deg, #1e3799, #0c2461, #4a69bd, #079992);
         }
 
-        * { box-sizing: border-box; transition: all 0.2s ease; }
+        * { box-sizing: border-box; transition: all 0.2s ease; user-select: none; }
         body { font-family: 'Nunito', sans-serif; margin: 0; background: var(--bg-gradient); background-size: 400% 400%; animation: gradientBG 15s ease infinite; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
@@ -35,21 +38,112 @@
         .content-header { padding: 15px 30px; display: flex; justify-content: flex-end; align-items: center; background: rgba(255,255,255,0.6); border-bottom: 2px solid #ddd; }
         .tab-body { flex: 1; padding: 30px; overflow-y: auto; }
 
-        /* BLOOKS & CARDS */
-        .blook-square { width: 60px; height: 80px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 2rem; border-bottom: 4px solid rgba(0,0,0,0.2); margin: 0 auto; }
-        .bg-orange { background: #ff9800; } .bg-lemon { background: #8bc34a; } .bg-strawberry { background: #ff4757; } .bg-pitaya { background: #e91e63; box-shadow: 0 0 15px rgba(233,30,99,0.5); }
+        /* --- DESIGN AUTÊNTICO DO BLOOK QUADRADO --- */
+        .blooks-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 20px; }
+        
+        /* O Container do Blook (proporção oficial) */
+        .blook-container {
+            width: 100px;
+            height: 125px; /* Proporção 4:5 aproximada do Blooket */
+            border-radius: 18px; /* Bordas arredondadas características */
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 -8px 0 rgba(0,0,0,0.15); /* Sombra interna inferior */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-        /* FRIENDS STYLES */
+        /* Rosto padrão do Blook ( olhos e boca Brancos) */
+        .blook-face {
+            width: 70%;
+            height: 50%;
+            position: relative;
+        }
+        .blook-face::before, .blook-face::after { /* Olhos */
+            content: '';
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: white;
+            border-radius: 50%;
+            top: 10px;
+        }
+        .blook-face::before { left: 10px; }
+        .blook-face::after { right: 10px; }
+        
+        .blook-mouth { /* Boca */
+            position: absolute;
+            width: 30px;
+            height: 15px;
+            border-bottom: 5px solid white;
+            border-radius: 0 0 15px 15px;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        /* Design Específico da PITAYA (Lendária) */
+        .blook-pitaya {
+            background: linear-gradient(135deg, #ff4081, #e91e63);
+            border: 4px solid #fce4ec;
+        }
+        .blook-pitaya .blook-mouth {
+            border-bottom-color: #fce4ec;
+        }
+        .blook-pitaya::before, .blook-pitaya::after { /* Olhos da Pitaya */
+            background: #fce4ec;
+        }
+
+        /* Cores dos outros Blooks */
+        .blook-orange { background-color: #ff9800; }
+        .blook-lemon { background-color: #8bc34a; }
+        .blook-strawberry { background-color: #ff4757; }
+
+        /* Card do Inventário */
+        .blook-card-item {
+            background: white;
+            border-radius: 20px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 8px 0 #ddd;
+            border: 4px solid transparent;
+            transition: transform 0.2s;
+        }
+        .blook-card-item:hover { transform: translateY(-5px); }
+        .blook-card-item.is-equipped { border-color: var(--equipped-color); background: #e8f5e9; }
+        .blook-name { font-weight: 900; font-size: 1.1rem; margin: 10px 0 5px 0; display: block; }
+        
+        /* Botões de Ação */
+        .action-btns { display: flex; gap: 5px; margin-top: 10px; }
+        .btn-action { flex: 1; padding: 6px; border: none; border-radius: 8px; font-weight: 900; cursor: pointer; font-size: 0.7rem; color: white; font-family: 'Nunito', sans-serif; }
+        .sell-btn { background: #ff7675; box-shadow: 0 3px 0 #d63031; }
+        .equip-btn { background: var(--primary); box-shadow: 0 3px 0 #0d47a1; }
+        .equipped-label { background: var(--equipped-color) !important; cursor: default; box-shadow: 0 3px 0 #27ae60; }
+
+        /* --- UNBOXING ANIMATION --- */
+        #unboxing-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 1000; cursor: pointer; }
+        #anim-box { font-size: 8rem; animation: shakeBox 0.5s infinite; }
+        @keyframes shakeBox { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(10deg); } 75% { transform: rotate(-10deg); } }
+        
+        #anim-result { display: none; text-align: center; animation: popBlook 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        @keyframes popBlook { from { transform: scale(0) rotate(-180deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
+
+        /* Efeito de brilho para Lendários */
+        .legendary-glow {
+            position: absolute;
+            width: 100%; height: 100%;
+            border-radius: 18px;
+            box-shadow: 0 0 30px rgba(233,30,99,0.8);
+            animation: glowPulse 1.5s infinite;
+        }
+        @keyframes glowPulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; box-shadow: 0 0 50px rgba(233,30,99,1); } }
+
+        /* FRIENDS */
         .friend-item { background: white; padding: 15px; border-radius: 15px; display: flex; align-items: center; gap: 15px; margin-bottom: 10px; box-shadow: 0 4px 0 #ddd; }
-        .friend-status { width: 12px; height: 12px; border-radius: 50%; background: #2ecc71; }
-        .request-badge { background: #ff4757; color: white; padding: 2px 8px; border-radius: 20px; font-size: 0.8rem; margin-left: auto; }
-
-        /* LOBBY JOGADORES */
-        .player-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 15px; margin: 20px 0; padding: 20px; background: rgba(0,0,0,0.1); border-radius: 15px; }
-        .player-slot { text-align: center; color: white; }
 
         .btn { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: 900; cursor: pointer; box-shadow: 0 5px 0 #0d47a1; margin-top: 10px; }
-        .btn-small { padding: 6px 12px; font-size: 0.8rem; width: auto; margin: 0 5px; }
         input { width: 100%; padding: 12px; margin: 8px 0; border: 3px solid #eee; border-radius: 10px; font-size: 1rem; outline: none; }
     </style>
 </head>
@@ -60,7 +154,7 @@
         <h2 id="auth-title">LOGIN</h2>
         <input type="text" id="user" placeholder="USUÁRIO">
         <input type="password" id="pass" placeholder="SENHA">
-        <button class="btn" onclick="handleAuth()" id="auth-btn">JOGAR!</button>
+        <button class="btn" onclick="handleAuth()">JOGAR!</button>
         <div style="margin-top:15px; cursor:pointer;" onclick="toggleAuthMode()" id="toggle-text">Criar conta</div>
     </div>
 
@@ -87,105 +181,121 @@
             <div class="tab-body">
                 <div id="tab-news" class="tab-content">
                     <h1>Novidades</h1>
-                    <div style="background:white; padding:20px; border-radius:20px; box-shadow: 0 6px 0 #ddd; border-left: 8px solid var(--primary);">
-                        <h3>👥 Sistema de Amigos!</h3>
-                        <p>Agora podes adicionar amigos, aceitar pedidos e ver quem está online. A diversão começou!</p>
+                    <div style="background:white; padding:20px; border-radius:20px; box-shadow: 0 6px 0 #ddd; border-left: 10px solid var(--rarity-legendary);">
+                        <h3>🟦 O Design Autêntico Chegou!</h3>
+                        <p>Os Blooks agora são **quadrados** e têm o visual oficial! Diga adeus aos emojis e olá para a verdadeira coleção Withet, incluindo a lendária Pitaya.</p>
+                    </div>
+                </div>
+
+                <div id="tab-blooks" class="tab-content hidden">
+                    <h1>Sua Coleção</h1>
+                    <div class="blooks-grid" id="inventory-grid"></div>
+                </div>
+
+                <div id="tab-shop" class="tab-content hidden">
+                    <h1>Loja</h1>
+                    <div style="background:white; padding:30px; border-radius:25px; text-align:center; cursor:pointer; width:260px; box-shadow: 0 10px 0 #ddd;" onclick="openFruitBox()">
+                        <span style="font-size:6rem;">📦</span>
+                        <h2 style="margin: 15px 0;">Fruit Box</h2>
+                        <div style="background:var(--token-color); color:white; padding:10px; border-radius:12px; font-weight:bold; font-size:1.4rem; box-shadow: 0 4px 0 #c8a200;">15 Tokens</div>
                     </div>
                 </div>
 
                 <div id="tab-friends" class="tab-content hidden">
                     <div style="display:flex; justify-content:space-between; align-items:center;">
                         <h1>Amigos</h1>
-                        <div>
-                            <button class="btn btn-small" onclick="showFriendsSubTab('list')">Lista</button>
-                            <button class="btn btn-small" style="background:#e67e22;" onclick="showFriendsSubTab('requests')">Pedidos <span id="req-count">0</span></button>
+                        <div style="background:white; padding:5px; border-radius:12px; box-shadow:0 3px 0 #ddd;">
+                            <button class="btn" style="width:100px; font-size:0.8rem; margin:0;" onclick="showFriendsSubTab('list')">Lista</button>
+                            <button class="btn" style="width:120px; font-size:0.8rem; margin:0; background:#e67e22;" onclick="showFriendsSubTab('requests')">Pedidos (<span id="req-count">0</span>)</button>
                         </div>
                     </div>
-
                     <div id="friends-list-ui">
-                        <div style="display:flex; gap:10px; margin-bottom:20px;">
+                        <div style="display:flex; gap:10px; margin:20px 0;">
                             <input type="text" id="search-friend" placeholder="Nome do usuário...">
                             <button class="btn" style="width:150px; margin:8px 0;" onclick="sendFriendRequest()">Adicionar</button>
                         </div>
                         <div id="my-friends-container"></div>
                     </div>
-
                     <div id="friends-requests-ui" class="hidden">
-                        <h3>Pedidos de Amizade</h3>
+                        <h3>Pedidos Pendentes</h3>
                         <div id="requests-container"></div>
                     </div>
                 </div>
 
-                <div id="tab-play" class="tab-content hidden" style="text-align:center;">
-                    <div id="play-input-ui">
-                        <h1>ENTRAR NO JOGO</h1>
-                        <input type="text" id="play-pin-input" placeholder="000000" maxlength="6" style="width:250px; font-size:2.5rem; text-align:center;">
-                        <br><button class="btn" style="width:250px;" onclick="joinGame()">ENTRAR</button>
-                    </div>
-                    <div id="play-lobby-ui" class="hidden">
-                        <div style="background:#2f3542; color:white; padding:40px; border-radius:25px;">
-                            <h2>Aguardando o Host...</h2>
-                            <div id="my-lobby-blook"></div>
-                            <button class="btn" style="background:#ff4757; width:200px;" onclick="leaveLobby()">SAIR</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="tab-create" class="tab-content hidden">
-                    <div id="create-main-ui">
-                        <h1>Criar Partida</h1>
-                        <button class="btn" onclick="startHosting()">HOST FRUIT SET</button>
-                    </div>
-                    <div id="host-lobby-ui" class="hidden">
-                        <div style="background:#2f3542; color:white; padding:40px; border-radius:25px; text-align:center;">
-                            <h1 style="color:var(--token-color); font-size:4rem;" id="generated-pin">000000</h1>
-                            <h3>Jogadores na Sala:</h3>
-                            <div class="player-list" id="host-player-list">
-                                </div>
-                            <button class="btn" style="background:var(--equipped-color); width:250px; font-size:1.5rem;" onclick="alert('O jogo vai começar na próxima atualização!')">START GAME</button>
-                            <br><button class="btn" style="background:#ff4757; width:200px; margin-top:20px;" onclick="cancelHosting()">CANCELAR</button>
-                        </div>
-                    </div>
-                </div>
-
-                <div id="tab-blooks" class="tab-content hidden"><h1>Meus Blooks</h1><div class="blooks-grid" id="inventory-grid"></div></div>
-                <div id="tab-shop" class="tab-content hidden"><h1>Loja</h1><button class="btn" onclick="openFruitBox()">Abrir Caixa (15 🟡)</button></div>
-                <div id="tab-account" class="tab-content hidden"><h1>Conta</h1><div id="profile-name" style="font-size:2rem;"></div><div id="profile-blook-container"></div></div>
+                <div id="tab-play" class="tab-content hidden"><h1>Entrar no Jogo</h1><input type="text" id="play-pin-input" placeholder="000000" style="width:250px; font-size:2.5rem; text-align:center;"><button class="btn" onclick="joinGame()">ENTRAR</button></div>
+                <div id="tab-create" class="tab-content hidden"><h1>Host</h1><button class="btn" onclick="startHosting()">START HOSTING</button><div id="host-lobby-ui" class="hidden"><h1 id="generated-pin"></h1></div></div>
+                <div id="tab-account" class="tab-content hidden"><h1>Conta</h1><div id="profile-name"></div><div id="profile-blook-container"></div></div>
             </div>
+        </div>
+    </div>
+
+    <div id="unboxing-overlay" onclick="closeUnboxing()">
+        <div id="anim-box">📦</div>
+        <div id="anim-result">
+            <div id="won-blook-container" style="position:relative; width:150px; height:180px; margin:0 auto;">
+                </div>
+            <h1 id="won-blook-name" style="color:white; margin-top:25px; font-size:2.5rem;"></h1>
+            <h3 id="won-blook-rarity" style="text-transform:uppercase; letter-spacing:2px;"></h3>
+            <p style="color: white; font-size: 0.9rem; margin-top: 15px;">(Clique para fechar)</p>
         </div>
     </div>
 
     <script>
         let currentUser = "";
+        let isAnimating = false;
+        
+        // DEFINIÇÃO DOS BLOOKS COM O NOVO DESIGN CSS
         const fruitBlooks = [
-            { id: 'orange', emoji: '🍊', colorClass: 'bg-orange', value: 10 },
-            { id: 'lemon', emoji: '🍋', colorClass: 'bg-lemon', value: 10 },
-            { id: 'strawberry', emoji: '🍓', colorClass: 'bg-strawberry', value: 25 },
-            { id: 'pitaya', emoji: '🐉', colorClass: 'bg-pitaya', value: 100 }
+            { id: 'orange', name: 'Orange', cssClass: 'blook-orange', rarity: 'Common', value: 10, rarityColor: '#bdc3c7' },
+            { id: 'lemon', name: 'Lemon', cssClass: 'blook-lemon', rarity: 'Common', value: 10, rarityColor: '#bdc3c7' },
+            { id: 'strawberry', name: 'Strawberry', cssClass: 'blook-strawberry', rarity: 'Uncommon', value: 25, rarityColor: '#2ecc71' },
+            { id: 'pitaya', name: 'Pitaya', cssClass: 'blook-pitaya', rarity: 'LEGENDARY', value: 100, rarityColor: '#e91e63' }
         ];
+
+        // Função auxiliar para gerar o HTML do Blook quadrado
+        function generateBlookHTML(blookData, sizeMultiplier = 1) {
+            const isLegendary = blookData.rarity === 'LEGENDARY';
+            const extraStyles = sizeMultiplier !== 1 ? `transform: scale(${sizeMultiplier}); transform-origin: top center;` : '';
+            
+            return `
+                <div class="blook-container ${blookData.cssClass}" style="${extraStyles}">
+                    ${isLegendary ? '<div class="legendary-glow"></div>' : ''}
+                    <div class="blook-face">
+                        <div class="blook-mouth"></div>
+                    </div>
+                </div>
+            `;
+        }
 
         window.onload = () => {
             const session = localStorage.getItem('withet_current_session');
             if (session) showDashboard(session);
         };
 
+        function toggleAuthMode() {
+            const t = document.getElementById('auth-title');
+            t.innerText = t.innerText === "LOGIN" ? "CADASTRO" : "LOGIN";
+            document.getElementById('toggle-text').innerText = t.innerText === "LOGIN" ? "Criar conta" : "Já tenho conta";
+        }
+
         function handleAuth() {
             const user = document.getElementById('user').value.trim().toLowerCase();
             const pass = document.getElementById('pass').value;
-            const isLogin = document.getElementById('auth-title').innerText === "LOGIN";
-
-            if (isLogin) {
-                if (localStorage.getItem(`withet_user_${user}`) === pass) {
+            if(!user || !pass) return;
+            const userExists = localStorage.getItem(`withet_user_${user}`);
+            if (document.getElementById('auth-title').innerText === "LOGIN") {
+                if (userExists === pass) {
                     localStorage.setItem('withet_current_session', user);
                     showDashboard(user);
                 } else alert("Erro!");
             } else {
-                if (localStorage.getItem(`withet_user_${user}`)) return alert("Existe!");
+                if(userExists) return alert("Existe!");
                 localStorage.setItem(`withet_user_${user}`, pass);
                 localStorage.setItem(`withet_coins_${user}`, 200);
                 localStorage.setItem(`withet_blooks_${user}`, "[]");
                 localStorage.setItem(`withet_friends_${user}`, "[]");
                 localStorage.setItem(`withet_requests_${user}`, "[]");
+                localStorage.setItem(`withet_equipped_${user}`, "");
                 alert("Criado!"); toggleAuthMode();
             }
         }
@@ -198,92 +308,6 @@
             updateTokens(); updateInventory(); updateFriendsUI();
         }
 
-        // --- SISTEMA DE AMIGOS ---
-        function showFriendsSubTab(type) {
-            document.getElementById('friends-list-ui').classList.toggle('hidden', type !== 'list');
-            document.getElementById('friends-requests-ui').classList.toggle('hidden', type !== 'requests');
-        }
-
-        function sendFriendRequest() {
-            const target = document.getElementById('search-friend').value.trim().toLowerCase();
-            if (target === currentUser) return alert("Não podes ser teu próprio amigo!");
-            if (!localStorage.getItem(`withet_user_${target}`)) return alert("Usuário não encontrado!");
-
-            let requests = JSON.parse(localStorage.getItem(`withet_requests_${target}`) || "[]");
-            if (!requests.includes(currentUser)) {
-                requests.push(currentUser);
-                localStorage.setItem(`withet_requests_${target}`, JSON.stringify(requests));
-                alert("Pedido enviado!");
-            }
-        }
-
-        function updateFriendsUI() {
-            const friends = JSON.parse(localStorage.getItem(`withet_friends_${currentUser}`) || "[]");
-            const requests = JSON.parse(localStorage.getItem(`withet_requests_${currentUser}`) || "[]");
-            
-            document.getElementById('req-count').innerText = requests.length;
-            
-            const listCont = document.getElementById('my-friends-container');
-            listCont.innerHTML = friends.length ? "" : "<p>Ainda não tens amigos.</p>";
-            friends.forEach(f => {
-                listCont.innerHTML += `<div class="friend-item"><div class="friend-status"></div><b>${f.toUpperCase()}</b></div>`;
-            });
-
-            const reqCont = document.getElementById('requests-container');
-            reqCont.innerHTML = requests.length ? "" : "<p>Nenhum pedido pendente.</p>";
-            requests.forEach((r, i) => {
-                reqCont.innerHTML += `
-                    <div class="friend-item">
-                        <b>${r.toUpperCase()}</b>
-                        <div style="margin-left:auto;">
-                            <button class="btn btn-small" style="background:var(--equipped-color);" onclick="acceptFriend(${i})">Aceitar</button>
-                            <button class="btn btn-small" style="background:#ff4757;" onclick="rejectFriend(${i})">X</button>
-                        </div>
-                    </div>`;
-            });
-        }
-
-        function acceptFriend(index) {
-            let requests = JSON.parse(localStorage.getItem(`withet_requests_${currentUser}`));
-            let friends = JSON.parse(localStorage.getItem(`withet_friends_${currentUser}`));
-            const newFriend = requests[index];
-
-            friends.push(newFriend);
-            requests.splice(index, 1);
-
-            localStorage.setItem(`withet_friends_${currentUser}`, JSON.stringify(friends));
-            localStorage.setItem(`withet_requests_${currentUser}`, JSON.stringify(requests));
-
-            // Adiciona na lista do outro também
-            let otherFriends = JSON.parse(localStorage.getItem(`withet_friends_${newFriend}`) || "[]");
-            otherFriends.push(currentUser);
-            localStorage.setItem(`withet_friends_${newFriend}`, JSON.stringify(otherFriends));
-
-            updateFriendsUI();
-        }
-
-        // --- SISTEMA DE HOST ---
-        function startHosting() {
-            const pin = Math.floor(100000 + Math.random() * 900000).toString();
-            localStorage.setItem('active_game_pin', pin);
-            document.getElementById('generated-pin').innerText = pin;
-            document.getElementById('create-main-ui').classList.add('hidden');
-            document.getElementById('host-lobby-ui').classList.remove('hidden');
-            
-            // Simular entrada de jogadores (como é local, vamos mostrar o próprio host no lobby)
-            const list = document.getElementById('host-player-list');
-            list.innerHTML = `<div class="player-slot"><div class="blook-square bg-pitaya">👑</div><p>${currentUser}</p></div>`;
-        }
-
-        function joinGame() {
-            const pin = document.getElementById('play-pin-input').value;
-            if (pin === localStorage.getItem('active_game_pin')) {
-                document.getElementById('play-input-ui').classList.add('hidden');
-                document.getElementById('play-lobby-ui').classList.remove('hidden');
-            } else alert("PIN Errado!");
-        }
-
-        // Funções auxiliares (Blooks, Tokens, etc)
         function updateTokens() {
             const coins = localStorage.getItem(`withet_coins_${currentUser}`) || 0;
             document.querySelectorAll('.global-token-count').forEach(el => el.innerText = coins);
@@ -292,22 +316,136 @@
         function updateInventory() {
             const grid = document.getElementById('inventory-grid');
             const myBlooks = JSON.parse(localStorage.getItem(`withet_blooks_${currentUser}`) || "[]");
-            grid.innerHTML = myBlooks.map(bID => {
+            const equippedIndex = localStorage.getItem(`withet_equipped_${currentUser}`);
+            grid.innerHTML = myBlooks.length ? "" : "<p style='grid-column: 1/-1; text-align:center; color:#7f8c8d;'>Abra caixas no Shop para começar sua coleção!</p>";
+            
+            myBlooks.forEach((bID, index) => {
                 const b = fruitBlooks.find(f => f.id === bID);
-                return `<div style="background:white; padding:10px; border-radius:10px; text-align:center;"><div class="blook-square ${b.colorClass}">${b.emoji}</div></div>`;
-            }).join("");
+                const isEquipped = equippedIndex === index.toString();
+                grid.innerHTML += `
+                    <div class="blook-card-item ${isEquipped ? 'is-equipped' : ''}">
+                        ${generateBlookHTML(b, 0.8)} <span class="blook-name">${b.name}</span>
+                        <div class="action-btns">
+                            ${isEquipped ? 
+                                `<button class="btn-action equipped-label">EQUIPADO</button>` : 
+                                `<button class="btn-action equip-btn" onclick="equipBlook(${index})">EQUIPAR</button>`
+                            }
+                            <button class="btn-action sell-btn" onclick="sellBlook(${index})">VENDER (${b.value})</button>
+                        </div>
+                    </div>`;
+            });
         }
 
-        function openFruitBox() {
+        function equipBlook(index) {
+            localStorage.setItem(`withet_equipped_${currentUser}`, index);
+            updateInventory();
+        }
+
+        function sellBlook(index) {
+            let my = JSON.parse(localStorage.getItem(`withet_blooks_${currentUser}`));
             let coins = parseInt(localStorage.getItem(`withet_coins_${currentUser}`));
-            if (coins < 15) return alert("Pobre!");
+            let eq = localStorage.getItem(`withet_equipped_${currentUser}`);
+            const b = fruitBlooks.find(f => f.id === my[index]);
+            coins += b.value;
+            my.splice(index, 1);
+            if(eq === index.toString()) localStorage.setItem(`withet_equipped_${currentUser}`, "");
+            localStorage.setItem(`withet_blooks_${currentUser}`, JSON.stringify(my));
+            localStorage.setItem(`withet_coins_${currentUser}`, coins);
+            updateTokens(); updateInventory();
+        }
+
+        // UNBOXING LOGIC (THE AUTHENTIC SUSPENSE)
+        function openFruitBox() {
+            if (isAnimating) return;
+            let coins = parseInt(localStorage.getItem(`withet_coins_${currentUser}`));
+            if (coins < 15) return alert("Tokens insuficientes!");
             coins -= 15;
             localStorage.setItem(`withet_coins_${currentUser}`, coins);
-            let won = fruitBlooks[Math.floor(Math.random() * fruitBlooks.length)];
+            updateTokens();
+
+            // Chances oficiais: Comum (Orange/Lemon) 40% cada, Uncommon 19.5%, Legendary 0.5%
+            const rand = Math.random() * 100;
+            let won;
+            if (rand <= 0.5) won = fruitBlooks[3]; // Pitaya
+            else if (rand <= 20) won = fruitBlooks[2]; // Strawberry
+            else if (rand <= 60) won = fruitBlooks[1]; // Lemon
+            else won = fruitBlooks[0]; // Orange
+
             let my = JSON.parse(localStorage.getItem(`withet_blooks_${currentUser}`));
             my.push(won.id);
             localStorage.setItem(`withet_blooks_${currentUser}`, JSON.stringify(my));
-            updateTokens(); updateInventory(); alert("Ganhaste: " + won.id);
+            
+            isAnimating = true;
+            document.getElementById('unboxing-overlay').style.display = 'flex';
+            document.getElementById('anim-box').style.display = 'block';
+            document.getElementById('anim-result').style.display = 'none';
+
+            setTimeout(() => {
+                document.getElementById('anim-box').style.display = 'none';
+                
+                // Gera o Blook Quadrado grande na tela de vitória
+                document.getElementById('won-blook-container').innerHTML = generateBlookHTML(won, 1.3);
+                
+                document.getElementById('won-blook-name').innerText = won.name;
+                const rarityEl = document.getElementById('won-blook-rarity');
+                rarityEl.innerText = won.rarity;
+                rarityEl.style.color = won.rarityColor;
+                
+                document.getElementById('anim-result').style.display = 'block';
+                isAnimating = false;
+                updateInventory();
+            }, 1800); // Aumentei um pouco o suspense
+        }
+
+        function closeUnboxing() { if(!isAnimating) document.getElementById('unboxing-overlay').style.display = 'none'; }
+
+        // AMIGOS (MANTIDOS)
+        function showFriendsSubTab(type) {
+            document.getElementById('friends-list-ui').classList.toggle('hidden', type !== 'list');
+            document.getElementById('friends-requests-ui').classList.toggle('hidden', type !== 'requests');
+        }
+        function sendFriendRequest() {
+            const target = document.getElementById('search-friend').value.trim().toLowerCase();
+            if(!target || target === currentUser) return alert("Inválido!");
+            if(!localStorage.getItem(`withet_user_${target}`)) return alert("Não existe!");
+            let reqs = JSON.parse(localStorage.getItem(`withet_requests_${target}`) || "[]");
+            if(!reqs.includes(currentUser)) reqs.push(currentUser);
+            localStorage.setItem(`withet_requests_${target}`, JSON.stringify(reqs));
+            alert("Pedido enviado!");
+        }
+        function updateFriendsUI() {
+            const friends = JSON.parse(localStorage.getItem(`withet_friends_${currentUser}`) || "[]");
+            const requests = JSON.parse(localStorage.getItem(`withet_requests_${currentUser}`) || "[]");
+            document.getElementById('req-count').innerText = requests.length;
+            const reqCont = document.getElementById('requests-container');
+            reqCont.innerHTML = requests.length ? "" : "<p>Nenhum pedido.</p>";
+            requests.forEach((r, i) => {
+                reqCont.innerHTML += `<div class="friend-item"><b>${r.toUpperCase()}</b><div style="margin-left:auto;"><button class="btn" style="width:80px; font-size:0.7rem; background:var(--equipped-color); margin:0;" onclick="acceptFriend(${i})">Aceitar</button><button class="btn" style="width:80px; font-size:0.7rem; background:#ff4757; margin:0;" onclick="rejectFriend(${i})">Recusar</button></div></div>`;
+            });
+            const listCont = document.getElementById('my-friends-container');
+            listCont.innerHTML = friends.length ? "" : "<p>Sua lista está vazia.</p>";
+            friends.forEach(f => {
+                listCont.innerHTML += `<div class="friend-item"><div style="width:10px;height:10px;background:#2ecc71;border-radius:50%;"></div><b>${f.toUpperCase()}</b></div>`;
+            });
+        }
+        function acceptFriend(index) {
+            let reqs = JSON.parse(localStorage.getItem(`withet_requests_${currentUser}`));
+            let mine = JSON.parse(localStorage.getItem(`withet_friends_${currentUser}`));
+            const other = reqs[index];
+            mine.push(other);
+            reqs.splice(index, 1);
+            localStorage.setItem(`withet_friends_${currentUser}`, JSON.stringify(mine));
+            localStorage.setItem(`withet_requests_${currentUser}`, JSON.stringify(reqs));
+            let others = JSON.parse(localStorage.getItem(`withet_friends_${other}`) || "[]");
+            others.push(currentUser);
+            localStorage.setItem(`withet_friends_${other}`, JSON.stringify(others));
+            updateFriendsUI();
+        }
+        function rejectFriend(index) {
+            let reqs = JSON.parse(localStorage.getItem(`withet_requests_${currentUser}`));
+            reqs.splice(index, 1);
+            localStorage.setItem(`withet_requests_${currentUser}`, JSON.stringify(reqs));
+            updateFriendsUI();
         }
 
         function switchTab(tab, el) {
@@ -317,15 +455,12 @@
             el.classList.add('active');
             if(tab === 'friends') updateFriendsUI();
         }
-
-        function toggleAuthMode() {
-            const t = document.getElementById('auth-title');
-            t.innerText = t.innerText === "LOGIN" ? "CADASTRO" : "LOGIN";
-        }
-
         function logout() { localStorage.removeItem('withet_current_session'); location.reload(); }
-        function cancelHosting() { localStorage.removeItem('active_game_pin'); location.reload(); }
-        function leaveLobby() { document.getElementById('play-input-ui').classList.remove('hidden'); document.getElementById('play-lobby-ui').classList.add('hidden'); }
+        // PLACEHOLDERS PARA PLAY E CREATE
+        function joinGame() { alert("PIN inváido ou sala fechada."); }
+        function startHosting() { alert("O sistema de Host está sendo reformulado para o novo design."); }
     </script>
 </body>
 </html>
+</html>
+
