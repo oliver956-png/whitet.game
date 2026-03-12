@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Withet | Blooks Reais</title>
+    <title>Withet | Blooks Estáveis</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -15,8 +15,8 @@
             --bg-gradient: linear-gradient(-45deg, #1e3799, #0c2461, #4a69bd, #079992);
         }
 
-        * { box-sizing: border-box; transition: all 0.2s ease; }
-        body { font-family: 'Nunito', sans-serif; margin: 0; background: var(--bg-gradient); background-size: 400% 400%; animation: gradientBG 15s ease infinite; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        * { box-sizing: border-box; transition: all 0.2s ease; font-family: 'Nunito', sans-serif; }
+        body { margin: 0; background: var(--bg-gradient); background-size: 400% 400%; animation: gradientBG 15s ease infinite; height: 100vh; display: flex; justify-content: center; align-items: center; overflow: hidden; }
         @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
 
         #auth-screen { background: white; padding: 40px; border-radius: 24px; box-shadow: 0 15px 0 rgba(0,0,0,0.2); width: 360px; text-align: center; }
@@ -24,39 +24,46 @@
         .active-flex { display: flex !important; }
         .hidden { display: none !important; }
 
+        /* SIDEBAR */
         .sidebar { width: 240px; background: var(--sidebar-bg); height: 100%; display: flex; flex-direction: column; padding: 15px; border-right: 4px solid #ddd; flex-shrink: 0; }
-        .logo-small { font-size: 2rem; color: var(--primary); text-align: center; margin-bottom: 25px; transform: rotate(-2deg); }
-        .nav-item { padding: 12px 15px; margin: 4px 0; border-radius: 12px; cursor: pointer; font-size: 1rem; color: #636e72; display: flex; align-items: center; gap: 10px; font-weight: bold; }
+        .nav-item { padding: 12px 15px; margin: 4px 0; border-radius: 12px; cursor: pointer; font-weight: bold; color: #636e72; }
         .nav-item.active { background: var(--primary); color: white; box-shadow: 0 4px 0 #0d47a1; }
 
         .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
-        .content-header { padding: 15px 30px; display: flex; justify-content: flex-end; align-items: center; background: rgba(255,255,255,0.6); border-bottom: 2px solid #ddd; }
         .tab-body { flex: 1; padding: 30px; overflow-y: auto; }
 
-        /* BLOOKS CARDS */
-        .blooks-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 15px; }
-        .blook-card-item { background: white; border-radius: 15px; padding: 12px; text-align: center; box-shadow: 0 5px 0 #ddd; border: 3px solid transparent; }
-        .blook-card-item.is-equipped { border-color: var(--primary); background: #e3f2fd; }
-        
-        /* O BLOOK COMO IMAGEM */
-        .blook-image { 
-            width: 90px; height: auto; margin: 0 auto; display: block;
+        /* DESIGN DO BLOOK (CÓDIGO PURO) */
+        .blook-box { 
+            width: 80px; height: 100px; border-radius: 12px; margin: 10px auto; position: relative; 
+            box-shadow: inset 0 -8px 0 rgba(0,0,0,0.15); display: flex; align-items: center; justify-content: center;
         }
+        .eye { position: absolute; width: 12px; height: 12px; background: #222; border-radius: 50%; top: 30px; }
+        .eye.l { left: 18px; } .eye.r { right: 18px; }
+        .mouth { position: absolute; width: 16px; height: 4px; background: #222; border-radius: 10px; bottom: 25px; }
 
-        .btn-action { margin-top: 5px; padding: 5px; width: 100%; border: none; border-radius: 8px; font-weight: 900; cursor: pointer; font-size: 0.7rem; color: white; }
-        .sell-btn { background: #ff7675; box-shadow: 0 3px 0 #d63031; }
-        .equip-btn { background: var(--primary); box-shadow: 0 3px 0 #0d47a1; }
+        /* PITAYA DETALHES */
+        .pitaya-leaf { position: absolute; width: 20px; height: 25px; background: #4caf50; border-radius: 50% 50% 0 0; top: -15px; z-index: -1; }
+        .leaf-1 { left: 15px; transform: rotate(-20deg); }
+        .leaf-2 { right: 15px; transform: rotate(20deg); }
 
-        /* UNBOXING OVERLAY */
+        .orange { background: #ff9800; }
+        .lemon { background: #cddc39; }
+        .strawberry { background: #ff5252; }
+        .pitaya { background: #e91e63; }
+
+        /* CARDS */
+        .blook-card { background: white; border-radius: 15px; padding: 10px; text-align: center; box-shadow: 0 5px 0 #ddd; border: 3px solid transparent; }
+        .is-equipped { border-color: var(--equipped-color); background: #f0fff4; }
+
+        .btn-action { margin-top: 5px; padding: 6px; width: 100%; border: none; border-radius: 8px; font-weight: 900; cursor: pointer; color: white; font-size: 0.7rem; }
+        
+        /* UNBOXING */
         #unboxing-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 1000; cursor: pointer; }
         #anim-box { font-size: 8rem; animation: shake 0.5s infinite; }
         @keyframes shake { 0%, 100% { transform: rotate(0); } 25% { transform: rotate(10deg); } 75% { transform: rotate(-10deg); } }
 
-        /* FRIENDS */
-        .friend-item { background: white; padding: 15px; border-radius: 15px; display: flex; align-items: center; gap: 15px; margin-bottom: 10px; box-shadow: 0 4px 0 #ddd; }
-
         .btn { width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: 900; cursor: pointer; box-shadow: 0 5px 0 #0d47a1; margin-top: 10px; }
-        input { width: 100%; padding: 12px; margin: 8px 0; border: 3px solid #eee; border-radius: 10px; outline: none; }
+        .friend-item { background: white; padding: 12px; border-radius: 12px; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 3px 0 #ddd; }
     </style>
 </head>
 <body>
@@ -64,256 +71,207 @@
     <div id="auth-screen">
         <h1>WITHET</h1>
         <h2 id="auth-title">LOGIN</h2>
-        <input type="text" id="user" placeholder="USUÁRIO">
-        <input type="password" id="pass" placeholder="SENHA">
-        <button class="btn" onclick="handleAuth()">JOGAR!</button>
-        <div style="margin-top:15px; cursor:pointer;" onclick="toggleAuthMode()">Criar conta</div>
+        <input type="text" id="user" placeholder="USUÁRIO" style="width:100%; padding:10px; margin:5px 0; border:2px solid #eee; border-radius:8px;">
+        <input type="password" id="pass" placeholder="SENHA" style="width:100%; padding:10px; margin:5px 0; border:2px solid #eee; border-radius:8px;">
+        <button class="btn" onclick="handleAuth()">ENTRAR</button>
+        <p onclick="toggleAuthMode()" style="cursor:pointer; font-size:0.9rem; margin-top:10px;">Criar conta</p>
     </div>
 
     <div id="game-screen">
         <div class="sidebar">
-            <div class="logo-small">WITHET</div>
-            <div class="nav-item active" onclick="switchTab('news', this)">📰 News</div>
-            <div class="nav-item" onclick="switchTab('play', this)">🎮 Play</div>
-            <div class="nav-item" onclick="switchTab('blooks', this)">🎒 Blooks</div>
-            <div class="nav-item" onclick="switchTab('shop', this)">🛒 Shop</div>
-            <div class="nav-item" onclick="switchTab('friends', this)">👥 Friends</div>
-            <div style="margin-top:auto; padding:10px; color:#d63031; text-align:center; cursor:pointer; font-weight:bold;" onclick="logout()">Sair</div>
+            <h2 style="color:var(--primary); text-align:center;">WITHET</h2>
+            <div class="nav-item active" onclick="switchTab('news', this)">Notícias</div>
+            <div class="nav-item" onclick="switchTab('shop', this)">Loja</div>
+            <div class="nav-item" onclick="switchTab('blooks', this)">Blooks</div>
+            <div class="nav-item" onclick="switchTab('friends', this)">Amigos</div>
+            <div style="margin-top:auto;" class="nav-item" onclick="logout()">Sair</div>
         </div>
 
         <div class="main-content">
-            <div class="content-header">
-                <div style="background:white; padding:8px 15px; border-radius:50px; font-weight:900; color:var(--token-color); box-shadow: 0 3px 0 #ddd;">
-                    🟡 <span class="global-token-count">0</span>
-                </div>
+            <div style="padding:15px; text-align:right; font-weight:900; color:var(--token-color);">
+                🟡 <span id="coins">0</span>
             </div>
-            
             <div class="tab-body">
-                <div id="tab-news" class="tab-content">
-                    <h1>Novidades</h1>
-                    <div style="background:white; padding:20px; border-radius:20px; box-shadow: 0 6px 0 #ddd;">
-                        <h3>🖼️ Blooks Originais!</h3>
-                        <p>Agora as artes são as oficiais do jogo. Nada de desenhos genéricos!</p>
-                    </div>
-                </div>
-
-                <div id="tab-blooks" class="tab-content hidden">
-                    <h1>Meus Blooks</h1>
-                    <div class="blooks-grid" id="inventory-grid"></div>
-                </div>
-
-                <div id="tab-shop" class="tab-content hidden">
+                <div id="tab-news"><h1>Novidades</h1><p>Blooks 100% carregáveis e sistema de amigos ativo!</p></div>
+                <div id="tab-shop" class="hidden">
                     <h1>Loja</h1>
-                    <div style="background:white; padding:30px; border-radius:20px; text-align:center; cursor:pointer; width:220px; box-shadow: 0 8px 0 #ddd;" onclick="openFruitBox()">
-                        <span style="font-size:5rem;">📦</span>
+                    <div onclick="openBox()" style="background:white; padding:30px; border-radius:20px; text-align:center; cursor:pointer; width:200px; box-shadow:0 8px 0 #ddd;">
+                        <div style="font-size:4rem;">📦</div>
                         <h3>Fruit Box</h3>
-                        <div style="background:var(--token-color); color:white; padding:8px; border-radius:10px;">15 Tokens</div>
+                        <div style="color:var(--token-color); font-weight:bold;">15 Tokens</div>
                     </div>
                 </div>
-
-                <div id="tab-friends" class="tab-content hidden">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div id="tab-blooks" class="hidden">
+                    <h1>Sua Coleção</h1>
+                    <div id="inv-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(130px, 1fr)); gap:15px;"></div>
+                </div>
+                <div id="tab-friends" class="hidden">
+                    <div style="display:flex; justify-content:space-between;">
                         <h1>Amigos</h1>
                         <div>
-                            <button class="btn" style="width:100px; font-size:0.7rem; margin:0;" onclick="showFriendsSubTab('list')">Lista</button>
-                            <button class="btn" style="width:120px; font-size:0.7rem; margin:0; background:#e67e22;" onclick="showFriendsSubTab('req')">Pedidos (<span id="req-count">0</span>)</button>
+                            <button class="btn" style="width:80px; font-size:0.6rem; margin:0;" onclick="toggleFriendsTab('list')">Lista</button>
+                            <button class="btn" style="width:80px; font-size:0.6rem; margin:0; background:#e67e22;" onclick="toggleFriendsTab('req')">Pedidos</button>
                         </div>
                     </div>
-                    <div id="friends-list-ui">
-                        <input type="text" id="search-friend" placeholder="Nome do usuário...">
-                        <button class="btn" onclick="sendFriendRequest()">Adicionar</button>
-                        <div id="my-friends-container" style="margin-top:20px;"></div>
+                    <div id="f-list">
+                        <input type="text" id="f-name" placeholder="Nome...">
+                        <button class="btn" onclick="addFriend()">Adicionar</button>
+                        <div id="f-container" style="margin-top:15px;"></div>
                     </div>
-                    <div id="friends-requests-ui" class="hidden">
-                        <h3>Pedidos Recebidos</h3>
-                        <div id="requests-container"></div>
-                    </div>
+                    <div id="f-req" class="hidden"><div id="r-container"></div></div>
                 </div>
-
-                <div id="tab-play" class="tab-content hidden"><h1>Play</h1><p>Sistema de PIN e salas ativo.</p></div>
             </div>
         </div>
     </div>
 
-    <div id="unboxing-overlay" onclick="closeUnboxing()">
+    <div id="unboxing-overlay" onclick="this.style.display='none'; updateInv();">
         <div id="anim-box">📦</div>
-        <div id="anim-result" style="display:none; text-align:center;">
-            <div id="won-blook-container"></div>
-            <h1 id="won-blook-name" style="color:white; margin-top:20px;"></h1>
+        <div id="anim-res" style="display:none; text-align:center; color:white;">
+            <div id="won-blook"></div>
+            <h1 id="won-name"></h1>
         </div>
     </div>
 
     <script>
-        let currentUser = "";
-        
-        // LINKS DAS IMAGENS REAIS DOS BLOOKS
-        const fruitBlooks = [
-            { id: 'orange', name: 'Orange', img: 'https://ac.blooket.com/static/media/orange.74d8525b.svg', val: 5 },
-            { id: 'lemon', name: 'Lemon', img: 'https://ac.blooket.com/static/media/lemon.246c755c.svg', val: 5 },
-            { id: 'strawberry', name: 'Strawberry', img: 'https://ac.blooket.com/static/media/strawberry.49080b06.svg', val: 15 },
-            { id: 'pitaya', name: 'Dragonfruit', img: 'https://ac.blooket.com/static/media/dragonfruit.80d38e21.svg', val: 100 }
-        ];
-
-        function getBlookHTML(id) {
-            const b = fruitBlooks.find(f => f.id === id);
-            return `<img src="${b.img}" class="blook-image" alt="${b.name}">`;
-        }
-
-        window.onload = () => {
-            const session = localStorage.getItem('withet_current_session');
-            if (session) showDashboard(session);
+        let user = "";
+        const blooks = {
+            orange: { n: 'Orange', c: 'orange', v: 5 },
+            lemon: { n: 'Lemon', c: 'lemon', v: 5 },
+            strawberry: { n: 'Strawberry', c: 'strawberry', v: 15 },
+            pitaya: { n: 'Dragonfruit', c: 'pitaya', v: 100 }
         };
 
+        function getBlook(id) {
+            return `
+            <div class="blook-box ${blooks[id].c}">
+                ${id === 'pitaya' ? '<div class="pitaya-leaf leaf-1"></div><div class="pitaya-leaf leaf-2"></div>' : ''}
+                <div class="eye l"></div><div class="eye r"></div><div class="mouth"></div>
+            </div>`;
+        }
+
         function handleAuth() {
-            const u = document.getElementById('user').value.trim().toLowerCase();
+            const u = document.getElementById('user').value.toLowerCase();
             const p = document.getElementById('pass').value;
             if(!u || !p) return;
-            if (document.getElementById('auth-title').innerText === "LOGIN") {
-                if (localStorage.getItem(`withet_user_${u}`) === p) {
-                    localStorage.setItem('withet_current_session', u);
-                    showDashboard(u);
-                } else alert("Senha incorreta!");
+            if(document.getElementById('auth-title').innerText === "LOGIN") {
+                if(localStorage.getItem(`u_${u}`) === p) { user = u; start(); } else alert("Erro!");
             } else {
-                localStorage.setItem(`withet_user_${u}`, p);
-                localStorage.setItem(`withet_coins_${u}`, 200);
-                localStorage.setItem(`withet_blooks_${u}`, "[]");
-                localStorage.setItem(`withet_friends_${u}`, "[]");
-                localStorage.setItem(`withet_requests_${u}`, "[]");
-                alert("Conta criada!"); toggleAuthMode();
+                localStorage.setItem(`u_${u}`, p);
+                localStorage.setItem(`c_${u}`, 200);
+                localStorage.setItem(`b_${u}`, "[]");
+                localStorage.setItem(`r_${u}`, "[]");
+                localStorage.setItem(`f_${u}`, "[]");
+                alert("Criado!"); toggleAuthMode();
             }
         }
 
-        function showDashboard(user) {
-            currentUser = user;
+        function start() {
             document.getElementById('auth-screen').style.display = 'none';
             document.getElementById('game-screen').classList.add('active-flex');
-            updateTokens(); updateInventory(); updateFriendsUI();
+            updateCoins(); updateInv(); updateFriends();
         }
 
-        function updateTokens() {
-            const coins = localStorage.getItem(`withet_coins_${currentUser}`) || 0;
-            document.querySelectorAll('.global-token-count').forEach(el => el.innerText = coins);
+        function updateCoins() { document.getElementById('coins').innerText = localStorage.getItem(`c_${user}`); }
+
+        function updateInv() {
+            const my = JSON.parse(localStorage.getItem(`b_${user}`) || "[]");
+            const eq = localStorage.getItem(`e_${user}`);
+            document.getElementById('inv-grid').innerHTML = my.map((id, i) => `
+                <div class="blook-card ${eq == i ? 'is-equipped' : ''}">
+                    ${getBlook(id)}
+                    <b>${blooks[id].n}</b>
+                    <button class="btn-action" style="background:var(--primary);" onclick="equip(${i})">${eq == i ? 'EQUIPADO' : 'EQUIPAR'}</button>
+                    <button class="btn-action" style="background:#ff7675;" onclick="sell(${i})">VENDER</button>
+                </div>`).join('');
         }
 
-        function updateInventory() {
-            const grid = document.getElementById('inventory-grid');
-            const my = JSON.parse(localStorage.getItem(`withet_blooks_${currentUser}`) || "[]");
-            const eq = localStorage.getItem(`withet_equipped_${currentUser}`);
-            grid.innerHTML = my.map((id, i) => `
-                <div class="blook-card-item ${eq == i ? 'is-equipped' : ''}">
-                    ${getBlookHTML(id)}
-                    <b style="display:block; margin: 10px 0;">${id.toUpperCase()}</b>
-                    <button class="btn-action equip-btn" onclick="equip(${i})">${eq == i ? 'EQUIPADO' : 'EQUIPAR'}</button>
-                    <button class="btn-action sell-btn" onclick="sell(${i})">VENDER</button>
-                </div>
-            `).join('');
-        }
-
-        function equip(i) { localStorage.setItem(`withet_equipped_${currentUser}`, i); updateInventory(); }
+        function equip(i) { localStorage.setItem(`e_${user}`, i); updateInv(); }
 
         function sell(i) {
-            let my = JSON.parse(localStorage.getItem(`withet_blooks_${currentUser}`));
-            let coins = parseInt(localStorage.getItem(`withet_coins_${currentUser}`));
-            coins += fruitBlooks.find(f => f.id === my[i]).val;
+            let my = JSON.parse(localStorage.getItem(`b_${user}`));
+            let c = parseInt(localStorage.getItem(`c_${user}`));
+            c += blooks[my[i]].v;
             my.splice(i, 1);
-            localStorage.setItem(`withet_blooks_${currentUser}`, JSON.stringify(my));
-            localStorage.setItem(`withet_coins_${currentUser}`, coins);
-            updateTokens(); updateInventory();
+            localStorage.setItem(`b_${user}`, JSON.stringify(my));
+            localStorage.setItem(`c_${user}`, c);
+            updateCoins(); updateInv();
         }
 
-        function openFruitBox() {
-            let coins = parseInt(localStorage.getItem(`withet_coins_${currentUser}`));
-            if (coins < 15) return alert("Tokens insuficientes!");
-            coins -= 15;
-            localStorage.setItem(`withet_coins_${currentUser}`, coins);
-            updateTokens();
-
-            const won = fruitBlooks[Math.floor(Math.random() * fruitBlooks.length)].id;
-            let my = JSON.parse(localStorage.getItem(`withet_blooks_${currentUser}`));
-            my.push(won);
-            localStorage.setItem(`withet_blooks_${currentUser}`, JSON.stringify(my));
-
-            document.getElementById('unboxing-overlay').style.display = 'flex';
-            document.getElementById('anim-box').style.display = 'block';
-            document.getElementById('anim-result').style.display = 'none';
+        function openBox() {
+            let c = parseInt(localStorage.getItem(`c_${user}`));
+            if(c < 15) return alert("Sem tokens!");
+            c -= 15; localStorage.setItem(`c_${user}`, c); updateCoins();
+            const ids = Object.keys(blooks);
+            const won = ids[Math.floor(Math.random() * ids.length)];
+            let my = JSON.parse(localStorage.getItem(`b_${user}`));
+            my.push(won); localStorage.setItem(`b_${user}`, JSON.stringify(my));
+            
+            document.getElementById('unboxing-overlay').style.display='flex';
+            document.getElementById('anim-box').style.display='block';
+            document.getElementById('anim-res').style.display='none';
             setTimeout(() => {
-                document.getElementById('anim-box').style.display = 'none';
-                document.getElementById('won-blook-container').innerHTML = getBlookHTML(won);
-                document.getElementById('won-blook-name').innerText = won.toUpperCase();
-                document.getElementById('anim-result').style.display = 'block';
-            }, 1500);
+                document.getElementById('anim-box').style.display='none';
+                document.getElementById('won-blook').innerHTML = getBlook(won);
+                document.getElementById('won-name').innerText = blooks[won].n;
+                document.getElementById('anim-res').style.display='block';
+            }, 1200);
         }
 
-        function closeUnboxing() { document.getElementById('unboxing-overlay').style.display = 'none'; updateInventory(); }
-
-        function showFriendsSubTab(t) {
-            document.getElementById('friends-list-ui').classList.toggle('hidden', t !== 'list');
-            document.getElementById('friends-requests-ui').classList.toggle('hidden', t !== 'req');
+        function updateFriends() {
+            const reqs = JSON.parse(localStorage.getItem(`r_${user}`) || "[]");
+            const list = JSON.parse(localStorage.getItem(`f_${user}`) || "[]");
+            document.getElementById('r-container').innerHTML = reqs.map((r, i) => `
+                <div class="friend-item"><span>${r}</span>
+                <div><button onclick="acceptF(${i})" style="background:green; color:white; border:none; padding:5px; border-radius:5px;">Sim</button>
+                <button onclick="rejectF(${i})" style="background:red; color:white; border:none; padding:5px; border-radius:5px;">Não</button></div></div>`).join('');
+            document.getElementById('f-container').innerHTML = list.map(l => `<div class="friend-item">🟢 ${l}</div>`).join('');
         }
 
-        function sendFriendRequest() {
-            const target = document.getElementById('search-friend').value.trim().toLowerCase();
-            if(!target || target === currentUser) return alert("Usuário inválido!");
-            if(!localStorage.getItem(`withet_user_${target}`)) return alert("Usuário não existe!");
-            let reqs = JSON.parse(localStorage.getItem(`withet_requests_${target}`) || "[]");
-            if(!reqs.includes(currentUser)) reqs.push(currentUser);
-            localStorage.setItem(`withet_requests_${target}`, JSON.stringify(reqs));
-            alert("Pedido enviado!");
+        function addFriend() {
+            const t = document.getElementById('f-name').value.toLowerCase();
+            if(!t || t === user || !localStorage.getItem(`u_${t}`)) return alert("Erro!");
+            let r = JSON.parse(localStorage.getItem(`r_${t}`) || "[]");
+            if(!r.includes(user)) r.push(user);
+            localStorage.setItem(`r_${t}`, JSON.stringify(r));
+            alert("Enviado!");
         }
 
-        function updateFriendsUI() {
-            const reqs = JSON.parse(localStorage.getItem(`withet_requests_${currentUser}`) || "[]");
-            const friends = JSON.parse(localStorage.getItem(`withet_friends_${currentUser}`) || "[]");
-            document.getElementById('req-count').innerText = reqs.length;
-            
-            document.getElementById('requests-container').innerHTML = reqs.map((r, i) => `
-                <div class="friend-item">
-                    <b>${r}</b>
-                    <button class="btn" style="width:80px; background:var(--equipped-color); margin:0;" onclick="acceptFriend(${i})">Sim</button>
-                    <button class="btn" style="width:80px; background:#ff4757; margin:0;" onclick="rejectFriend(${i})">Não</button>
-                </div>`).join('');
-            
-            document.getElementById('my-friends-container').innerHTML = friends.map(f => `
-                <div class="friend-item">🟢 <b>${f}</b></div>`).join('');
+        function acceptF(i) {
+            let r = JSON.parse(localStorage.getItem(`r_${user}`));
+            let f = JSON.parse(localStorage.getItem(`f_${user}`));
+            const other = r[i];
+            f.push(other); r.splice(i, 1);
+            localStorage.setItem(`f_${user}`, JSON.stringify(f));
+            localStorage.setItem(`r_${user}`, JSON.stringify(r));
+            let of = JSON.parse(localStorage.getItem(`f_${other}`) || "[]");
+            of.push(user); localStorage.setItem(`f_${other}`, JSON.stringify(of));
+            updateFriends();
         }
 
-        function acceptFriend(i) {
-            let reqs = JSON.parse(localStorage.getItem(`withet_requests_${currentUser}`));
-            let mine = JSON.parse(localStorage.getItem(`withet_friends_${currentUser}`));
-            const other = reqs[i];
-            mine.push(other);
-            reqs.splice(i, 1);
-            localStorage.setItem(`withet_friends_${currentUser}`, JSON.stringify(mine));
-            localStorage.setItem(`withet_requests_${currentUser}`, JSON.stringify(reqs));
-            let others = JSON.parse(localStorage.getItem(`withet_friends_${other}`) || "[]");
-            others.push(currentUser);
-            localStorage.setItem(`withet_friends_${other}`, JSON.stringify(others));
-            updateFriendsUI();
+        function rejectF(i) {
+            let r = JSON.parse(localStorage.getItem(`r_${user}`));
+            r.splice(i, 1); localStorage.setItem(`r_${user}`, JSON.stringify(r));
+            updateFriends();
         }
 
-        function rejectFriend(i) {
-            let reqs = JSON.parse(localStorage.getItem(`withet_requests_${currentUser}`));
-            reqs.splice(i, 1);
-            localStorage.setItem(`withet_requests_${currentUser}`, JSON.stringify(reqs));
-            updateFriendsUI();
-        }
-
-        function switchTab(tab, el) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+        function switchTab(t, el) {
+            ['news', 'shop', 'blooks', 'friends'].forEach(id => document.getElementById(`tab-${id}`).classList.add('hidden'));
             document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+            document.getElementById(`tab-${t}`).classList.remove('hidden');
             el.classList.add('active');
-            if(tab === 'friends') updateFriendsUI();
+        }
+
+        function toggleFriendsTab(t) {
+            document.getElementById('f-list').classList.toggle('hidden', t !== 'list');
+            document.getElementById('f-req').classList.toggle('hidden', t !== 'req');
         }
 
         function toggleAuthMode() {
             const t = document.getElementById('auth-title');
             t.innerText = t.innerText === "LOGIN" ? "CADASTRO" : "LOGIN";
         }
-        function logout() { localStorage.removeItem('withet_current_session'); location.reload(); }
+
+        function logout() { user = ""; location.reload(); }
     </script>
 </body>
 </html>
-</body>
-</html>
-
