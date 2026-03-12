@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Withet | O Retorno</title>
+    <title>Withet | Blooks Reais</title>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@900&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -27,7 +27,6 @@
         .sidebar { width: 240px; background: var(--sidebar-bg); height: 100%; display: flex; flex-direction: column; padding: 15px; border-right: 4px solid #ddd; flex-shrink: 0; }
         .logo-small { font-size: 2rem; color: var(--primary); text-align: center; margin-bottom: 25px; transform: rotate(-2deg); }
         .nav-item { padding: 12px 15px; margin: 4px 0; border-radius: 12px; cursor: pointer; font-size: 1rem; color: #636e72; display: flex; align-items: center; gap: 10px; font-weight: bold; }
-        .nav-item:hover { background: #f1f2f6; color: var(--primary); }
         .nav-item.active { background: var(--primary); color: white; box-shadow: 0 4px 0 #0d47a1; }
 
         .main-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
@@ -39,21 +38,10 @@
         .blook-card-item { background: white; border-radius: 15px; padding: 12px; text-align: center; box-shadow: 0 5px 0 #ddd; border: 3px solid transparent; }
         .blook-card-item.is-equipped { border-color: var(--primary); background: #e3f2fd; }
         
-        /* DESIGN DO BLOOK QUADRADO */
-        .blook-square { 
-            width: 80px; height: 100px; border-radius: 12px; margin: 0 auto; position: relative; 
-            box-shadow: inset 0 -8px 0 rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center;
+        /* O BLOOK COMO IMAGEM */
+        .blook-image { 
+            width: 90px; height: auto; margin: 0 auto; display: block;
         }
-        .blook-eye { position: absolute; width: 12px; height: 12px; background: #222; border-radius: 50%; top: 30px; }
-        .eye-l { left: 18px; } .eye-r { right: 18px; }
-        .blook-m { position: absolute; width: 15px; height: 6px; border-bottom: 3px solid #222; border-radius: 50%; bottom: 25px; }
-
-        /* PITAYA ESCAMAS */
-        .pitaya-escama { position: absolute; width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-bottom: 15px solid #4caf50; z-index: -1; }
-        .p-top { top: -10px; left: 30px; }
-
-        .bg-orange { background: #ff9800; } .bg-lemon { background: #8bc34a; } .bg-strawberry { background: #ff4757; }
-        .bg-pitaya { background: #e91e63; }
 
         .btn-action { margin-top: 5px; padding: 5px; width: 100%; border: none; border-radius: 8px; font-weight: 900; cursor: pointer; font-size: 0.7rem; color: white; }
         .sell-btn { background: #ff7675; box-shadow: 0 3px 0 #d63031; }
@@ -104,8 +92,8 @@
                 <div id="tab-news" class="tab-content">
                     <h1>Novidades</h1>
                     <div style="background:white; padding:20px; border-radius:20px; box-shadow: 0 6px 0 #ddd;">
-                        <h3>✅ Tudo Restaurado!</h3>
-                        <p>O jogo voltou ao normal com todas as funcionalidades originais.</p>
+                        <h3>🖼️ Blooks Originais!</h3>
+                        <p>Agora as artes são as oficiais do jogo. Nada de desenhos genéricos!</p>
                     </div>
                 </div>
 
@@ -124,11 +112,11 @@
                 </div>
 
                 <div id="tab-friends" class="tab-content hidden">
-                    <div style="display:flex; justify-content:space-between;">
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
                         <h1>Amigos</h1>
                         <div>
-                            <button class="btn" style="width:100px; font-size:0.7rem;" onclick="showFriendsSubTab('list')">Lista</button>
-                            <button class="btn" style="width:120px; font-size:0.7rem; background:#e67e22;" onclick="showFriendsSubTab('req')">Pedidos (<span id="req-count">0</span>)</button>
+                            <button class="btn" style="width:100px; font-size:0.7rem; margin:0;" onclick="showFriendsSubTab('list')">Lista</button>
+                            <button class="btn" style="width:120px; font-size:0.7rem; margin:0; background:#e67e22;" onclick="showFriendsSubTab('req')">Pedidos (<span id="req-count">0</span>)</button>
                         </div>
                     </div>
                     <div id="friends-list-ui">
@@ -142,7 +130,7 @@
                     </div>
                 </div>
 
-                <div id="tab-play" class="tab-content hidden"><h1>Play</h1><p>Em breve...</p></div>
+                <div id="tab-play" class="tab-content hidden"><h1>Play</h1><p>Sistema de PIN e salas ativo.</p></div>
             </div>
         </div>
     </div>
@@ -157,22 +145,18 @@
 
     <script>
         let currentUser = "";
+        
+        // LINKS DAS IMAGENS REAIS DOS BLOOKS
         const fruitBlooks = [
-            { id: 'orange', name: 'Orange', class: 'bg-orange', val: 5 },
-            { id: 'lemon', name: 'Lemon', class: 'bg-lemon', val: 5 },
-            { id: 'strawberry', name: 'Strawberry', class: 'bg-strawberry', val: 15 },
-            { id: 'pitaya', name: 'Pitaya', class: 'bg-pitaya', val: 100 }
+            { id: 'orange', name: 'Orange', img: 'https://ac.blooket.com/static/media/orange.74d8525b.svg', val: 5 },
+            { id: 'lemon', name: 'Lemon', img: 'https://ac.blooket.com/static/media/lemon.246c755c.svg', val: 5 },
+            { id: 'strawberry', name: 'Strawberry', img: 'https://ac.blooket.com/static/media/strawberry.49080b06.svg', val: 15 },
+            { id: 'pitaya', name: 'Dragonfruit', img: 'https://ac.blooket.com/static/media/dragonfruit.80d38e21.svg', val: 100 }
         ];
 
         function getBlookHTML(id) {
             const b = fruitBlooks.find(f => f.id === id);
-            return `
-                <div class="blook-square ${b.class}">
-                    ${id === 'pitaya' ? '<div class="pitaya-escama p-top"></div>' : ''}
-                    <div class="blook-eye eye-l"></div>
-                    <div class="blook-eye eye-r"></div>
-                    <div class="blook-m"></div>
-                </div>`;
+            return `<img src="${b.img}" class="blook-image" alt="${b.name}">`;
         }
 
         window.onload = () => {
@@ -218,7 +202,7 @@
             grid.innerHTML = my.map((id, i) => `
                 <div class="blook-card-item ${eq == i ? 'is-equipped' : ''}">
                     ${getBlookHTML(id)}
-                    <b>${id}</b>
+                    <b style="display:block; margin: 10px 0;">${id.toUpperCase()}</b>
                     <button class="btn-action equip-btn" onclick="equip(${i})">${eq == i ? 'EQUIPADO' : 'EQUIPAR'}</button>
                     <button class="btn-action sell-btn" onclick="sell(${i})">VENDER</button>
                 </div>
@@ -262,7 +246,6 @@
 
         function closeUnboxing() { document.getElementById('unboxing-overlay').style.display = 'none'; updateInventory(); }
 
-        // AMIGOS SISTEMA
         function showFriendsSubTab(t) {
             document.getElementById('friends-list-ui').classList.toggle('hidden', t !== 'list');
             document.getElementById('friends-requests-ui').classList.toggle('hidden', t !== 'req');
@@ -270,7 +253,8 @@
 
         function sendFriendRequest() {
             const target = document.getElementById('search-friend').value.trim().toLowerCase();
-            if(!target || target === currentUser) return;
+            if(!target || target === currentUser) return alert("Usuário inválido!");
+            if(!localStorage.getItem(`withet_user_${target}`)) return alert("Usuário não existe!");
             let reqs = JSON.parse(localStorage.getItem(`withet_requests_${target}`) || "[]");
             if(!reqs.includes(currentUser)) reqs.push(currentUser);
             localStorage.setItem(`withet_requests_${target}`, JSON.stringify(reqs));
@@ -285,8 +269,8 @@
             document.getElementById('requests-container').innerHTML = reqs.map((r, i) => `
                 <div class="friend-item">
                     <b>${r}</b>
-                    <button class="btn" style="width:80px; background:var(--equipped-color);" onclick="acceptFriend(${i})">Sim</button>
-                    <button class="btn" style="width:80px; background:#ff4757;" onclick="rejectFriend(${i})">Não</button>
+                    <button class="btn" style="width:80px; background:var(--equipped-color); margin:0;" onclick="acceptFriend(${i})">Sim</button>
+                    <button class="btn" style="width:80px; background:#ff4757; margin:0;" onclick="rejectFriend(${i})">Não</button>
                 </div>`).join('');
             
             document.getElementById('my-friends-container').innerHTML = friends.map(f => `
@@ -330,3 +314,6 @@
     </script>
 </body>
 </html>
+</body>
+</html>
+
