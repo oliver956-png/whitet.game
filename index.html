@@ -3,6 +3,571 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Whitet – Entre ou Cadastre-se</title>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0f0e17;
+      --card: #1a1828;
+      --card2: #211f33;
+      --accent: #f7c948;
+      --accent2: #ff6b6b;
+      --accent3: #5ce1c0;
+      --accent4: #a78bfa;
+      --text: #f0eeff;
+      --muted: #8b86b0;
+      --border: rgba(167,139,250,0.18);
+      --input-bg: #13111f;
+      --shadow: 0 8px 40px rgba(0,0,0,0.5);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Animated background blobs */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.18;
+      pointer-events: none;
+      animation: blobFloat 8s ease-in-out infinite alternate;
+    }
+    .blob1 { width: 420px; height: 420px; background: var(--accent4); top: -80px; left: -80px; animation-delay: 0s; }
+    .blob2 { width: 320px; height: 320px; background: var(--accent); bottom: -60px; right: -60px; animation-delay: 2s; }
+    .blob3 { width: 260px; height: 260px; background: var(--accent3); bottom: 20%; left: 10%; animation-delay: 4s; }
+    .blob4 { width: 180px; height: 180px; background: var(--accent2); top: 30%; right: 5%; animation-delay: 1s; }
+
+    @keyframes blobFloat {
+      from { transform: translateY(0) scale(1); }
+      to   { transform: translateY(30px) scale(1.08); }
+    }
+
+    /* Floating shapes */
+    .shape {
+      position: fixed;
+      pointer-events: none;
+      opacity: 0.55;
+      animation: shapeDrift linear infinite;
+    }
+    @keyframes shapeDrift {
+      0%   { transform: translateY(0) rotate(0deg); }
+      100% { transform: translateY(-100vh) rotate(360deg); }
+    }
+
+    /* Stars grid */
+    .stars {
+      position: fixed; inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,0.6) 1px, transparent 1px);
+      background-size: 60px 60px;
+      opacity: 0.04;
+      pointer-events: none;
+    }
+
+    /* Main card */
+    .card-wrap {
+      position: relative;
+      z-index: 10;
+      width: 100%;
+      max-width: 440px;
+      padding: 16px;
+    }
+
+    .logo-area {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+    .logo-icon {
+      font-size: 52px;
+      line-height: 1;
+      animation: bounce 2s ease-in-out infinite;
+    }
+    @keyframes bounce {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(-8px); }
+    }
+    .logo-text {
+      font-family: 'Fredoka One', cursive;
+      font-size: 48px;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 50%, var(--accent4) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-top: 4px;
+    }
+    .logo-tag {
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-top: 6px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1.5px solid var(--border);
+      border-radius: 24px;
+      box-shadow: var(--shadow), 0 0 0 1px rgba(255,255,255,0.03) inset;
+      overflow: hidden;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      background: var(--input-bg);
+    }
+    .tab {
+      padding: 16px;
+      text-align: center;
+      font-family: 'Fredoka One', cursive;
+      font-size: 18px;
+      cursor: pointer;
+      color: var(--muted);
+      transition: all 0.3s;
+      border-bottom: 3px solid transparent;
+      user-select: none;
+    }
+    .tab.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+      background: var(--card);
+    }
+    .tab:hover:not(.active) {
+      color: var(--text);
+      background: rgba(255,255,255,0.03);
+    }
+
+    /* Form panels */
+    .panels { position: relative; overflow: hidden; }
+    .panel {
+      padding: 28px 28px 24px;
+      display: none;
+      animation: slideIn 0.35s cubic-bezier(.4,0,.2,1);
+    }
+    .panel.active { display: block; }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateX(30px); }
+      to   { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Fields */
+    .field { margin-bottom: 16px; }
+    .field label {
+      display: block;
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 7px;
+    }
+    .field-wrap {
+      position: relative;
+    }
+    .field-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 18px;
+      pointer-events: none;
+    }
+    .field input {
+      width: 100%;
+      background: var(--input-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 13px 14px 13px 44px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .field input::placeholder { color: var(--muted); font-weight: 600; }
+    .field input:focus {
+      border-color: var(--accent4);
+      box-shadow: 0 0 0 3px rgba(167,139,250,0.15);
+    }
+
+    /* Avatar selector */
+    .avatar-label {
+      font-size: 13px;
+      font-weight: 800;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 10px;
+      display: block;
+    }
+    .avatar-grid {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+    }
+    .avatar-opt {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--input-bg);
+      border: 2px solid var(--border);
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      user-select: none;
+    }
+    .avatar-opt:hover { border-color: var(--accent4); transform: scale(1.08); }
+    .avatar-opt.selected {
+      border-color: var(--accent);
+      background: rgba(247,201,72,0.12);
+      box-shadow: 0 0 0 3px rgba(247,201,72,0.2);
+      transform: scale(1.1);
+    }
+
+    /* Button */
+    .btn-main {
+      width: 100%;
+      padding: 15px;
+      border: none;
+      border-radius: 14px;
+      font-family: 'Fredoka One', cursive;
+      font-size: 20px;
+      letter-spacing: 1px;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-top: 4px;
+      position: relative;
+      overflow: hidden;
+    }
+    .btn-main::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, rgba(255,255,255,0.13) 0%, transparent 60%);
+      pointer-events: none;
+    }
+    .btn-login {
+      background: linear-gradient(135deg, #f7c948 0%, #ff9f43 100%);
+      color: #1a1200;
+      box-shadow: 0 4px 20px rgba(247,201,72,0.35);
+    }
+    .btn-login:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(247,201,72,0.45);
+    }
+    .btn-login:active { transform: translateY(0); }
+
+    .btn-register {
+      background: linear-gradient(135deg, #a78bfa 0%, #5ce1c0 100%);
+      color: #fff;
+      box-shadow: 0 4px 20px rgba(167,139,250,0.35);
+    }
+    .btn-register:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 28px rgba(167,139,250,0.45);
+    }
+    .btn-register:active { transform: translateY(0); }
+
+    /* Divider */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 18px 0;
+    }
+    .divider span { flex: 1; height: 1px; background: var(--border); }
+    .divider p { font-size: 12px; color: var(--muted); font-weight: 700; letter-spacing: 1px; }
+
+    /* Social login */
+    .btn-social {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      padding: 12px;
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      background: var(--input-bg);
+      color: var(--text);
+      font-family: 'Nunito', sans-serif;
+      font-size: 14px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.2s;
+      margin-bottom: 10px;
+    }
+    .btn-social:hover {
+      border-color: var(--accent4);
+      background: rgba(167,139,250,0.07);
+    }
+    .btn-social .social-icon { font-size: 20px; }
+
+    /* Footer text */
+    .switch-link {
+      text-align: center;
+      margin-top: 18px;
+      font-size: 13px;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .switch-link a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: 800;
+      cursor: pointer;
+    }
+    .switch-link a:hover { text-decoration: underline; }
+
+    /* Password toggle */
+    .toggle-pass {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 18px;
+      color: var(--muted);
+      user-select: none;
+      transition: color 0.2s;
+    }
+    .toggle-pass:hover { color: var(--text); }
+
+    /* Success flash */
+    .toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--accent3);
+      color: #0d2e28;
+      font-family: 'Fredoka One', cursive;
+      font-size: 16px;
+      letter-spacing: 1px;
+      padding: 14px 28px;
+      border-radius: 50px;
+      box-shadow: 0 6px 30px rgba(92,225,192,0.4);
+      z-index: 999;
+      transition: transform 0.4s cubic-bezier(.4,0,.2,1);
+      pointer-events: none;
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    /* Strength bar */
+    .strength-bar { height: 4px; border-radius: 4px; background: var(--border); margin-top: 8px; overflow: hidden; }
+    .strength-fill { height: 100%; border-radius: 4px; transition: width 0.3s, background 0.3s; width: 0%; }
+  </style>
+</head>
+<body>
+
+<!-- Background -->
+<div class="stars"></div>
+<div class="blob blob1"></div>
+<div class="blob blob2"></div>
+<div class="blob blob3"></div>
+<div class="blob blob4"></div>
+
+<!-- Floating shapes -->
+<div class="shape" style="font-size:28px;left:8%;top:80%;animation-duration:14s;animation-delay:-3s;">⭐</div>
+<div class="shape" style="font-size:22px;left:90%;top:90%;animation-duration:11s;animation-delay:-6s;">🎯</div>
+<div class="shape" style="font-size:20px;left:3%;top:50%;animation-duration:16s;animation-delay:-1s;">💡</div>
+<div class="shape" style="font-size:26px;left:85%;top:20%;animation-duration:13s;animation-delay:-8s;">🏆</div>
+<div class="shape" style="font-size:18px;left:50%;top:90%;animation-duration:12s;animation-delay:-4s;">✨</div>
+
+<!-- Card -->
+<div class="card-wrap">
+  <div class="logo-area">
+    <div class="logo-icon">🐾</div>
+    <div class="logo-text">Whitet</div>
+    <div class="logo-tag">Aprenda. Jogue. Conquiste.</div>
+  </div>
+
+  <div class="card">
+    <div class="tabs">
+      <div class="tab active" id="tab-login" onclick="switchTab('login')">Entrar</div>
+      <div class="tab" id="tab-register" onclick="switchTab('register')">Cadastrar</div>
+    </div>
+
+    <div class="panels">
+
+      <!-- LOGIN -->
+      <div class="panel active" id="panel-login">
+        <div class="field">
+          <label>Email ou usuário</label>
+          <div class="field-wrap">
+            <span class="field-icon">📧</span>
+            <input type="text" placeholder="seu@email.com" id="login-user" />
+          </div>
+        </div>
+        <div class="field">
+          <label>Senha</label>
+          <div class="field-wrap">
+            <span class="field-icon">🔒</span>
+            <input type="password" placeholder="••••••••" id="login-pass" />
+            <span class="toggle-pass" onclick="togglePass('login-pass', this)">👁️</span>
+          </div>
+        </div>
+
+        <div style="text-align:right;margin-bottom:18px;margin-top:-6px;">
+          <a href="#" style="font-size:12px;color:var(--muted);font-weight:700;text-decoration:none;">Esqueci minha senha</a>
+        </div>
+
+        <button class="btn-main btn-login" onclick="doLogin()">🚀 Entrar no Whitet</button>
+
+        <div class="divider">
+          <span></span><p>ou continue com</p><span></span>
+        </div>
+
+        <button class="btn-social">
+          <span class="social-icon">🌐</span> Entrar com Google
+        </button>
+        <button class="btn-social">
+          <span class="social-icon">🍎</span> Entrar com Apple
+        </button>
+
+        <div class="switch-link">
+          Não tem conta? <a onclick="switchTab('register')">Cadastre-se grátis</a>
+        </div>
+      </div>
+
+      <!-- REGISTER -->
+      <div class="panel" id="panel-register">
+        <div class="field">
+          <label>Nome de usuário</label>
+          <div class="field-wrap">
+            <span class="field-icon">🎮</span>
+            <input type="text" placeholder="seunicknome123" id="reg-user" />
+          </div>
+        </div>
+        <div class="field">
+          <label>Email</label>
+          <div class="field-wrap">
+            <span class="field-icon">📧</span>
+            <input type="email" placeholder="seu@email.com" id="reg-email" />
+          </div>
+        </div>
+        <div class="field">
+          <label>Senha</label>
+          <div class="field-wrap">
+            <span class="field-icon">🔒</span>
+            <input type="password" placeholder="Crie uma senha forte" id="reg-pass" oninput="checkStrength(this.value)" />
+            <span class="toggle-pass" onclick="togglePass('reg-pass', this)">👁️</span>
+          </div>
+          <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
+        </div>
+
+        <button class="btn-main btn-register" onclick="doRegister()">🎉 Criar minha conta</button>
+
+        <div class="divider">
+          <span></span><p>ou continue com</p><span></span>
+        </div>
+
+        <button class="btn-social">
+          <span class="social-icon">🌐</span> Cadastrar com Google
+        </button>
+
+        <div class="switch-link">
+          Já tem conta? <a onclick="switchTab('login')">Entrar agora</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<script>
+  function switchTab(tab) {
+    document.getElementById('tab-login').classList.toggle('active', tab === 'login');
+    document.getElementById('tab-register').classList.toggle('active', tab === 'register');
+    document.getElementById('panel-login').classList.toggle('active', tab === 'login');
+    document.getElementById('panel-register').classList.toggle('active', tab === 'register');
+  }
+
+  function togglePass(id, el) {
+    const inp = document.getElementById(id);
+    if (inp.type === 'password') { inp.type = 'text'; el.textContent = '🙈'; }
+    else { inp.type = 'password'; el.textContent = '👁️'; }
+  }
+
+  function selectAvatar(el) {
+    document.querySelectorAll('.avatar-opt').forEach(a => a.classList.remove('selected'));
+    el.classList.add('selected');
+  }
+
+  function checkStrength(val) {
+    const fill = document.getElementById('strengthFill');
+    let score = 0;
+    if (val.length >= 6) score++;
+    if (val.length >= 10) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+    const pct = (score / 5) * 100;
+    const colors = ['#ff6b6b','#ff9f43','#ffd43b','#74c0fc','#5ce1c0'];
+    fill.style.width = pct + '%';
+    fill.style.background = colors[Math.max(0, score - 1)] || '#ff6b6b';
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  function doLogin() {
+    const u = document.getElementById('login-user').value.trim();
+    const p = document.getElementById('login-pass').value.trim();
+    if (!u || !p) { showToast('⚠️ Preencha todos os campos!'); return; }
+    localStorage.setItem('whitet_username', u);
+    showToast('🎮 Bem-vindo ao Whitet!');
+    setTimeout(() => { window.location.href = 'whitet-dashboard.html'; }, 1200);
+  }
+
+  function doRegister() {
+    const u = document.getElementById('reg-user').value.trim();
+    const e = document.getElementById('reg-email').value.trim();
+    const p = document.getElementById('reg-pass').value.trim();
+    if (!u || !e || !p) { showToast('⚠️ Preencha todos os campos!'); return; }
+    if (p.length < 6) { showToast('🔒 Senha muito curta!'); return; }
+    localStorage.setItem('whitet_username', u);
+    showToast('🎉 Conta criada com sucesso!');
+    setTimeout(() => { window.location.href = 'whitet-dashboard.html'; }, 1200);
+  }
+</script>
+</body>
+</html>
+
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Whitet – Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
   <style>
@@ -42,9 +607,12 @@
       animation: blobFloat 9s ease-in-out infinite alternate;
       pointer-events: none; z-index: 0;
     }
-    .blob1 { width:480px;height:480px;background:var(--accent4);top:-120px;left:160px; }
-    .blob2 { width:340px;height:340px;background:var(--accent);bottom:-80px;right:80px;animation-delay:3s; }
-    .blob3 { width:220px;height:220px;background:var(--accent3);top:50%;right:30%;animation-delay:5s; }
+    .blob1 { width:480px;height:480px;top:-120px;left:160px;animation:blobFloat 9s ease-in-out infinite alternate, blobColor1 6s ease-in-out infinite alternate; }
+    .blob2 { width:340px;height:340px;bottom:-80px;right:80px;animation:blobFloat 9s 3s ease-in-out infinite alternate, blobColor2 7s ease-in-out infinite alternate; }
+    .blob3 { width:220px;height:220px;top:50%;right:30%;animation:blobFloat 9s 5s ease-in-out infinite alternate, blobColor3 5s ease-in-out infinite alternate; }
+    @keyframes blobColor1 { 0%{background:#1a6fff} 50%{background:#ffffff} 100%{background:#00e5ff} }
+    @keyframes blobColor2 { 0%{background:#00e5ff} 50%{background:#1a6fff} 100%{background:#ffffff} }
+    @keyframes blobColor3 { 0%{background:#ffffff} 50%{background:#00e5ff} 100%{background:#1a6fff} }
     @keyframes blobFloat {
       from { transform: scale(1) translateY(0); }
       to   { transform: scale(1.08) translateY(22px); }
@@ -329,8 +897,7 @@
 
     <div class="user-card" onclick="showToast('⚙️ Configurações')">
       <div class="user-av">🦊</div>
-      <div class="user-name">FoxPlayer123</div>
-      <div class="user-xp">⚡ 4.820 XP</div>
+      <div class="user-name" id="sidebar-username">Jogador</div>
     </div>
 
   </aside>
@@ -339,15 +906,8 @@
   <main class="main">
 
     <div class="greeting">
-      <h1>Olá, <span>FoxPlayer</span> 👋</h1>
+      <h1>Olá, <span id="greeting-name">Jogador</span> 👋</h1>
       <p>Pronto pra aprender e se divertir hoje?</p>
-    </div>
-
-    <div class="stats-row">
-      <div class="stat-card"><span class="stat-icon">🔥</span><div><div class="stat-label">Sequência</div><div class="stat-val">7 dias</div></div></div>
-      <div class="stat-card"><span class="stat-icon">🏆</span><div><div class="stat-label">Ranking</div><div class="stat-val">#142</div></div></div>
-      <div class="stat-card"><span class="stat-icon">🪙</span><div><div class="stat-label">Moedas</div><div class="stat-val">3.240</div></div></div>
-      <div class="stat-card"><span class="stat-icon">⚡</span><div><div class="stat-label">XP Total</div><div class="stat-val">4.820</div></div></div>
     </div>
 
     <div class="play-hero" onclick="showToast('🎮 Procurando partida...')">
@@ -422,6 +982,11 @@
 <div class="toast" id="toast"></div>
 
 <script>
+  // Carrega o nome do jogador salvo no cadastro
+  const playerName = localStorage.getItem('whitet_username') || 'Jogador';
+  document.getElementById('greeting-name').textContent = playerName;
+  document.getElementById('sidebar-username').textContent = playerName;
+
   function openModal() { document.getElementById('overlay').classList.add('open'); }
   function closeModal() { document.getElementById('overlay').classList.remove('open'); }
   function closeOut(e) { if (e.target === document.getElementById('overlay')) closeModal(); }
@@ -432,9 +997,6 @@
     t.textContent = msg; t.classList.add('show');
     setTimeout(() => t.classList.remove('show'), 2600);
   }
-</script>
-</body>
-</html>
 </script>
 </body>
 </html>
