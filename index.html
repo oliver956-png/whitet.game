@@ -347,6 +347,183 @@
     }
     .btn-logout:hover { background:rgba(255,107,107,0.18); transform:translateY(-2px); }
 
+    /* ── Role toggle (cadastro professor) ── */
+    .role-toggle {
+      display:flex; align-items:center; gap:12px; padding:12px 14px;
+      background:var(--input-bg); border:1.5px solid var(--border); border-radius:12px;
+      cursor:pointer; margin-bottom:16px; transition:all 0.2s; user-select:none;
+    }
+    .role-toggle:hover { border-color:var(--accent4); }
+    .role-toggle.on { border-color:var(--accent3); background:rgba(92,225,192,0.08); }
+    .role-icon  { font-size:22px; }
+    .role-title { font-size:13px; font-weight:900; color:var(--text); }
+    .role-sub   { font-size:11px; color:var(--muted); font-weight:600; margin-top:2px; }
+    .role-check { margin-left:auto; font-size:20px; color:var(--muted); transition:all 0.2s; }
+    .role-toggle.on .role-check { color:var(--accent3); }
+
+    /* ── Boolks screens ── */
+    #screen-boolks, #screen-create-boolks { min-height:100vh; position:relative; z-index:1; }
+    .boolks-main { flex:1; padding:36px 40px; overflow-y:auto; }
+    .boolks-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; animation:fadeUp 0.4s ease both; }
+    .boolks-header h1 { font-family:'Fredoka One',cursive; font-size:34px; line-height:1; }
+    .boolks-header p  { font-size:14px; color:var(--muted); font-weight:600; margin-top:4px; }
+    .btn-new-boolks {
+      background:linear-gradient(135deg,var(--accent4),var(--accent3));
+      color:#fff; border:none; border-radius:14px; padding:12px 22px;
+      font-family:'Fredoka One',cursive; font-size:16px; cursor:pointer;
+      box-shadow:0 4px 18px rgba(167,139,250,0.3); transition:all 0.2s; white-space:nowrap;
+    }
+    .btn-new-boolks:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(167,139,250,0.45); }
+
+    .boolks-empty {
+      text-align:center; padding:60px 20px;
+      background:var(--surface); border:1.5px dashed var(--border); border-radius:22px;
+      animation:fadeUp 0.4s 0.1s ease both;
+    }
+    .boolks-empty .empty-icon { font-size:56px; margin-bottom:14px; }
+    .boolks-empty h3 { font-family:'Fredoka One',cursive; font-size:22px; margin-bottom:8px; }
+    .boolks-empty p  { font-size:14px; color:var(--muted); font-weight:600; }
+
+    .boolks-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; animation:fadeUp 0.4s 0.1s ease both; }
+    .boolks-item {
+      background:var(--surface); border:1.5px solid var(--border); border-radius:18px;
+      padding:20px; cursor:pointer; transition:all 0.22s; position:relative;
+    }
+    .boolks-item:hover { transform:translateY(-4px); border-color:rgba(167,139,250,0.35); box-shadow:0 10px 30px rgba(0,0,0,0.25); }
+    .boolks-item-icon { font-size:36px; margin-bottom:10px; }
+    .boolks-item-name { font-family:'Fredoka One',cursive; font-size:18px; margin-bottom:6px; }
+    .boolks-item-meta { font-size:12px; color:var(--muted); font-weight:600; }
+    .boolks-item-badge {
+      position:absolute; top:12px; right:12px; font-size:10px; font-weight:900;
+      padding:3px 8px; border-radius:20px; letter-spacing:0.5px;
+    }
+    .badge-mc  { background:rgba(167,139,250,0.2); color:var(--accent4); }
+    .badge-vf  { background:rgba(92,225,192,0.2); color:var(--accent3); }
+    .badge-mix { background:rgba(247,201,72,0.2); color:var(--accent); }
+
+    /* ── Create Boolks ── */
+    .create-boolks-main { flex:1; padding:36px 40px; overflow-y:auto; }
+    .cb-header { margin-bottom:28px; animation:fadeUp 0.4s ease both; }
+    .cb-header h1 { font-family:'Fredoka One',cursive; font-size:30px; }
+    .cb-header p  { font-size:14px; color:var(--muted); font-weight:600; margin-top:4px; }
+
+    .cb-info-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:20px; animation:fadeUp 0.4s 0.05s ease both; }
+    .cb-field { }
+    .cb-field label { display:block; font-size:11px; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:6px; }
+    .cb-field input, .cb-field select {
+      width:100%; background:var(--input-bg); border:1.5px solid var(--border); border-radius:11px;
+      padding:11px 13px; font-family:'Nunito',sans-serif; font-size:14px; font-weight:700;
+      color:var(--text); outline:none; transition:border-color 0.2s; appearance:none;
+    }
+    .cb-field input:focus, .cb-field select:focus { border-color:var(--accent4); }
+    .cb-field select option { background:#1a1828; }
+    .cb-field-full { grid-column:1/-1; }
+
+    .questions-list { display:flex; flex-direction:column; gap:12px; margin-bottom:16px; animation:fadeUp 0.4s 0.1s ease both; }
+
+    .q-card {
+      background:var(--surface); border:1.5px solid var(--border); border-radius:16px; padding:18px;
+      position:relative; transition:border-color 0.2s;
+    }
+    .q-card:hover { border-color:rgba(167,139,250,0.3); }
+    .q-card-top { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+    .q-num { font-family:'Fredoka One',cursive; font-size:13px; color:var(--accent4); background:rgba(167,139,250,0.1); padding:4px 10px; border-radius:20px; }
+    .q-type-tag { font-size:11px; font-weight:900; padding:4px 10px; border-radius:20px; }
+    .q-type-mc  { background:rgba(167,139,250,0.15); color:var(--accent4); }
+    .q-type-vf  { background:rgba(92,225,192,0.15); color:var(--accent3); }
+    .q-remove { margin-left:auto; cursor:pointer; font-size:16px; color:var(--muted); transition:color 0.2s; }
+    .q-remove:hover { color:var(--accent2); }
+
+    .q-text { font-size:14px; font-weight:700; color:var(--text); margin-bottom:10px; line-height:1.4; }
+    .q-opts { display:grid; grid-template-columns:1fr 1fr; gap:6px; }
+    .q-opt {
+      padding:8px 12px; border-radius:10px; font-size:12px; font-weight:700;
+      background:var(--surface2); border:1.5px solid var(--border);
+    }
+    .q-opt.correct { background:rgba(92,225,192,0.12); border-color:var(--accent3); color:var(--accent3); }
+    .q-vf-opts { display:flex; gap:8px; }
+    .q-vf-opt { padding:8px 20px; border-radius:10px; font-size:13px; font-weight:800; background:var(--surface2); border:1.5px solid var(--border); }
+    .q-vf-opt.correct { background:rgba(92,225,192,0.12); border-color:var(--accent3); color:var(--accent3); }
+
+    /* Add question modal */
+    .aq-overlay {
+      position:fixed; inset:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(8px);
+      z-index:150; display:flex; align-items:center; justify-content:center;
+      opacity:0; pointer-events:none; transition:opacity 0.3s;
+    }
+    .aq-overlay.open { opacity:1; pointer-events:all; }
+    .aq-modal {
+      background:var(--surface); border:1.5px solid var(--border); border-radius:24px;
+      padding:28px; width:100%; max-width:540px; max-height:90vh; overflow-y:auto;
+      box-shadow:0 20px 60px rgba(0,0,0,0.5);
+      transform:translateY(28px) scale(0.97); transition:all 0.3s cubic-bezier(.4,0,.2,1);
+    }
+    .aq-overlay.open .aq-modal { transform:translateY(0) scale(1); }
+    .aq-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+    .aq-title  { font-family:'Fredoka One',cursive; font-size:22px; color:var(--accent4); }
+    .aq-close  { font-size:20px; cursor:pointer; color:var(--muted); }
+    .aq-close:hover { color:var(--accent2); }
+
+    .type-selector { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px; }
+    .type-opt {
+      padding:12px; border-radius:12px; border:2px solid var(--border);
+      background:var(--input-bg); text-align:center; cursor:pointer; transition:all 0.2s;
+    }
+    .type-opt:hover { border-color:var(--accent4); }
+    .type-opt.sel { border-color:var(--accent4); background:rgba(167,139,250,0.1); }
+    .type-opt .to-icon { font-size:22px; margin-bottom:4px; }
+    .type-opt .to-label { font-family:'Fredoka One',cursive; font-size:14px; }
+
+    .aq-field { margin-bottom:14px; }
+    .aq-field label { display:block; font-size:11px; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:6px; }
+    .aq-field input, .aq-field textarea {
+      width:100%; background:var(--input-bg); border:1.5px solid var(--border); border-radius:11px;
+      padding:11px 13px; font-family:'Nunito',sans-serif; font-size:14px; font-weight:700;
+      color:var(--text); outline:none; transition:border-color 0.2s; resize:none;
+    }
+    .aq-field input:focus, .aq-field textarea:focus { border-color:var(--accent4); }
+
+    .opts-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-bottom:14px; }
+    .opt-row { display:flex; align-items:center; gap:8px; }
+    .opt-row input { flex:1; }
+    .opt-correct-btn {
+      width:32px; height:32px; border-radius:8px; border:1.5px solid var(--border);
+      background:var(--input-bg); cursor:pointer; font-size:14px; flex-shrink:0;
+      transition:all 0.2s; display:flex; align-items:center; justify-content:center;
+    }
+    .opt-correct-btn.active { background:rgba(92,225,192,0.15); border-color:var(--accent3); }
+
+    .vf-selector { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+    .vf-opt {
+      padding:14px; border-radius:12px; border:2px solid var(--border);
+      background:var(--input-bg); text-align:center; cursor:pointer; transition:all 0.2s;
+      font-family:'Fredoka One',cursive; font-size:16px;
+    }
+    .vf-opt:hover { border-color:var(--accent3); }
+    .vf-opt.sel { border-color:var(--accent3); background:rgba(92,225,192,0.1); color:var(--accent3); }
+
+    .btn-add-q {
+      width:100%; padding:13px; background:linear-gradient(135deg,var(--accent4),var(--accent3));
+      border:none; border-radius:12px; font-family:'Fredoka One',cursive; font-size:17px;
+      color:#fff; cursor:pointer; transition:all 0.2s;
+    }
+    .btn-add-q:hover { transform:translateY(-2px); }
+
+    .btn-add-question {
+      width:100%; padding:13px; background:transparent; border:2px dashed var(--border);
+      border-radius:14px; font-family:'Fredoka One',cursive; font-size:16px; color:var(--muted);
+      cursor:pointer; transition:all 0.2s; margin-bottom:16px;
+    }
+    .btn-add-question:hover { border-color:var(--accent4); color:var(--accent4); }
+
+    .btn-save-boolks {
+      width:100%; padding:15px; background:linear-gradient(135deg,var(--accent),#ff9f43);
+      border:none; border-radius:14px; font-family:'Fredoka One',cursive; font-size:19px;
+      color:#1a0f00; cursor:pointer; box-shadow:0 4px 20px rgba(247,201,72,0.3); transition:all 0.2s;
+    }
+    .btn-save-boolks:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(247,201,72,0.45); }
+    .q-counter { font-size:12px; color:var(--muted); font-weight:700; text-align:right; margin-bottom:8px; }
+
     /* ── Toast ── */
     .toast {
       position:fixed; bottom:26px; left:50%;
@@ -446,6 +623,14 @@
             </div>
             <div class="strength-bar"><div class="strength-fill" id="strengthFill"></div></div>
           </div>
+          <div class="role-toggle" onclick="toggleRole(this)">
+            <span class="role-icon">🎓</span>
+            <div class="role-text">
+              <div class="role-title">Sou professor / admin</div>
+              <div class="role-sub">Permite criar Boolks e gerenciar salas</div>
+            </div>
+            <div class="role-check" id="roleCheck">○</div>
+          </div>
           <button class="btn-main btn-register" onclick="doRegister()">🎉 Criar minha conta</button>
           <div class="divider"><span></span><p>ou continue com</p><span></span></div>
           <button class="btn-social"><span class="social-icon">🌐</span> Cadastrar com Google</button>
@@ -483,7 +668,7 @@
           <span class="nb-icon">🛍️</span>
           <span class="nb-label">Shop</span>
         </div>
-        <div class="nav-btn" onclick="showToast('📚 Seus Boolks!')">
+        <div class="nav-btn" onclick="showBoolksScreen()">
           <span class="nb-icon">📚</span>
           <span class="nb-label">Your Boolks</span>
         </div>
@@ -637,6 +822,158 @@
   </div>
 </div>
 
+<!-- ═══════════════════════════
+     BOOLKS SCREEN
+═══════════════════════════ -->
+<div id="screen-boolks" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="logo"><div class="logo-emoji">🐾</div><div class="logo-name">Whitet</div></div>
+      <nav class="nav">
+        <div class="nav-btn" onclick="showDashScreen()"><span class="nb-icon">🏠</span><span class="nb-label">Home</span></div>
+        <div class="nav-btn" onclick="showToast('🎮 Entrando no Play!')"><span class="nb-icon">🎮</span><span class="nb-label">Play</span><span class="nb-badge">LIVE</span></div>
+        <div class="nav-btn" onclick="showToast('🛍️ Abrindo a Loja...')"><span class="nb-icon">🛍️</span><span class="nb-label">Shop</span></div>
+        <div class="nav-btn active"><span class="nb-icon">📚</span><span class="nb-label">Your Boolks</span></div>
+        <div class="nav-btn" onclick="showAccountScreen()"><span class="nb-icon">👤</span><span class="nb-label">Account</span></div>
+        <div class="sidebar-divider"></div>
+        <div class="nav-btn create" onclick="openModal()"><span class="nb-icon">✨</span><span class="nb-label">Create a Room</span></div>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="user-card"><div class="user-av">🦊</div><div class="user-name" id="boolks-sidebar-username">Jogador</div></div>
+    </aside>
+
+    <main class="boolks-main">
+      <div class="boolks-header">
+        <div>
+          <h1>📚 Your Boolks</h1>
+          <p>Seus questionários criados</p>
+        </div>
+        <button class="btn-new-boolks" id="btn-new-boolks" onclick="showCreateBoolksScreen()" style="display:none;">✏️ Criar Boolks</button>
+      </div>
+
+      <div id="boolks-list-wrap">
+        <div class="boolks-empty" id="boolks-empty">
+          <div class="empty-icon">📭</div>
+          <h3>Nenhum Boolks ainda</h3>
+          <p id="boolks-empty-msg">Só professores e admins podem criar Boolks.</p>
+        </div>
+        <div class="boolks-grid" id="boolks-grid" style="display:none;"></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ═══════════════════════════
+     CREATE BOOLKS SCREEN
+═══════════════════════════ -->
+<div id="screen-create-boolks" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="logo"><div class="logo-emoji">🐾</div><div class="logo-name">Whitet</div></div>
+      <nav class="nav">
+        <div class="nav-btn" onclick="showDashScreen()"><span class="nb-icon">🏠</span><span class="nb-label">Home</span></div>
+        <div class="nav-btn" onclick="showToast('🎮 Entrando no Play!')"><span class="nb-icon">🎮</span><span class="nb-label">Play</span><span class="nb-badge">LIVE</span></div>
+        <div class="nav-btn" onclick="showToast('🛍️ Abrindo a Loja...')"><span class="nb-icon">🛍️</span><span class="nb-label">Shop</span></div>
+        <div class="nav-btn active"><span class="nb-icon">📚</span><span class="nb-label">Your Boolks</span></div>
+        <div class="nav-btn" onclick="showAccountScreen()"><span class="nb-icon">👤</span><span class="nb-label">Account</span></div>
+        <div class="sidebar-divider"></div>
+        <div class="nav-btn create" onclick="openModal()"><span class="nb-icon">✨</span><span class="nb-label">Create a Room</span></div>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="user-card"><div class="user-av">🦊</div><div class="user-name" id="create-sidebar-username">Jogador</div></div>
+    </aside>
+
+    <main class="create-boolks-main">
+      <div class="cb-header">
+        <h1>✏️ Criar Boolks</h1>
+        <p>Preencha as informações e adicione as perguntas</p>
+      </div>
+
+      <div class="cb-info-row">
+        <div class="cb-field cb-field-full">
+          <label>Título do Boolks</label>
+          <input type="text" id="cb-title" placeholder="Ex: Ciências – 7º ano" maxlength="60" />
+        </div>
+        <div class="cb-field">
+          <label>Ícone (emoji)</label>
+          <input type="text" id="cb-icon" placeholder="🔬" maxlength="2" />
+        </div>
+        <div class="cb-field">
+          <label>Matéria</label>
+          <select id="cb-subject">
+            <option>Ciências</option>
+            <option>Matemática</option>
+            <option>Português</option>
+            <option>História</option>
+            <option>Geografia</option>
+            <option>Inglês</option>
+            <option>Física</option>
+            <option>Química</option>
+            <option>Biologia</option>
+            <option>Outro</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="q-counter"><span id="q-count">0</span>/50 perguntas</div>
+      <div class="questions-list" id="questions-list"></div>
+
+      <button class="btn-add-question" onclick="openAddQuestion()">＋ Adicionar Pergunta</button>
+      <button class="btn-save-boolks" onclick="saveBoolks()">💾 Salvar Boolks</button>
+      <div style="height:20px;"></div>
+    </main>
+  </div>
+</div>
+
+<!-- Add Question Modal -->
+<div class="aq-overlay" id="aq-overlay" onclick="closeAQOut(event)">
+  <div class="aq-modal">
+    <div class="aq-header">
+      <div class="aq-title">➕ Nova Pergunta</div>
+      <div class="aq-close" onclick="closeAQ()">✕</div>
+    </div>
+
+    <div class="type-selector">
+      <div class="type-opt sel" id="type-mc" onclick="selectQType('mc')">
+        <div class="to-icon">🔤</div>
+        <div class="to-label">Múltipla Escolha</div>
+      </div>
+      <div class="type-opt" id="type-vf" onclick="selectQType('vf')">
+        <div class="to-icon">✅</div>
+        <div class="to-label">Verdadeiro/Falso</div>
+      </div>
+    </div>
+
+    <div class="aq-field">
+      <label>Enunciado da pergunta</label>
+      <textarea id="aq-question" rows="3" placeholder="Digite a pergunta aqui..."></textarea>
+    </div>
+
+    <!-- Múltipla escolha -->
+    <div id="mc-section">
+      <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;">Alternativas (marque a correta ✓)</div>
+      <div class="opts-grid">
+        <div class="opt-row"><input type="text" id="opt-a" placeholder="A) Alternativa..." /><button class="opt-correct-btn" id="btn-a" onclick="setCorrect('a')">✓</button></div>
+        <div class="opt-row"><input type="text" id="opt-b" placeholder="B) Alternativa..." /><button class="opt-correct-btn" id="btn-b" onclick="setCorrect('b')">✓</button></div>
+        <div class="opt-row"><input type="text" id="opt-c" placeholder="C) Alternativa..." /><button class="opt-correct-btn" id="btn-c" onclick="setCorrect('c')">✓</button></div>
+        <div class="opt-row"><input type="text" id="opt-d" placeholder="D) Alternativa..." /><button class="opt-correct-btn" id="btn-d" onclick="setCorrect('d')">✓</button></div>
+      </div>
+      <div style="font-size:11px;color:var(--muted);font-weight:600;margin-bottom:14px;">💡 Deixe C e D em branco para usar só 2 alternativas</div>
+    </div>
+
+    <!-- Verdadeiro/Falso -->
+    <div id="vf-section" style="display:none;">
+      <div style="font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px;">Resposta correta</div>
+      <div class="vf-selector">
+        <div class="vf-opt" id="vf-v" onclick="setVF('verdadeiro')">✅ Verdadeiro</div>
+        <div class="vf-opt" id="vf-f" onclick="setVF('falso')">❌ Falso</div>
+      </div>
+    </div>
+
+    <button class="btn-add-q" onclick="addQuestion()">✅ Adicionar Pergunta</button>
+  </div>
+</div>
+
 <!-- Modal -->
 <div class="overlay" id="overlay" onclick="closeOut(event)">
   <div class="modal">
@@ -672,7 +1009,7 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, query, collection, where, getDocs }
+  import { getFirestore, doc, setDoc, getDoc, query, collection, where, getDocs, addDoc, orderBy }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   // ── Config Firebase ──
@@ -764,7 +1101,8 @@
         email:    email,
         matches:  0,
         since:    since,
-        blook:    null
+        blook:    null,
+        isTeacher: isTeacher
       });
       showToast('🎉 Conta criada com sucesso!');
     } catch(e) {
@@ -801,6 +1139,192 @@
   window.doLogout = async function() {
     await signOut(auth);
     showScreen('screen-auth');
+  };
+
+  // ── Role toggle ──
+  let isTeacher = false;
+  window.toggleRole = function(el) {
+    isTeacher = !isTeacher;
+    el.classList.toggle('on', isTeacher);
+    document.getElementById('roleCheck').textContent = isTeacher ? '●' : '○';
+  };
+
+  // ── Boolks state ──
+  let currentQuestions = [];
+  let currentQType = 'mc';
+  let currentCorrect = null;
+  let currentVF = null;
+
+  // ── Boolks screens ──
+  window.showBoolksScreen = async function() {
+    const user = auth.currentUser;
+    if (!user) return;
+    const snap = await getDoc(doc(db, 'users', user.uid));
+    const data = snap.data();
+
+    // Update sidebar name
+    document.getElementById('boolks-sidebar-username').textContent = data.username || 'Jogador';
+
+    // Show/hide create button based on role
+    const isProf = data.isTeacher || false;
+    document.getElementById('btn-new-boolks').style.display = isProf ? 'block' : 'none';
+
+    if (isProf) {
+      document.getElementById('boolks-empty-msg').textContent = 'Clique em "Criar Boolks" para começar!';
+    }
+
+    // Load boolks
+    const q = query(collection(db, 'boolks'), where('authorId', '==', user.uid), orderBy('createdAt', 'desc'));
+    try {
+      const snaps = await getDocs(q);
+      const grid = document.getElementById('boolks-grid');
+      const empty = document.getElementById('boolks-empty');
+      grid.innerHTML = '';
+      if (snaps.empty) {
+        empty.style.display = 'block'; grid.style.display = 'none';
+      } else {
+        empty.style.display = 'none'; grid.style.display = 'grid';
+        snaps.forEach(d => {
+          const b = d.data();
+          const types = [...new Set((b.questions||[]).map(q => q.type))];
+          const badgeClass = types.length > 1 ? 'badge-mix' : types[0] === 'vf' ? 'badge-vf' : 'badge-mc';
+          const badgeLabel = types.length > 1 ? 'MISTO' : types[0] === 'vf' ? 'V/F' : 'M.C.';
+          grid.innerHTML += `
+            <div class="boolks-item">
+              <span class="boolks-item-badge ${badgeClass}">${badgeLabel}</span>
+              <div class="boolks-item-icon">${b.icon || '📚'}</div>
+              <div class="boolks-item-name">${b.title}</div>
+              <div class="boolks-item-meta">${(b.questions||[]).length} questões · ${b.subject}</div>
+            </div>`;
+        });
+      }
+    } catch(e) { console.log(e); }
+
+    showScreen('screen-boolks');
+  };
+
+  window.showCreateBoolksScreen = function() {
+    currentQuestions = [];
+    document.getElementById('cb-title').value = '';
+    document.getElementById('cb-icon').value = '';
+    document.getElementById('questions-list').innerHTML = '';
+    document.getElementById('q-count').textContent = '0';
+    const user = auth.currentUser;
+    if (user) getDoc(doc(db, 'users', user.uid)).then(s => {
+      document.getElementById('create-sidebar-username').textContent = s.data()?.username || 'Jogador';
+    });
+    showScreen('screen-create-boolks');
+  };
+
+  // ── Add Question Modal ──
+  window.openAddQuestion = function() {
+    if (currentQuestions.length >= 50) { showToast('⚠️ Máximo de 50 perguntas!'); return; }
+    document.getElementById('aq-question').value = '';
+    ['a','b','c','d'].forEach(l => { document.getElementById('opt-'+l).value = ''; document.getElementById('btn-'+l).classList.remove('active'); });
+    document.getElementById('vf-v').classList.remove('sel');
+    document.getElementById('vf-f').classList.remove('sel');
+    currentCorrect = null; currentVF = null;
+    selectQType('mc');
+    document.getElementById('aq-overlay').classList.add('open');
+  };
+
+  window.closeAQ = () => document.getElementById('aq-overlay').classList.remove('open');
+  window.closeAQOut = (e) => { if (e.target === document.getElementById('aq-overlay')) closeAQ(); };
+
+  window.selectQType = function(type) {
+    currentQType = type;
+    document.getElementById('type-mc').classList.toggle('sel', type === 'mc');
+    document.getElementById('type-vf').classList.toggle('sel', type === 'vf');
+    document.getElementById('mc-section').style.display = type === 'mc' ? 'block' : 'none';
+    document.getElementById('vf-section').style.display = type === 'vf' ? 'block' : 'none';
+  };
+
+  window.setCorrect = function(letter) {
+    ['a','b','c','d'].forEach(l => document.getElementById('btn-'+l).classList.remove('active'));
+    document.getElementById('btn-'+letter).classList.add('active');
+    currentCorrect = letter;
+  };
+
+  window.setVF = function(val) {
+    document.getElementById('vf-v').classList.toggle('sel', val === 'verdadeiro');
+    document.getElementById('vf-f').classList.toggle('sel', val === 'falso');
+    currentVF = val;
+  };
+
+  window.addQuestion = function() {
+    const text = document.getElementById('aq-question').value.trim();
+    if (!text) { showToast('⚠️ Digite o enunciado da pergunta!'); return; }
+
+    if (currentQType === 'mc') {
+      const a = document.getElementById('opt-a').value.trim();
+      const b = document.getElementById('opt-b').value.trim();
+      if (!a || !b) { showToast('⚠️ Preencha pelo menos A e B!'); return; }
+      if (!currentCorrect) { showToast('⚠️ Marque a alternativa correta!'); return; }
+      const opts = {};
+      ['a','b','c','d'].forEach(l => { const v = document.getElementById('opt-'+l).value.trim(); if(v) opts[l] = v; });
+      currentQuestions.push({ type:'mc', text, opts, correct: currentCorrect });
+    } else {
+      if (!currentVF) { showToast('⚠️ Escolha Verdadeiro ou Falso!'); return; }
+      currentQuestions.push({ type:'vf', text, correct: currentVF });
+    }
+
+    renderQuestions();
+    closeAQ();
+    showToast('✅ Pergunta adicionada!');
+  };
+
+  function renderQuestions() {
+    document.getElementById('q-count').textContent = currentQuestions.length;
+    const list = document.getElementById('questions-list');
+    list.innerHTML = currentQuestions.map((q, i) => {
+      const tag = q.type === 'vf' ? `<span class="q-type-tag q-type-vf">V/F</span>` : `<span class="q-type-tag q-type-mc">M.C.</span>`;
+      let optsHtml = '';
+      if (q.type === 'mc') {
+        optsHtml = `<div class="q-opts">${Object.entries(q.opts).map(([l,v]) =>
+          `<div class="q-opt ${l===q.correct?'correct':''}">${l.toUpperCase()}) ${v}</div>`).join('')}</div>`;
+      } else {
+        optsHtml = `<div class="q-vf-opts">
+          <div class="q-vf-opt ${q.correct==='verdadeiro'?'correct':''}">✅ Verdadeiro</div>
+          <div class="q-vf-opt ${q.correct==='falso'?'correct':''}">❌ Falso</div>
+        </div>`;
+      }
+      return `<div class="q-card">
+        <div class="q-card-top">
+          <span class="q-num">Q${i+1}</span>${tag}
+          <span class="q-remove" onclick="removeQuestion(${i})">🗑️</span>
+        </div>
+        <div class="q-text">${q.text}</div>
+        ${optsHtml}
+      </div>`;
+    }).join('');
+  }
+
+  window.removeQuestion = function(i) {
+    currentQuestions.splice(i, 1);
+    renderQuestions();
+  };
+
+  window.saveBoolks = async function() {
+    const title = document.getElementById('cb-title').value.trim();
+    const icon  = document.getElementById('cb-icon').value.trim() || '📚';
+    const subject = document.getElementById('cb-subject').value;
+    if (!title) { showToast('⚠️ Dê um título ao Boolks!'); return; }
+    if (currentQuestions.length === 0) { showToast('⚠️ Adicione pelo menos 1 pergunta!'); return; }
+
+    showToast('⏳ Salvando...');
+    try {
+      const user = auth.currentUser;
+      await addDoc(collection(db, 'boolks'), {
+        title, icon, subject,
+        questions: currentQuestions,
+        authorId: user.uid,
+        createdAt: new Date().toISOString()
+      });
+      showToast('🎉 Boolks salvo com sucesso!');
+      setTimeout(() => showBoolksScreen(), 1200);
+    } catch(e) {
+      showToast('❌ Erro ao salvar: ' + e.message);
+    }
   };
 
   // ── Navegação ──
