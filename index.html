@@ -524,6 +524,77 @@
     .btn-save-boolks:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(247,201,72,0.45); }
     .q-counter { font-size:12px; color:var(--muted); font-weight:700; text-align:right; margin-bottom:8px; }
 
+    /* ── Community Screen ── */
+    #screen-community { min-height:100vh; position:relative; z-index:1; }
+    .community-main { flex:1; padding:36px 40px; overflow-y:auto; }
+    .community-header { margin-bottom:28px; animation:fadeUp 0.4s ease both; }
+    .community-header h1 { font-family:'Fredoka One',cursive; font-size:34px; line-height:1; }
+    .community-header p  { font-size:14px; color:var(--muted); font-weight:600; margin-top:6px; }
+
+    .community-search {
+      display:flex; gap:10px; margin-bottom:24px; animation:fadeUp 0.4s 0.05s ease both;
+    }
+    .community-search input {
+      flex:1; background:var(--surface); border:1.5px solid var(--border); border-radius:14px;
+      padding:13px 18px; font-family:'Nunito',sans-serif; font-size:14px; font-weight:700;
+      color:var(--text); outline:none; transition:border-color 0.2s;
+    }
+    .community-search input:focus { border-color:var(--accent4); }
+    .community-search input::placeholder { color:var(--muted); }
+    .btn-search {
+      background:linear-gradient(135deg,var(--accent4),var(--accent3));
+      border:none; border-radius:14px; padding:13px 22px;
+      font-family:'Fredoka One',cursive; font-size:15px; color:#fff;
+      cursor:pointer; transition:all 0.2s;
+    }
+    .btn-search:hover { transform:translateY(-2px); }
+
+    .community-filters { display:flex; gap:8px; margin-bottom:24px; flex-wrap:wrap; animation:fadeUp 0.4s 0.08s ease both; }
+    .filter-chip {
+      padding:7px 16px; border-radius:50px; border:1.5px solid var(--border);
+      background:var(--surface); font-size:12px; font-weight:800; color:var(--muted);
+      cursor:pointer; transition:all 0.2s; user-select:none;
+    }
+    .filter-chip:hover { border-color:var(--accent4); color:var(--text); }
+    .filter-chip.active { background:rgba(167,139,250,0.12); border-color:var(--accent4); color:var(--accent4); }
+
+    .community-grid {
+      display:grid; grid-template-columns:repeat(3,1fr); gap:16px;
+      animation:fadeUp 0.4s 0.12s ease both;
+    }
+    .community-card {
+      background:var(--surface); border:1.5px solid var(--border); border-radius:18px;
+      padding:20px; cursor:pointer; transition:all 0.22s; position:relative; overflow:hidden;
+    }
+    .community-card::before {
+      content:''; position:absolute; top:0; left:0; right:0; height:3px; border-radius:18px 18px 0 0;
+    }
+    .community-card.color-0::before { background:linear-gradient(90deg,var(--accent),var(--accent2)); }
+    .community-card.color-1::before { background:linear-gradient(90deg,var(--accent4),var(--accent5)); }
+    .community-card.color-2::before { background:linear-gradient(90deg,var(--accent3),var(--accent4)); }
+    .community-card.color-3::before { background:linear-gradient(90deg,var(--accent2),var(--accent4)); }
+    .community-card.color-4::before { background:linear-gradient(90deg,var(--accent5),var(--accent3)); }
+    .community-card:hover { transform:translateY(-4px); border-color:rgba(167,139,250,0.35); box-shadow:0 10px 30px rgba(0,0,0,0.25); }
+
+    .cc-icon   { font-size:36px; margin-bottom:10px; display:block; }
+    .cc-title  { font-family:'Fredoka One',cursive; font-size:18px; margin-bottom:6px; line-height:1.2; }
+    .cc-author { font-size:12px; color:var(--accent4); font-weight:700; margin-bottom:8px; }
+    .cc-meta   { display:flex; align-items:center; gap:10px; font-size:11px; color:var(--muted); font-weight:600; }
+    .cc-badge  {
+      position:absolute; top:14px; right:14px;
+      font-size:10px; font-weight:900; padding:3px 8px; border-radius:20px; letter-spacing:0.5px;
+    }
+    .cc-subject {
+      display:inline-block; margin-top:8px; font-size:11px; font-weight:800;
+      padding:3px 10px; border-radius:20px; background:rgba(255,255,255,0.05); color:var(--muted);
+    }
+
+    .community-loading { text-align:center; padding:60px 20px; color:var(--muted); font-weight:700; font-size:15px; }
+    .community-empty   { text-align:center; padding:60px 20px; background:var(--surface); border:1.5px dashed var(--border); border-radius:22px; }
+    .community-empty .empty-icon { font-size:52px; margin-bottom:12px; }
+    .community-empty h3 { font-family:'Fredoka One',cursive; font-size:20px; margin-bottom:8px; }
+    .community-empty p  { font-size:13px; color:var(--muted); font-weight:600; }
+
     /* ── Toast ── */
     .toast {
       position:fixed; bottom:26px; left:50%;
@@ -663,6 +734,10 @@
           <span class="nb-icon">🎮</span>
           <span class="nb-label">Play</span>
           <span class="nb-badge">LIVE</span>
+        </div>
+        <div class="nav-btn" onclick="showCommunityScreen()">
+          <span class="nb-icon">🌍</span>
+          <span class="nb-label">Community</span>
         </div>
         <div class="nav-btn" onclick="showToast('🛍️ Abrindo a Loja...')">
           <span class="nb-icon">🛍️</span>
@@ -818,6 +893,55 @@
       </div>
 
       <button class="btn-logout" onclick="doLogout()">🚪 Sair da conta</button>
+    </main>
+  </div>
+</div>
+
+<!-- ═══════════════════════════
+     COMMUNITY SCREEN
+═══════════════════════════ -->
+<div id="screen-community" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="logo"><div class="logo-emoji">🐾</div><div class="logo-name">Whitet</div></div>
+      <nav class="nav">
+        <div class="nav-btn" onclick="showDashScreen()"><span class="nb-icon">🏠</span><span class="nb-label">Home</span></div>
+        <div class="nav-btn" onclick="showToast('🎮 Entrando no Play!')"><span class="nb-icon">🎮</span><span class="nb-label">Play</span><span class="nb-badge">LIVE</span></div>
+        <div class="nav-btn active"><span class="nb-icon">🌍</span><span class="nb-label">Community</span></div>
+        <div class="nav-btn" onclick="showToast('🛍️ Abrindo a Loja...')"><span class="nb-icon">🛍️</span><span class="nb-label">Shop</span></div>
+        <div class="nav-btn" onclick="showBoolksScreen()"><span class="nb-icon">📚</span><span class="nb-label">Your Boolks</span></div>
+        <div class="nav-btn" onclick="showAccountScreen()"><span class="nb-icon">👤</span><span class="nb-label">Account</span></div>
+        <div class="sidebar-divider"></div>
+        <div class="nav-btn create" onclick="openModal()"><span class="nb-icon">✨</span><span class="nb-label">Create a Room</span></div>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="user-card"><div class="user-av">🦊</div><div class="user-name" id="community-sidebar-username">Jogador</div></div>
+    </aside>
+
+    <main class="community-main">
+      <div class="community-header">
+        <h1>🌍 Community</h1>
+        <p>Descubra Boolks criados por professores de todo o mundo</p>
+      </div>
+
+      <div class="community-search">
+        <input type="text" id="community-search-input" placeholder="🔍 Buscar por título ou matéria..." oninput="filterCommunity()" />
+      </div>
+
+      <div class="community-filters" id="community-filters">
+        <div class="filter-chip active" onclick="setCommunityFilter(this, 'all')">🌟 Todos</div>
+        <div class="filter-chip" onclick="setCommunityFilter(this, 'Ciências')">🔬 Ciências</div>
+        <div class="filter-chip" onclick="setCommunityFilter(this, 'Matemática')">📐 Matemática</div>
+        <div class="filter-chip" onclick="setCommunityFilter(this, 'Português')">📝 Português</div>
+        <div class="filter-chip" onclick="setCommunityFilter(this, 'História')">📜 História</div>
+        <div class="filter-chip" onclick="setCommunityFilter(this, 'Geografia')">🌎 Geografia</div>
+        <div class="filter-chip" onclick="setCommunityFilter(this, 'Inglês')">🇬🇧 Inglês</div>
+        <div class="filter-chip" onclick="setCommunityFilter(this, 'Outro')">📦 Outro</div>
+      </div>
+
+      <div id="community-content">
+        <div class="community-loading">⏳ Carregando Boolks da comunidade...</div>
+      </div>
     </main>
   </div>
 </div>
@@ -1147,6 +1271,85 @@
     isTeacher = !isTeacher;
     el.classList.toggle('on', isTeacher);
     document.getElementById('roleCheck').textContent = isTeacher ? '●' : '○';
+  };
+
+  // ── Community ──
+  let allCommunityBoolks = [];
+  let communityFilter = 'all';
+
+  window.showCommunityScreen = async function() {
+    const user = auth.currentUser;
+    if (user) {
+      const snap = await getDoc(doc(db, 'users', user.uid));
+      document.getElementById('community-sidebar-username').textContent = snap.data()?.username || 'Jogador';
+    }
+    showScreen('screen-community');
+    loadCommunityBoolks();
+  };
+
+  async function loadCommunityBoolks() {
+    document.getElementById('community-content').innerHTML = '<div class="community-loading">⏳ Carregando Boolks da comunidade...</div>';
+    try {
+      const snaps = await getDocs(query(collection(db, 'boolks'), orderBy('createdAt', 'desc')));
+      allCommunityBoolks = [];
+      for (const d of snaps.docs) {
+        const b = d.data();
+        // Busca nome do autor
+        let authorName = 'Anônimo';
+        try {
+          const authorSnap = await getDoc(doc(db, 'users', b.authorId));
+          if (authorSnap.exists()) authorName = authorSnap.data().username;
+        } catch(e) {}
+        allCommunityBoolks.push({ ...b, id: d.id, authorName });
+      }
+      renderCommunity();
+    } catch(e) {
+      document.getElementById('community-content').innerHTML = '<div class="community-empty"><div class="empty-icon">😕</div><h3>Erro ao carregar</h3><p>Tente novamente mais tarde.</p></div>';
+    }
+  }
+
+  function renderCommunity() {
+    const search = document.getElementById('community-search-input').value.toLowerCase();
+    const filtered = allCommunityBoolks.filter(b => {
+      const matchFilter = communityFilter === 'all' || b.subject === communityFilter;
+      const matchSearch = !search || b.title.toLowerCase().includes(search) || (b.subject||'').toLowerCase().includes(search);
+      return matchFilter && matchSearch;
+    });
+
+    const content = document.getElementById('community-content');
+    if (filtered.length === 0) {
+      content.innerHTML = `<div class="community-empty"><div class="empty-icon">📭</div><h3>Nenhum Boolks encontrado</h3><p>Tente outro filtro ou busca.</p></div>`;
+      return;
+    }
+
+    const colors = ['color-0','color-1','color-2','color-3','color-4'];
+    const types = { mc:'M.C.', vf:'V/F', mix:'MISTO' };
+    const badgeColors = { mc:'badge-mc', vf:'badge-vf', mix:'badge-mix' };
+
+    content.innerHTML = `<div class="community-grid">${filtered.map((b, i) => {
+      const qs = b.questions || [];
+      const typeSet = [...new Set(qs.map(q => q.type))];
+      const typeKey = typeSet.length > 1 ? 'mix' : typeSet[0] || 'mc';
+      return `<div class="community-card ${colors[i % 5]}" onclick="showToast('📚 ${b.title} — em breve!')">
+        <span class="cc-badge ${badgeColors[typeKey]}">${types[typeKey]}</span>
+        <span class="cc-icon">${b.icon || '📚'}</span>
+        <div class="cc-title">${b.title}</div>
+        <div class="cc-author">👤 @${b.authorName}</div>
+        <div class="cc-meta">
+          <span>📝 ${qs.length} questões</span>
+        </div>
+        <span class="cc-subject">${b.subject || 'Geral'}</span>
+      </div>`;
+    }).join('')}</div>`;
+  }
+
+  window.filterCommunity = () => renderCommunity();
+
+  window.setCommunityFilter = function(el, filter) {
+    communityFilter = filter;
+    document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    renderCommunity();
   };
 
   // ── Boolks state ──
