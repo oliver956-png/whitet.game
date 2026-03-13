@@ -299,6 +299,54 @@
     }
     .btn-create:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(167,139,250,0.45); }
 
+    /* ── Account Screen ── */
+    #screen-account { min-height:100vh; position:relative; z-index:1; }
+    .account-main { flex:1; padding:36px 40px; overflow-y:auto; }
+    .account-header { margin-bottom:32px; animation:fadeUp 0.4s ease both; }
+    .account-header h1 { font-family:'Fredoka One',cursive; font-size:34px; line-height:1; }
+    .account-header p  { font-size:14px; color:var(--muted); font-weight:600; margin-top:6px; }
+
+    .profile-card {
+      background:var(--surface); border:1.5px solid var(--border); border-radius:22px;
+      padding:28px; display:flex; align-items:center; gap:22px;
+      margin-bottom:24px; animation:fadeUp 0.4s 0.05s ease both;
+    }
+    .profile-avatar { font-size:56px; width:80px; height:80px; background:rgba(167,139,250,0.1); border-radius:20px; display:flex; align-items:center; justify-content:center; border:2px solid var(--border); flex-shrink:0; }
+    .profile-info h2 { font-family:'Fredoka One',cursive; font-size:26px; margin-bottom:4px; }
+    .profile-info .nick { font-size:14px; color:var(--muted); font-weight:700; }
+
+    .account-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px; animation:fadeUp 0.4s 0.1s ease both; }
+    .acc-card {
+      background:var(--surface); border:1.5px solid var(--border); border-radius:18px; padding:22px;
+    }
+    .acc-card-label { font-size:12px; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:10px; }
+    .acc-card-value { font-family:'Fredoka One',cursive; font-size:28px; color:var(--text); line-height:1; }
+    .acc-card-sub   { font-size:12px; color:var(--muted); font-weight:600; margin-top:4px; }
+
+    .blook-card {
+      background:var(--surface); border:1.5px solid var(--border); border-radius:18px; padding:22px;
+      display:flex; align-items:center; gap:16px;
+      animation:fadeUp 0.4s 0.15s ease both; margin-bottom:24px;
+    }
+    .blook-preview {
+      width:64px; height:64px; border-radius:14px;
+      background:var(--surface2); border:2px dashed var(--border);
+      display:flex; align-items:center; justify-content:center;
+      font-size:11px; color:var(--muted); font-weight:700; text-align:center; line-height:1.3;
+      flex-shrink:0;
+    }
+    .blook-info { flex:1; }
+    .blook-title { font-family:'Fredoka One',cursive; font-size:16px; margin-bottom:4px; }
+    .blook-sub   { font-size:12px; color:var(--muted); font-weight:600; }
+
+    .btn-logout {
+      width:100%; padding:15px; border:2px solid var(--accent2); border-radius:14px;
+      background:rgba(255,107,107,0.08); font-family:'Fredoka One',cursive;
+      font-size:18px; color:var(--accent2); cursor:pointer; transition:all 0.2s;
+      letter-spacing:1px; animation:fadeUp 0.4s 0.2s ease both;
+    }
+    .btn-logout:hover { background:rgba(255,107,107,0.18); transform:translateY(-2px); }
+
     /* ── Toast ── */
     .toast {
       position:fixed; bottom:26px; left:50%;
@@ -349,10 +397,10 @@
         <!-- LOGIN -->
         <div class="panel active" id="panel-login">
           <div class="field">
-            <label>Email ou usuário</label>
+            <label>Nick</label>
             <div class="field-wrap">
-              <span class="field-icon">📧</span>
-              <input type="text" placeholder="seu@email.com" id="login-user" />
+              <span class="field-icon">🎮</span>
+              <input type="text" placeholder="seunicknome123" id="login-user" />
             </div>
           </div>
           <div class="field">
@@ -439,7 +487,7 @@
           <span class="nb-icon">📚</span>
           <span class="nb-label">Your Boolks</span>
         </div>
-        <div class="nav-btn" onclick="showToast('👤 Perfil do jogador!')">
+        <div class="nav-btn" onclick="showAccountScreen()">
           <span class="nb-icon">👤</span>
           <span class="nb-label">Account</span>
         </div>
@@ -503,6 +551,92 @@
   </div>
 </div>
 
+<!-- ═══════════════════════════
+     ACCOUNT SCREEN
+═══════════════════════════ -->
+<div id="screen-account" class="screen">
+  <div class="layout">
+
+    <aside class="sidebar">
+      <div class="logo">
+        <div class="logo-emoji">🐾</div>
+        <div class="logo-name">Whitet</div>
+      </div>
+      <nav class="nav">
+        <div class="nav-btn" onclick="showDashScreen()">
+          <span class="nb-icon">🏠</span>
+          <span class="nb-label">Home</span>
+        </div>
+        <div class="nav-btn" onclick="showToast('🎮 Entrando no Play!')">
+          <span class="nb-icon">🎮</span>
+          <span class="nb-label">Play</span>
+          <span class="nb-badge">LIVE</span>
+        </div>
+        <div class="nav-btn" onclick="showToast('🛍️ Abrindo a Loja...')">
+          <span class="nb-icon">🛍️</span>
+          <span class="nb-label">Shop</span>
+        </div>
+        <div class="nav-btn" onclick="showToast('📚 Seus Boolks!')">
+          <span class="nb-icon">📚</span>
+          <span class="nb-label">Your Boolks</span>
+        </div>
+        <div class="nav-btn active">
+          <span class="nb-icon">👤</span>
+          <span class="nb-label">Account</span>
+        </div>
+        <div class="sidebar-divider"></div>
+        <div class="nav-btn create" onclick="openModal()">
+          <span class="nb-icon">✨</span>
+          <span class="nb-label">Create a Room</span>
+        </div>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="user-card">
+        <div class="user-av">🦊</div>
+        <div class="user-name" id="acc-sidebar-username">Jogador</div>
+      </div>
+    </aside>
+
+    <main class="account-main">
+      <div class="account-header">
+        <h1>👤 Account</h1>
+        <p>Seu perfil e estatísticas no Whitet</p>
+      </div>
+
+      <div class="profile-card">
+        <div class="profile-avatar">🦊</div>
+        <div class="profile-info">
+          <h2 id="acc-name">Jogador</h2>
+          <div class="nick" id="acc-nick">@jogador</div>
+        </div>
+      </div>
+
+      <div class="account-grid">
+        <div class="acc-card">
+          <div class="acc-card-label">🎮 Partidas Jogadas</div>
+          <div class="acc-card-value" id="acc-matches">0</div>
+          <div class="acc-card-sub">desde que criou a conta</div>
+        </div>
+        <div class="acc-card">
+          <div class="acc-card-label">📅 Membro desde</div>
+          <div class="acc-card-value" style="font-size:18px;" id="acc-since">—</div>
+          <div class="acc-card-sub">bem-vindo ao Whitet!</div>
+        </div>
+      </div>
+
+      <div class="blook-card">
+        <div class="blook-preview">Sem<br>Blook</div>
+        <div class="blook-info">
+          <div class="blook-title">Blook Equipado</div>
+          <div class="blook-sub">Você ainda não tem nenhum blook. Visite a Shop para conseguir o seu!</div>
+        </div>
+      </div>
+
+      <button class="btn-logout" onclick="doLogout()">🚪 Sair da conta</button>
+    </main>
+  </div>
+</div>
+
 <!-- Modal -->
 <div class="overlay" id="overlay" onclick="closeOut(event)">
   <div class="modal">
@@ -552,8 +686,29 @@
 
   function loadPlayer() {
     const name = localStorage.getItem('whitet_username') || 'Jogador';
+    const matches = localStorage.getItem('whitet_matches') || '0';
+    const since = localStorage.getItem('whitet_since') || '—';
+
+    // Dashboard
     document.getElementById('greeting-name').textContent = name;
     document.getElementById('sidebar-username').textContent = name;
+
+    // Account
+    document.getElementById('acc-name').textContent = name;
+    document.getElementById('acc-nick').textContent = '@' + name.toLowerCase().replace(/\s+/g,'');
+    document.getElementById('acc-sidebar-username').textContent = name;
+    document.getElementById('acc-matches').textContent = matches;
+    document.getElementById('acc-since').textContent = since;
+  }
+
+  function showAccountScreen() {
+    loadPlayer();
+    showScreen('screen-account');
+  }
+
+  function showDashScreen() {
+    loadPlayer();
+    showScreen('screen-dash');
   }
 
   // ── Auth ──
@@ -588,6 +743,9 @@
     if (!u || !p) { showToast('⚠️ Preencha todos os campos!'); return; }
     localStorage.setItem('whitet_username', u);
     localStorage.setItem('whitet_logged', 'true');
+    if (!localStorage.getItem('whitet_since')) {
+      localStorage.setItem('whitet_since', new Date().toLocaleDateString('pt-BR'));
+    }
     showToast('🎮 Bem-vindo ao Whitet!');
     setTimeout(() => { loadPlayer(); showScreen('screen-dash'); }, 1000);
   }
@@ -600,6 +758,8 @@
     if (p.length < 6) { showToast('🔒 Senha muito curta!'); return; }
     localStorage.setItem('whitet_username', u);
     localStorage.setItem('whitet_logged', 'true');
+    localStorage.setItem('whitet_since', new Date().toLocaleDateString('pt-BR'));
+    localStorage.setItem('whitet_matches', '0');
     showToast('🎉 Conta criada com sucesso!');
     setTimeout(() => { loadPlayer(); showScreen('screen-dash'); }, 1000);
   }
@@ -607,6 +767,8 @@
   function doLogout() {
     localStorage.removeItem('whitet_logged');
     localStorage.removeItem('whitet_username');
+    localStorage.removeItem('whitet_since');
+    localStorage.removeItem('whitet_matches');
     showScreen('screen-auth');
   }
 
