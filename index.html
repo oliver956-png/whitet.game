@@ -667,65 +667,171 @@
 
 <div class="toast" id="toast"></div>
 
-<script>
-  // ── Roteamento de telas ──
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, getDoc, query, collection, where, getDocs }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // ── Config Firebase ──
+  const firebaseConfig = {
+    apiKey: "AIzaSyAODpC2hoQhEldAwCE9v2s1Bx9joes5Wjw",
+    authDomain: "whitet-b75cd.firebaseapp.com",
+    projectId: "whitet-b75cd",
+    storageBucket: "whitet-b75cd.firebasestorage.app",
+    messagingSenderId: "259306081505",
+    appId: "1:259306081505:web:dd6ee4822c5fb78f83bba0",
+    measurementId: "G-S67PBPF0LQ"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  // ── Lista de palavrões bloqueados ──
+  const PALAVROES = [
+    'puta','viado','fdp','merda','caralho','porra','buceta','cu','otario','idiota',
+    'imbecil','cuzao','vadia','piranha','safado','vagabundo','lixo','burro','cretino',
+    'desgraça','filho da puta','fudido','puto','arrombado','babaca','bosta','cacete',
+    'vsf','tnc','krl','pqp','qrl','infiel','retardado','mongol','negro','bixa','bicha'
+  ];
+
+  function contemPalavrão(texto) {
+    const t = texto.toLowerCase().replace(/[^a-z0-9]/g,'');
+    return PALAVROES.some(p => t.includes(p.replace(/[^a-z0-9]/g,'')));
+  }
+
+  // ── Roteamento ──
   function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
     document.getElementById(id).classList.add('active');
   }
 
-  // Ao carregar: verifica se já está logado
-  window.addEventListener('DOMContentLoaded', () => {
-    if (localStorage.getItem('whitet_logged')) {
-      loadPlayer();
-      showScreen('screen-dash');
+  function loadPlayer(userData) {
+    const name    = userData.username || 'Jogador';
+    const matches = userData.matches  || 0;
+    const since   = userData.since    || '—';
+
+    document.getElementById('greeting-name').textContent       = name;
+    document.getElementById('sidebar-username').textContent    = name;
+    document.getElementById('acc-name').textContent            = name;
+    document.getElementById('acc-nick').textContent            = '@' + name.toLowerCase().replace(/\s+/g,'');
+    document.getElementById('acc-sidebar-username').textContent = name;
+    document.getElementById('acc-matches').textContent         = matches;
+    document.getElementById('acc-since').textContent           = since;
+  }
+
+  // ── Verifica sessão ao carregar ──
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const snap = await getDoc(doc(db, 'users', user.uid));
+      if (snap.exists()) {
+        loadPlayer(snap.data());
+        showScreen('screen-dash');
+      } else {
+        await signOut(auth);
+        showScreen('screen-auth');
+      }
     } else {
       showScreen('screen-auth');
     }
   });
 
-  function loadPlayer() {
-    const name = localStorage.getItem('whitet_username') || 'Jogador';
-    const matches = localStorage.getItem('whitet_matches') || '0';
-    const since = localStorage.getItem('whitet_since') || '—';
+  // ── Cadastro ──
+  window.doRegister = async function() {
+    const nick  = document.getElementById('reg-user').value.trim();
+    const email = document.getElementById('reg-email').value.trim();
+    const pass  = document.getElementById('reg-pass').value.trim();
 
-    // Dashboard
-    document.getElementById('greeting-name').textContent = name;
-    document.getElementById('sidebar-username').textContent = name;
+    if (!nick || !email || !pass) { showToast('⚠️ Preencha todos os campos!'); return; }
+    if (pass.length < 6)          { showToast('🔒 Senha muito curta! Mínimo 6 caracteres.'); return; }
+    if (nick.length < 3)          { showToast('⚠️ Nick muito curto! Mínimo 3 letras.'); return; }
+    if (!/^[a-zA-Z0-9_]+$/.test(nick)) { showToast('⚠️ Nick só pode ter letras, números e _'); return; }
+    if (contemPalavrão(nick))     { showToast('🚫 Esse nick não é permitido!'); return; }
 
-    // Account
-    document.getElementById('acc-name').textContent = name;
-    document.getElementById('acc-nick').textContent = '@' + name.toLowerCase().replace(/\s+/g,'');
-    document.getElementById('acc-sidebar-username').textContent = name;
-    document.getElementById('acc-matches').textContent = matches;
-    document.getElementById('acc-since').textContent = since;
-  }
+    // Verifica se nick já existe
+    const nickQuery = await getDocs(query(collection(db, 'users'), where('username', '==', nick)));
+    if (!nickQuery.empty) { showToast('❌ Esse nick já está em uso!'); return; }
 
-  function showAccountScreen() {
-    loadPlayer();
+    showToast('⏳ Criando conta...');
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, pass);
+      const since = new Date().toLocaleDateString('pt-BR');
+      await setDoc(doc(db, 'users', cred.user.uid), {
+        username: nick,
+        email:    email,
+        matches:  0,
+        since:    since,
+        blook:    null
+      });
+      showToast('🎉 Conta criada com sucesso!');
+    } catch(e) {
+      if (e.code === 'auth/email-already-in-use') showToast('❌ Este email já está cadastrado!');
+      else if (e.code === 'auth/invalid-email')   showToast('❌ Email inválido!');
+      else showToast('❌ Erro: ' + e.message);
+    }
+  };
+
+  // ── Login ──
+  window.doLogin = async function() {
+    const nick = document.getElementById('login-user').value.trim();
+    const pass = document.getElementById('login-pass').value.trim();
+
+    if (!nick || !pass) { showToast('⚠️ Preencha todos os campos!'); return; }
+
+    // Busca email pelo nick no Firestore
+    showToast('⏳ Entrando...');
+    try {
+      const nickQuery = await getDocs(query(collection(db, 'users'), where('username', '==', nick)));
+      if (nickQuery.empty) { showToast('❌ Nick não encontrado!'); return; }
+
+      const email = nickQuery.docs[0].data().email;
+      await signInWithEmailAndPassword(auth, email, pass);
+      showToast('🎮 Bem-vindo de volta!');
+    } catch(e) {
+      if (e.code === 'auth/wrong-password' || e.code === 'auth/invalid-credential')
+        showToast('❌ Senha incorreta!');
+      else showToast('❌ Erro ao entrar. Tente novamente.');
+    }
+  };
+
+  // ── Logout ──
+  window.doLogout = async function() {
+    await signOut(auth);
+    showScreen('screen-auth');
+  };
+
+  // ── Navegação ──
+  window.showAccountScreen = async function() {
+    const user = auth.currentUser;
+    if (user) {
+      const snap = await getDoc(doc(db, 'users', user.uid));
+      if (snap.exists()) loadPlayer(snap.data());
+    }
     showScreen('screen-account');
-  }
+  };
 
-  function showDashScreen() {
-    loadPlayer();
+  window.showDashScreen = function() {
     showScreen('screen-dash');
-  }
+  };
 
-  // ── Auth ──
-  function switchTab(tab) {
+  // ── UI helpers ──
+  window.switchTab = function(tab) {
     document.getElementById('tab-login').classList.toggle('active', tab === 'login');
     document.getElementById('tab-register').classList.toggle('active', tab === 'register');
     document.getElementById('panel-login').classList.toggle('active', tab === 'login');
     document.getElementById('panel-register').classList.toggle('active', tab === 'register');
-  }
+  };
 
-  function togglePass(id, el) {
+  window.togglePass = function(id, el) {
     const inp = document.getElementById(id);
     inp.type = inp.type === 'password' ? 'text' : 'password';
     el.textContent = inp.type === 'password' ? '👁️' : '🙈';
-  }
+  };
 
-  function checkStrength(val) {
+  window.checkStrength = function(val) {
     const fill = document.getElementById('strengthFill');
     let score = 0;
     if (val.length >= 6) score++;
@@ -735,55 +841,19 @@
     if (/[^A-Za-z0-9]/.test(val)) score++;
     fill.style.width = (score / 5 * 100) + '%';
     fill.style.background = ['#ff6b6b','#ff9f43','#ffd43b','#74c0fc','#5ce1c0'][Math.max(0, score - 1)];
-  }
+  };
 
-  function doLogin() {
-    const u = document.getElementById('login-user').value.trim();
-    const p = document.getElementById('login-pass').value.trim();
-    if (!u || !p) { showToast('⚠️ Preencha todos os campos!'); return; }
-    localStorage.setItem('whitet_username', u);
-    localStorage.setItem('whitet_logged', 'true');
-    if (!localStorage.getItem('whitet_since')) {
-      localStorage.setItem('whitet_since', new Date().toLocaleDateString('pt-BR'));
-    }
-    showToast('🎮 Bem-vindo ao Whitet!');
-    setTimeout(() => { loadPlayer(); showScreen('screen-dash'); }, 1000);
-  }
+  window.openModal  = () => document.getElementById('overlay').classList.add('open');
+  window.closeModal = () => document.getElementById('overlay').classList.remove('open');
+  window.closeOut   = (e) => { if (e.target === document.getElementById('overlay')) closeModal(); };
+  window.selMode    = (el) => { document.querySelectorAll('.mode-opt').forEach(m => m.classList.remove('sel')); el.classList.add('sel'); };
+  window.createRoom = () => { closeModal(); showToast('🎉 Sala criada! Compartilhe o código!'); };
 
-  function doRegister() {
-    const u = document.getElementById('reg-user').value.trim();
-    const e = document.getElementById('reg-email').value.trim();
-    const p = document.getElementById('reg-pass').value.trim();
-    if (!u || !e || !p) { showToast('⚠️ Preencha todos os campos!'); return; }
-    if (p.length < 6) { showToast('🔒 Senha muito curta!'); return; }
-    localStorage.setItem('whitet_username', u);
-    localStorage.setItem('whitet_logged', 'true');
-    localStorage.setItem('whitet_since', new Date().toLocaleDateString('pt-BR'));
-    localStorage.setItem('whitet_matches', '0');
-    showToast('🎉 Conta criada com sucesso!');
-    setTimeout(() => { loadPlayer(); showScreen('screen-dash'); }, 1000);
-  }
-
-  function doLogout() {
-    localStorage.removeItem('whitet_logged');
-    localStorage.removeItem('whitet_username');
-    localStorage.removeItem('whitet_since');
-    localStorage.removeItem('whitet_matches');
-    showScreen('screen-auth');
-  }
-
-  // ── Dashboard ──
-  function openModal()  { document.getElementById('overlay').classList.add('open'); }
-  function closeModal() { document.getElementById('overlay').classList.remove('open'); }
-  function closeOut(e)  { if (e.target === document.getElementById('overlay')) closeModal(); }
-  function selMode(el)  { document.querySelectorAll('.mode-opt').forEach(m => m.classList.remove('sel')); el.classList.add('sel'); }
-  function createRoom() { closeModal(); showToast('🎉 Sala criada! Compartilhe o código!'); }
-
-  function showToast(msg) {
+  window.showToast = function(msg) {
     const t = document.getElementById('toast');
     t.textContent = msg; t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2600);
-  }
+    setTimeout(() => t.classList.remove('show'), 2800);
+  };
 </script>
 </body>
 </html>
