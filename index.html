@@ -595,6 +595,54 @@
     .community-empty h3 { font-family:'Fredoka One',cursive; font-size:20px; margin-bottom:8px; }
     .community-empty p  { font-size:13px; color:var(--muted); font-weight:600; }
 
+    /* ── Report Player Modal ── */
+    .report-overlay {
+      position:fixed; inset:0; background:rgba(0,0,0,0.7); backdrop-filter:blur(8px);
+      z-index:150; display:flex; align-items:center; justify-content:center;
+      opacity:0; pointer-events:none; transition:opacity 0.3s;
+    }
+    .report-overlay.open { opacity:1; pointer-events:all; }
+    .report-modal {
+      background:var(--surface); border:1.5px solid rgba(255,107,107,0.3); border-radius:24px;
+      padding:28px; width:100%; max-width:440px;
+      box-shadow:0 20px 60px rgba(0,0,0,0.5);
+      transform:translateY(28px) scale(0.97); transition:all 0.3s cubic-bezier(.4,0,.2,1);
+    }
+    .report-overlay.open .report-modal { transform:translateY(0) scale(1); }
+    .report-modal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:20px; }
+    .report-modal-title { font-family:'Fredoka One',cursive; font-size:22px; color:var(--accent2); }
+    .report-modal-close { font-size:20px; cursor:pointer; color:var(--muted); transition:color 0.2s; }
+    .report-modal-close:hover { color:var(--accent2); }
+    .report-target { display:flex; align-items:center; gap:10px; background:var(--surface2); border-radius:12px; padding:12px 14px; margin-bottom:18px; }
+    .report-target-av { font-size:24px; }
+    .report-target-name { font-family:'Fredoka One',cursive; font-size:16px; color:var(--accent2); }
+    .report-target-sub { font-size:11px; color:var(--muted); font-weight:600; }
+    .rf { margin-bottom:14px; }
+    .rf label { display:block; font-size:11px; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:6px; }
+    .rf select, .rf textarea {
+      width:100%; background:var(--input-bg); border:1.5px solid var(--border); border-radius:11px;
+      padding:11px 13px; font-family:'Nunito',sans-serif; font-size:14px; font-weight:700;
+      color:var(--text); outline:none; transition:border-color 0.2s; appearance:none; resize:none;
+    }
+    .rf select:focus, .rf textarea:focus { border-color:var(--accent2); }
+    .rf select option { background:#1a1828; }
+    .btn-send-report {
+      width:100%; padding:14px; background:linear-gradient(135deg,var(--accent2),#ff9f43);
+      border:none; border-radius:13px; font-family:'Fredoka One',cursive;
+      font-size:18px; color:#fff; cursor:pointer;
+      box-shadow:0 4px 20px rgba(255,107,107,0.3); transition:all 0.2s; letter-spacing:1px;
+    }
+    .btn-send-report:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(255,107,107,0.45); }
+
+    /* Report button na community */
+    .btn-report-player {
+      display:flex; align-items:center; gap:8px; margin-top:16px; padding:10px 16px;
+      background:rgba(255,107,107,0.08); border:1.5px solid rgba(255,107,107,0.25);
+      border-radius:50px; font-family:'Fredoka One',cursive; font-size:13px;
+      color:var(--accent2); cursor:pointer; transition:all 0.2s; width:fit-content;
+    }
+    .btn-report-player:hover { background:rgba(255,107,107,0.15); border-color:var(--accent2); }
+
     /* ── Toast ── */
     .toast {
       position:fixed; bottom:26px; left:50%;
@@ -920,8 +968,11 @@
 
     <main class="community-main">
       <div class="community-header">
-        <h1>🌍 Community</h1>
-        <p>Descubra Boolks criados por professores de todo o mundo</p>
+        <div>
+          <h1>🌍 Community</h1>
+          <p>Descubra Boolks criados por professores de todo o mundo</p>
+        </div>
+        <button class="btn-report-player" onclick="openReportModal()">🚨 Reportar Jogador</button>
       </div>
 
       <div class="community-search">
@@ -1098,6 +1149,52 @@
   </div>
 </div>
 
+<!-- Report Player Modal -->
+<div class="report-overlay" id="report-overlay" onclick="closeReportOut(event)">
+  <div class="report-modal">
+    <div class="report-modal-header">
+      <div class="report-modal-title">🚨 Reportar Jogador</div>
+      <div class="report-modal-close" onclick="closeReportModal()">✕</div>
+    </div>
+
+    <div class="report-target">
+      <div class="report-target-av">👤</div>
+      <div>
+        <div class="report-target-name">@<span id="report-target-nick">jogador</span></div>
+        <div class="report-target-sub">Jogador sendo reportado</div>
+      </div>
+    </div>
+
+    <div class="rf">
+      <label>Nick do jogador a reportar</label>
+      <input type="text" id="report-nick-input" placeholder="Ex: jogador123"
+        style="width:100%;background:var(--input-bg);border:1.5px solid var(--border);border-radius:11px;padding:11px 13px;font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;color:var(--text);outline:none;transition:border-color 0.2s;"
+        oninput="document.getElementById('report-target-nick').textContent=this.value||'jogador'" />
+    </div>
+
+    <div class="rf">
+      <label>Motivo do report</label>
+      <select id="report-reason">
+        <option value="">Selecione um motivo...</option>
+        <option value="Nome ofensivo">🤬 Nome ofensivo / palavrão</option>
+        <option value="Comportamento tóxico">😡 Comportamento tóxico</option>
+        <option value="Trapaça / cheating">🎯 Trapaça / cheating</option>
+        <option value="Spam">📢 Spam</option>
+        <option value="Conteúdo inapropriado">🚫 Conteúdo inapropriado</option>
+        <option value="Bullying / assédio">💢 Bullying / assédio</option>
+        <option value="Outro">📋 Outro</option>
+      </select>
+    </div>
+
+    <div class="rf">
+      <label>Detalhes (opcional)</label>
+      <textarea id="report-details" rows="3" placeholder="Descreva o que aconteceu..."></textarea>
+    </div>
+
+    <button class="btn-send-report" onclick="sendReport()">📨 Enviar Report</button>
+  </div>
+</div>
+
 <!-- Modal -->
 <div class="overlay" id="overlay" onclick="closeOut(event)">
   <div class="modal">
@@ -1127,6 +1224,10 @@
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- EmailJS SDK -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script>emailjs.init('qaaCt5gcVphT-Rq5h');</script>
 
 <!-- Firebase SDK -->
 <script type="module">
@@ -1575,6 +1676,61 @@
   window.closeOut   = (e) => { if (e.target === document.getElementById('overlay')) closeModal(); };
   window.selMode    = (el) => { document.querySelectorAll('.mode-opt').forEach(m => m.classList.remove('sel')); el.classList.add('sel'); };
   window.createRoom = () => { closeModal(); showToast('🎉 Sala criada! Compartilhe o código!'); };
+
+  // ── Report Player ──
+  window.openReportModal = function() {
+    document.getElementById('report-nick-input').value = '';
+    document.getElementById('report-target-nick').textContent = 'jogador';
+    document.getElementById('report-reason').value = '';
+    document.getElementById('report-details').value = '';
+    document.getElementById('report-overlay').classList.add('open');
+  };
+
+  window.closeReportModal = () => document.getElementById('report-overlay').classList.remove('open');
+  window.closeReportOut = (e) => { if (e.target === document.getElementById('report-overlay')) closeReportModal(); };
+
+  window.sendReport = async function() {
+    const reportedNick = document.getElementById('report-nick-input').value.trim();
+    const reason       = document.getElementById('report-reason').value;
+    const details      = document.getElementById('report-details').value.trim() || 'Sem detalhes adicionais.';
+
+    if (!reportedNick) { showToast('⚠️ Digite o nick do jogador!'); return; }
+    if (!reason)        { showToast('⚠️ Selecione um motivo!'); return; }
+
+    const user = auth.currentUser;
+    let reporterName = 'Anônimo';
+    if (user) {
+      const snap = await getDoc(doc(db, 'users', user.uid));
+      if (snap.exists()) reporterName = snap.data().username || 'Anônimo';
+    }
+
+    showToast('⏳ Enviando report...');
+    try {
+      // Salva no Firestore
+      await addDoc(collection(db, 'reports'), {
+        reportedUser: reportedNick,
+        reporter: reporterName,
+        reason, details,
+        date: new Date().toLocaleString('pt-BR'),
+        createdAt: new Date().toISOString()
+      });
+
+      // Envia email via EmailJS
+      await emailjs.send('service_091iqyc', 'template_41227wc', {
+        reported_user: reportedNick,
+        reporter: reporterName,
+        reason,
+        details,
+        date: new Date().toLocaleString('pt-BR')
+      });
+
+      closeReportModal();
+      showToast('✅ Report enviado! Obrigado por ajudar a comunidade!');
+    } catch(e) {
+      console.error(e);
+      showToast('❌ Erro ao enviar report. Tente novamente.');
+    }
+  };
 
   window.showToast = function(msg) {
     const t = document.getElementById('toast');
