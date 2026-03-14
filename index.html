@@ -643,6 +643,38 @@
     }
     .btn-report-player:hover { background:rgba(255,107,107,0.15); border-color:var(--accent2); }
 
+    /* ── Your Blooks Screen ── */
+    #screen-your-blooks { min-height:100vh; position:relative; z-index:1; }
+    .your-blooks-main { flex:1; padding:36px 40px; overflow-y:auto; }
+    .your-blooks-header { margin-bottom:32px; animation:fadeUp 0.4s ease both; }
+    .your-blooks-header h1 { font-family:\'Fredoka One\', cursive; font-size:34px; line-height:1; }
+    .your-blooks-header p  { font-size:14px; color:var(--muted); font-weight:600; margin-top:6px; }
+
+    .blooks-inventory-grid {
+      display:grid; grid-template-columns:repeat(4,1fr); gap:20px;
+      animation:fadeUp 0.4s 0.1s ease both;
+    }
+    .blook-inv-card {
+      background:var(--surface); border:1.5px solid var(--border); border-radius:20px;
+      padding:20px; text-align:center; cursor:pointer; transition:all 0.25s; position:relative;
+    }
+    .blook-inv-card:hover { transform:translateY(-5px); border-color:rgba(167,139,250,0.4); box-shadow:0 12px 35px rgba(0,0,0,0.3); }
+    .blook-inv-card.equipped { border-color:var(--accent3); background:rgba(92,225,192,0.06); box-shadow:0 0 0 3px rgba(92,225,192,0.2); }
+    .blook-inv-card.equipped::before { content:\'✅ Equipado\'; position:absolute; top:10px; right:10px; font-size:10px; font-weight:900; background:rgba(92,225,192,0.2); color:var(--accent3); padding:3px 8px; border-radius:20px; }
+    .blook-inv-img { width:100px; height:100px; border-radius:16px; margin:0 auto 12px; display:block; object-fit:cover; }
+    .blook-inv-name { font-family:\'Fredoka One\', cursive; font-size:18px; margin-bottom:4px; }
+    .blook-inv-rarity { font-size:11px; font-weight:800; padding:3px 10px; border-radius:20px; display:inline-block; }
+    .rarity-common { background:rgba(139,134,176,0.2); color:var(--muted); }
+    .rarity-rare   { background:rgba(116,192,252,0.2); color:var(--accent5); }
+    .rarity-epic   { background:rgba(167,139,250,0.2); color:var(--accent4); }
+    .blook-inv-btn {
+      margin-top:12px; width:100%; padding:9px; border-radius:10px; border:none;
+      font-family:\'Fredoka One\', cursive; font-size:14px; cursor:pointer; transition:all 0.2s;
+    }
+    .blook-inv-btn.equip   { background:linear-gradient(135deg,var(--accent4),var(--accent3)); color:#fff; }
+    .blook-inv-btn.equip:hover { transform:scale(1.04); }
+    .blook-inv-btn.equipped-btn { background:var(--surface2); color:var(--accent3); border:1.5px solid var(--accent3); cursor:default; }
+
     /* ── Toast ── */
     .toast {
       position:fixed; bottom:26px; left:50%;
@@ -790,6 +822,10 @@
         <div class="nav-btn" onclick="showToast('🛍️ Abrindo a Loja...')">
           <span class="nb-icon">🛍️</span>
           <span class="nb-label">Shop</span>
+        </div>
+        <div class="nav-btn" onclick="showYourBlooksScreen()">
+          <span class="nb-icon">🐾</span>
+          <span class="nb-label">Your Blooks</span>
         </div>
         <div class="nav-btn" onclick="showBoolksScreen()">
           <span class="nb-icon">📚</span>
@@ -1096,6 +1132,41 @@
       <button class="btn-add-question" onclick="openAddQuestion()">＋ Adicionar Pergunta</button>
       <button class="btn-save-boolks" onclick="saveBoolks()">💾 Salvar Boolks</button>
       <div style="height:20px;"></div>
+    </main>
+  </div>
+</div>
+
+<!-- ═══════════════════════════
+     YOUR BLOOKS SCREEN
+═══════════════════════════ -->
+<div id="screen-your-blooks" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="logo"><div class="logo-emoji">🐾</div><div class="logo-name">Whitet</div></div>
+      <nav class="nav">
+        <div class="nav-btn" onclick="showDashScreen()"><span class="nb-icon">🏠</span><span class="nb-label">Home</span></div>
+        <div class="nav-btn" onclick="showToast('🎮 Entrando no Play!')"><span class="nb-icon">🎮</span><span class="nb-label">Play</span><span class="nb-badge">LIVE</span></div>
+        <div class="nav-btn" onclick="showCommunityScreen()"><span class="nb-icon">🌍</span><span class="nb-label">Community</span></div>
+        <div class="nav-btn" onclick="showToast('🛍️ Abrindo a Loja...')"><span class="nb-icon">🛍️</span><span class="nb-label">Shop</span></div>
+        <div class="nav-btn active"><span class="nb-icon">🐾</span><span class="nb-label">Your Blooks</span></div>
+        <div class="nav-btn" onclick="showBoolksScreen()"><span class="nb-icon">📚</span><span class="nb-label">Your Boolks</span></div>
+        <div class="nav-btn" onclick="showAccountScreen()"><span class="nb-icon">👤</span><span class="nb-label">Account</span></div>
+        <div class="sidebar-divider"></div>
+        <div class="nav-btn create" onclick="openModal()"><span class="nb-icon">✨</span><span class="nb-label">Create a Room</span></div>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="user-card"><div class="user-av">🦊</div><div class="user-name" id="your-blooks-sidebar-username">Jogador</div></div>
+    </aside>
+
+    <main class="your-blooks-main">
+      <div class="your-blooks-header">
+        <h1>🐾 Your Blooks</h1>
+        <p>Gerencie e equipe seus Blooks</p>
+      </div>
+
+      <div class="blooks-inventory-grid" id="blooks-inventory-grid">
+        <!-- Blooks aparecem aqui -->
+      </div>
     </main>
   </div>
 </div>
@@ -1730,6 +1801,63 @@
       console.error(e);
       showToast('❌ Erro ao enviar report. Tente novamente.');
     }
+  };
+
+  // ── Your Blooks ──
+  const PAWNLING_IMG = "data:image/png;base64,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";
+
+  const DEFAULT_BLOOKS = [
+    { id:'pawnling', name:'Pawnling', rarity:'common', img: PAWNLING_IMG }
+  ];
+
+  window.showYourBlooksScreen = async function() {
+    const user = auth.currentUser;
+    if (!user) return;
+    const snap = await getDoc(doc(db, 'users', user.uid));
+    const data = snap.data() || {};
+    document.getElementById('your-blooks-sidebar-username').textContent = data.username || 'Jogador';
+
+    // Garante que o jogador tem ao menos o Pawnling
+    let inventory = data.blooks || ['pawnling'];
+    if (!inventory.includes('pawnling')) inventory = ['pawnling', ...inventory];
+    const equipped = data.equippedBlook || 'pawnling';
+
+    // Salva se ainda não tinha
+    if (!data.blooks) {
+      await setDoc(doc(db, 'users', user.uid), { blooks: inventory, equippedBlook: 'pawnling' }, { merge: true });
+    }
+
+    renderBlooksInventory(inventory, equipped);
+    showScreen('screen-your-blooks');
+  };
+
+  function renderBlooksInventory(inventory, equipped) {
+    const grid = document.getElementById('blooks-inventory-grid');
+    grid.innerHTML = inventory.map(id => {
+      const blook = DEFAULT_BLOOKS.find(b => b.id === id) || { id, name: id, rarity:'common', img:'' };
+      const isEquipped = id === equipped;
+      const rarityLabel = { common:'⚪ Comum', rare:'🔵 Raro', epic:'🟣 Épico' }[blook.rarity] || '⚪ Comum';
+      const rarityClass = { common:'rarity-common', rare:'rarity-rare', epic:'rarity-epic' }[blook.rarity] || 'rarity-common';
+      return `<div class="blook-inv-card ${isEquipped ? 'equipped' : ''}">
+        <img class="blook-inv-img" src="${blook.img}" alt="${blook.name}" />
+        <div class="blook-inv-name">${blook.name}</div>
+        <span class="blook-inv-rarity ${rarityClass}">${rarityLabel}</span>
+        ${isEquipped
+          ? `<button class="blook-inv-btn equipped-btn">✅ Equipado</button>`
+          : `<button class="blook-inv-btn equip" onclick="equipBlook('${id}')">⚡ Equipar</button>`
+        }
+      </div>`;
+    }).join('');
+  }
+
+  window.equipBlook = async function(id) {
+    const user = auth.currentUser;
+    if (!user) return;
+    await setDoc(doc(db, 'users', user.uid), { equippedBlook: id }, { merge: true });
+    const snap = await getDoc(doc(db, 'users', user.uid));
+    const data = snap.data() || {};
+    renderBlooksInventory(data.blooks || ['pawnling'], id);
+    showToast('🐾 Blook equipado!');
   };
 
   window.showToast = function(msg) {
