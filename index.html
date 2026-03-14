@@ -675,6 +675,41 @@
     .blook-inv-btn.equip:hover { transform:scale(1.04); }
     .blook-inv-btn.equipped-btn { background:var(--surface2); color:var(--accent3); border:1.5px solid var(--accent3); cursor:default; }
 
+    /* ── Shop Screen ── */
+    #screen-shop { min-height:100vh; position:relative; z-index:1; }
+    .shop-main { flex:1; padding:36px 40px; overflow-y:auto; }
+    .shop-header { margin-bottom:32px; animation:fadeUp 0.4s ease both; }
+    .shop-header h1 { font-family:'Fredoka One',cursive; font-size:34px; line-height:1; }
+    .shop-header p  { font-size:14px; color:var(--muted); font-weight:600; margin-top:6px; }
+
+    .shop-coming-soon {
+      display:flex; flex-direction:column; align-items:center; justify-content:center;
+      padding:80px 20px; text-align:center;
+      background:var(--surface); border:1.5px dashed var(--border); border-radius:28px;
+      animation:fadeUp 0.4s 0.1s ease both; position:relative; overflow:hidden;
+    }
+    .shop-coming-soon::before {
+      content:''; position:absolute; inset:0;
+      background:radial-gradient(ellipse at 50% 0%, rgba(247,201,72,0.08) 0%, transparent 70%);
+      pointer-events:none;
+    }
+    .shop-cs-icon { font-size:72px; margin-bottom:20px; animation:bounce 2s ease-in-out infinite; }
+    .shop-cs-title {
+      font-family:'Fredoka One',cursive; font-size:36px; margin-bottom:10px;
+      background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 50%,var(--accent4) 100%);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .shop-cs-sub { font-size:15px; color:var(--muted); font-weight:600; max-width:400px; line-height:1.6; margin-bottom:28px; }
+    .shop-cs-tags { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; }
+    .shop-cs-tag {
+      padding:8px 18px; border-radius:50px; font-size:13px; font-weight:800;
+      border:1.5px solid var(--border); background:var(--surface2); color:var(--muted);
+    }
+    .shop-cs-tag.yellow { border-color:rgba(247,201,72,0.3); background:rgba(247,201,72,0.08); color:var(--accent); }
+    .shop-cs-tag.purple { border-color:rgba(167,139,250,0.3); background:rgba(167,139,250,0.08); color:var(--accent4); }
+    .shop-cs-tag.cyan   { border-color:rgba(92,225,192,0.3);  background:rgba(92,225,192,0.08);  color:var(--accent3); }
+    .shop-cs-tag.red    { border-color:rgba(255,107,107,0.3); background:rgba(255,107,107,0.08); color:var(--accent2); }
+
     /* ── Toast ── */
     .toast {
       position:fixed; bottom:26px; left:50%;
@@ -819,7 +854,7 @@
           <span class="nb-icon">🌍</span>
           <span class="nb-label">Community</span>
         </div>
-        <div class="nav-btn" onclick="showToast('🛍️ Abrindo a Loja...')">
+        <div class="nav-btn" onclick="showShopScreen()">
           <span class="nb-icon">🛍️</span>
           <span class="nb-label">Shop</span>
         </div>
@@ -920,7 +955,7 @@
           <span class="nb-icon">🌍</span>
           <span class="nb-label">Community</span>
         </div>
-        <div class="nav-btn" onclick="showToast('🛍️ Abrindo a Loja...')">
+        <div class="nav-btn" onclick="showShopScreen()">
           <span class="nb-icon">🛍️</span>
           <span class="nb-label">Shop</span>
         </div>
@@ -1003,7 +1038,7 @@
         <div class="nav-btn" onclick="showDashScreen()"><span class="nb-icon">🏠</span><span class="nb-label">Home</span></div>
         <div class="nav-btn" onclick="showToast('🎮 Entrando no Play!')"><span class="nb-icon">🎮</span><span class="nb-label">Play</span><span class="nb-badge">LIVE</span></div>
         <div class="nav-btn active"><span class="nb-icon">🌍</span><span class="nb-label">Community</span></div>
-        <div class="nav-btn" onclick="showToast('🛍️ Abrindo a Loja...')"><span class="nb-icon">🛍️</span><span class="nb-label">Shop</span></div>
+        <div class="nav-btn" onclick="showShopScreen()"><span class="nb-icon">🛍️</span><span class="nb-label">Shop</span></div>
         <div class="nav-btn" onclick="showBoolksScreen()"><span class="nb-icon">📚</span><span class="nb-label">Your Boolks</span></div>
         <div class="nav-btn" onclick="showAccountScreen()"><span class="nb-icon">👤</span><span class="nb-label">Account</span></div>
         <div class="sidebar-divider"></div>
@@ -1055,7 +1090,7 @@
         <div class="nav-btn" onclick="showDashScreen()"><span class="nb-icon">🏠</span><span class="nb-label">Home</span></div>
         <div class="nav-btn" onclick="showToast('🎮 Entrando no Play!')"><span class="nb-icon">🎮</span><span class="nb-label">Play</span><span class="nb-badge">LIVE</span></div>
         <div class="nav-btn" onclick="showCommunityScreen()"><span class="nb-icon">🌍</span><span class="nb-label">Community</span></div>
-        <div class="nav-btn" onclick="showToast('🛍️ Abrindo a Loja...')"><span class="nb-icon">🛍️</span><span class="nb-label">Shop</span></div>
+        <div class="nav-btn" onclick="showShopScreen()"><span class="nb-icon">🛍️</span><span class="nb-label">Shop</span></div>
         <div class="nav-btn" onclick="showYourBlooksScreen()"><span class="nb-icon">🐾</span><span class="nb-label">Your Blooks</span></div>
         <div class="nav-btn active"><span class="nb-icon">📚</span><span class="nb-label">Your Boolks</span></div>
         <div class="nav-btn" onclick="showAccountScreen()"><span class="nb-icon">👤</span><span class="nb-label">Account</span></div>
@@ -1098,7 +1133,7 @@
         <div class="nav-btn" onclick="showDashScreen()"><span class="nb-icon">🏠</span><span class="nb-label">Home</span></div>
         <div class="nav-btn" onclick="showToast('🎮 Entrando no Play!')"><span class="nb-icon">🎮</span><span class="nb-label">Play</span><span class="nb-badge">LIVE</span></div>
         <div class="nav-btn" onclick="showCommunityScreen()"><span class="nb-icon">🌍</span><span class="nb-label">Community</span></div>
-        <div class="nav-btn" onclick="showToast('🛍️ Abrindo a Loja...')"><span class="nb-icon">🛍️</span><span class="nb-label">Shop</span></div>
+        <div class="nav-btn" onclick="showShopScreen()"><span class="nb-icon">🛍️</span><span class="nb-label">Shop</span></div>
         <div class="nav-btn" onclick="showYourBlooksScreen()"><span class="nb-icon">🐾</span><span class="nb-label">Your Blooks</span></div>
         <div class="nav-btn active"><span class="nb-icon">📚</span><span class="nb-label">Your Boolks</span></div>
         <div class="nav-btn" onclick="showAccountScreen()"><span class="nb-icon">👤</span><span class="nb-label">Account</span></div>
@@ -1162,7 +1197,7 @@
         <div class="nav-btn" onclick="showDashScreen()"><span class="nb-icon">🏠</span><span class="nb-label">Home</span></div>
         <div class="nav-btn" onclick="showToast('🎮 Entrando no Play!')"><span class="nb-icon">🎮</span><span class="nb-label">Play</span><span class="nb-badge">LIVE</span></div>
         <div class="nav-btn" onclick="showCommunityScreen()"><span class="nb-icon">🌍</span><span class="nb-label">Community</span></div>
-        <div class="nav-btn" onclick="showToast('🛍️ Abrindo a Loja...')"><span class="nb-icon">🛍️</span><span class="nb-label">Shop</span></div>
+        <div class="nav-btn" onclick="showShopScreen()"><span class="nb-icon">🛍️</span><span class="nb-label">Shop</span></div>
         <div class="nav-btn active"><span class="nb-icon">🐾</span><span class="nb-label">Your Blooks</span></div>
         <div class="nav-btn" onclick="showBoolksScreen()"><span class="nb-icon">📚</span><span class="nb-label">Your Boolks</span></div>
         <div class="nav-btn" onclick="showAccountScreen()"><span class="nb-icon">👤</span><span class="nb-label">Account</span></div>
@@ -1181,6 +1216,52 @@
 
       <div class="blooks-inventory-grid" id="blooks-inventory-grid">
         <!-- Blooks aparecem aqui -->
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ═══════════════════════════
+     SHOP SCREEN
+═══════════════════════════ -->
+<div id="screen-shop" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="logo"><div class="logo-emoji">🐾</div><div class="logo-name">Whitet</div></div>
+      <nav class="nav">
+        <div class="nav-btn" onclick="showDashScreen()"><span class="nb-icon">🏠</span><span class="nb-label">Home</span></div>
+        <div class="nav-btn" onclick="showToast('🎮 Entrando no Play!')"><span class="nb-icon">🎮</span><span class="nb-label">Play</span><span class="nb-badge">LIVE</span></div>
+        <div class="nav-btn" onclick="showCommunityScreen()"><span class="nb-icon">🌍</span><span class="nb-label">Community</span></div>
+        <div class="nav-btn active"><span class="nb-icon">🛍️</span><span class="nb-label">Shop</span></div>
+        <div class="nav-btn" onclick="showYourBlooksScreen()"><span class="nb-icon">🐾</span><span class="nb-label">Your Blooks</span></div>
+        <div class="nav-btn" onclick="showBoolksScreen()"><span class="nb-icon">📚</span><span class="nb-label">Your Boolks</span></div>
+        <div class="nav-btn" onclick="showAccountScreen()"><span class="nb-icon">👤</span><span class="nb-label">Account</span></div>
+        <div class="sidebar-divider"></div>
+        <div class="nav-btn create" onclick="openModal()"><span class="nb-icon">✨</span><span class="nb-label">Create a Room</span></div>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="user-card"><div class="user-av">🦊</div><div class="user-name" id="shop-sidebar-username">Jogador</div></div>
+    </aside>
+
+    <main class="shop-main">
+      <div class="shop-header">
+        <h1>🛍️ Shop</h1>
+        <p>Compre novos Blooks e itens exclusivos</p>
+      </div>
+
+      <div class="shop-coming-soon">
+        <div class="shop-cs-icon">🚧</div>
+        <div class="shop-cs-title">Em Breve!</div>
+        <div class="shop-cs-sub">
+          A loja do Whitet está sendo construída com muito carinho.<br>
+          Em breve você poderá comprar Blooks, power-ups e muito mais!
+        </div>
+        <div class="shop-cs-tags">
+          <span class="shop-cs-tag yellow">🐾 Blooks exclusivos</span>
+          <span class="shop-cs-tag purple">⚡ Power-ups</span>
+          <span class="shop-cs-tag cyan">🎨 Temas</span>
+          <span class="shop-cs-tag red">🏆 Itens raros</span>
+        </div>
       </div>
     </main>
   </div>
@@ -1897,6 +1978,16 @@
     const data = snap.data() || {};
     renderBlooksInventory(data.blooks || ['pawnling'], id);
     showToast('🐾 Blook equipado!');
+  };
+
+  // ── Shop ──
+  window.showShopScreen = async function() {
+    const user = auth.currentUser;
+    if (user) {
+      const snap = await getDoc(doc(db, 'users', user.uid));
+      document.getElementById('shop-sidebar-username').textContent = snap.data()?.username || 'Jogador';
+    }
+    showScreen('screen-shop');
   };
 
   window.showToast = function(msg) {
