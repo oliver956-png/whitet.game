@@ -762,6 +762,31 @@
     .btn-result-close { width:100%; padding:13px; background:linear-gradient(135deg,var(--accent4),var(--accent3)); border:none; border-radius:13px; font-family:'Fredoka One',cursive; font-size:18px; color:#fff; cursor:pointer; transition:all 0.2s; }
     .btn-result-close:hover { transform:translateY(-2px); }
 
+    /* ── Boolks Viewer Screen ── */
+    #screen-boolks-viewer { min-height:100vh; position:relative; z-index:1; }
+    .viewer-main { flex:1; padding:36px 40px; overflow-y:auto; }
+    .viewer-header { display:flex; align-items:center; gap:16px; margin-bottom:28px; animation:fadeUp 0.4s ease both; }
+    .viewer-back { background:var(--surface); border:1.5px solid var(--border); border-radius:12px; padding:8px 16px; font-family:'Fredoka One',cursive; font-size:14px; color:var(--muted); cursor:pointer; transition:all 0.2s; }
+    .viewer-back:hover { border-color:var(--accent4); color:var(--text); }
+    .viewer-title-wrap h1 { font-family:'Fredoka One',cursive; font-size:30px; line-height:1; }
+    .viewer-title-wrap p  { font-size:13px; color:var(--muted); font-weight:600; margin-top:4px; }
+    .viewer-teacher-badge { display:inline-flex; align-items:center; gap:6px; background:rgba(92,225,192,0.1); border:1.5px solid var(--accent3); border-radius:50px; padding:5px 14px; font-size:12px; font-weight:800; color:var(--accent3); margin-bottom:20px; }
+    .viewer-locked-badge  { display:inline-flex; align-items:center; gap:6px; background:rgba(139,134,176,0.1); border:1.5px solid var(--muted); border-radius:50px; padding:5px 14px; font-size:12px; font-weight:800; color:var(--muted); margin-bottom:20px; }
+
+    .viewer-q-list { display:flex; flex-direction:column; gap:16px; animation:fadeUp 0.4s 0.1s ease both; }
+    .viewer-q-card { background:var(--surface); border:1.5px solid var(--border); border-radius:18px; padding:22px; }
+    .viewer-q-num  { font-family:'Fredoka One',cursive; font-size:12px; color:var(--accent4); background:rgba(167,139,250,0.1); padding:3px 10px; border-radius:20px; display:inline-block; margin-bottom:10px; }
+    .viewer-q-text { font-size:15px; font-weight:800; color:var(--text); margin-bottom:14px; line-height:1.5; }
+    .viewer-opts   { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .viewer-opt    { padding:10px 14px; border-radius:12px; font-size:13px; font-weight:700; background:var(--surface2); border:1.5px solid var(--border); transition:all 0.2s; }
+    .viewer-opt.correct   { background:rgba(92,225,192,0.12); border-color:var(--accent3); color:var(--accent3); }
+    .viewer-opt.hidden-ans { background:var(--surface2); border-color:var(--border); color:var(--text); }
+    .viewer-vf-opts { display:flex; gap:10px; }
+    .viewer-vf-opt  { padding:10px 22px; border-radius:12px; font-size:14px; font-weight:800; background:var(--surface2); border:1.5px solid var(--border); }
+    .viewer-vf-opt.correct { background:rgba(92,225,192,0.12); border-color:var(--accent3); color:var(--accent3); }
+    .viewer-vf-opt.hidden-ans { background:var(--surface2); border-color:var(--border); color:var(--text); }
+    .viewer-answer-locked { margin-top:10px; font-size:12px; color:var(--muted); font-weight:700; font-style:italic; }
+
     /* ── Toast ── */
     .toast {
       position:fixed; bottom:26px; left:50%;
@@ -957,22 +982,22 @@
       </div>
 
       <div class="books-grid">
-        <div class="book-card" onclick="showToast('📚 Ciências – 7º ano — em breve!')">
+        <div class="book-card" onclick="showBoolksViewer('Ciências – 7º ano')">
           <div class="book-cover" style="background:linear-gradient(135deg,#f7c94830,#ff6b6b30);">🔬</div>
           <div class="book-name">Ciências – 7º ano</div>
           <div class="book-meta"><span>15 questões</span><span class="dot"></span><span style="color:var(--accent)">⭐ Oficial</span></div>
         </div>
-        <div class="book-card" onclick="showToast('📐 Matemática Básica — em breve!')">
+        <div class="book-card" onclick="showBoolksViewer('Matemática Básica')">
           <div class="book-cover" style="background:linear-gradient(135deg,#a78bfa30,#74c0fc30);">📐</div>
           <div class="book-name">Matemática Básica</div>
           <div class="book-meta"><span>15 questões</span><span class="dot"></span><span style="color:var(--accent)">⭐ Oficial</span></div>
         </div>
-        <div class="book-card" onclick="showToast('🌎 Geografia Geral — em breve!')">
+        <div class="book-card" onclick="showBoolksViewer('Geografia Geral')">
           <div class="book-cover" style="background:linear-gradient(135deg,#5ce1c030,#a78bfa30);">🌎</div>
           <div class="book-name">Geografia Geral</div>
           <div class="book-meta"><span>15 questões</span><span class="dot"></span><span style="color:var(--accent)">⭐ Oficial</span></div>
         </div>
-        <div class="book-card" onclick="showToast('📜 História do Brasil — em breve!')">
+        <div class="book-card" onclick="showBoolksViewer('História do Brasil')">
           <div class="book-cover" style="background:linear-gradient(135deg,#74c0fc30,#ff9f4330);">📜</div>
           <div class="book-name">História do Brasil</div>
           <div class="book-meta"><span>15 questões</span><span class="dot"></span><span style="color:var(--accent)">⭐ Oficial</span></div>
@@ -1332,6 +1357,42 @@
     </div>
     <div class="result-rarity" id="result-rarity"></div>
     <button class="btn-result-close" onclick="closeBoxResult()">🎉 Incrível!</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════
+     BOOLKS VIEWER SCREEN
+═══════════════════════════ -->
+<div id="screen-boolks-viewer" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="logo"><div class="logo-emoji">🐾</div><div class="logo-name">Whitet</div></div>
+      <nav class="nav">
+        <div class="nav-btn" onclick="showDashScreen()"><span class="nb-icon">🏠</span><span class="nb-label">Home</span></div>
+        <div class="nav-btn" onclick="showToast('🎮 Entrando no Play!')"><span class="nb-icon">🎮</span><span class="nb-label">Play</span><span class="nb-badge">LIVE</span></div>
+        <div class="nav-btn" onclick="showCommunityScreen()"><span class="nb-icon">🌍</span><span class="nb-label">Community</span></div>
+        <div class="nav-btn" onclick="showShopScreen()"><span class="nb-icon">🛍️</span><span class="nb-label">Shop</span></div>
+        <div class="nav-btn" onclick="showYourBlooksScreen()"><span class="nb-icon">🐾</span><span class="nb-label">Your Blooks</span></div>
+        <div class="nav-btn" onclick="showBoolksScreen()"><span class="nb-icon">📚</span><span class="nb-label">Your Boolks</span></div>
+        <div class="nav-btn" onclick="showAccountScreen()"><span class="nb-icon">👤</span><span class="nb-label">Account</span></div>
+        <div class="sidebar-divider"></div>
+        <div class="nav-btn create" onclick="openModal()"><span class="nb-icon">✨</span><span class="nb-label">Create a Room</span></div>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="user-card"><div class="user-av">🦊</div><div class="user-name" id="viewer-sidebar-username">Jogador</div></div>
+    </aside>
+
+    <main class="viewer-main">
+      <div class="viewer-header">
+        <button class="viewer-back" onclick="showDashScreen()">← Voltar</button>
+        <div class="viewer-title-wrap">
+          <h1 id="viewer-title">Boolks</h1>
+          <p id="viewer-subtitle">Questões</p>
+        </div>
+      </div>
+      <div id="viewer-role-badge"></div>
+      <div class="viewer-q-list" id="viewer-q-list"></div>
+    </main>
   </div>
 </div>
 
@@ -1783,6 +1844,67 @@
       }).join('');
     } catch(e) { console.log('loadHomeBoolks error:', e); }
   }
+
+
+  // ── Boolks Viewer ──
+  window.showBoolksViewer = async function(title) {
+    const user = auth.currentUser;
+    if (!user) return;
+    const snap = await getDoc(doc(db,'users',user.uid));
+    const data = snap.data() || {};
+    const isTeacher = data.isTeacher || false;
+
+    document.getElementById('viewer-sidebar-username').textContent = data.username || 'Jogador';
+
+    // Find boolks by title
+    const q = await getDocs(query(collection(db,'boolks'), where('title','==',title)));
+    if (q.empty) { showToast('❌ Boolks não encontrado!'); return; }
+
+    const boolks = q.docs[0].data();
+    document.getElementById('viewer-title').textContent = boolks.icon + ' ' + boolks.title;
+    document.getElementById('viewer-subtitle').textContent = (boolks.questions||[]).length + ' questões · ' + boolks.subject;
+
+    // Badge
+    const badge = document.getElementById('viewer-role-badge');
+    badge.innerHTML = isTeacher
+      ? '<div class="viewer-teacher-badge">🎓 Professor — respostas visíveis</div>'
+      : '<div class="viewer-locked-badge">🔒 Aluno — respostas ocultas</div>';
+
+    // Render questions
+    const list = document.getElementById('viewer-q-list');
+    list.innerHTML = (boolks.questions||[]).map((q,i) => {
+      if (q.type === 'mc') {
+        const optsHtml = Object.entries(q.opts).map(([l,v]) => {
+          const isCorrect = l === q.correct;
+          const cls = isTeacher && isCorrect ? 'viewer-opt correct' : 'viewer-opt hidden-ans';
+          const prefix = isTeacher && isCorrect ? '✅ ' : `${l.toUpperCase()}) `;
+          return `<div class="${cls}">${prefix}${v}</div>`;
+        }).join('');
+        const locked = !isTeacher ? '<div class="viewer-answer-locked">🔒 Resposta visível apenas para professores</div>' : '';
+        return `<div class="viewer-q-card">
+          <div class="viewer-q-num">Questão ${i+1} · Múltipla Escolha</div>
+          <div class="viewer-q-text">${q.text}</div>
+          <div class="viewer-opts">${optsHtml}</div>
+          ${locked}
+        </div>`;
+      } else {
+        const vCls = isTeacher && q.correct==='verdadeiro' ? 'viewer-vf-opt correct' : 'viewer-vf-opt hidden-ans';
+        const fCls = isTeacher && q.correct==='falso'      ? 'viewer-vf-opt correct' : 'viewer-vf-opt hidden-ans';
+        const locked = !isTeacher ? '<div class="viewer-answer-locked">🔒 Resposta visível apenas para professores</div>' : '';
+        return `<div class="viewer-q-card">
+          <div class="viewer-q-num">Questão ${i+1} · Verdadeiro ou Falso</div>
+          <div class="viewer-q-text">${q.text}</div>
+          <div class="viewer-vf-opts">
+            <div class="${vCls}">✅ Verdadeiro</div>
+            <div class="${fCls}">❌ Falso</div>
+          </div>
+          ${locked}
+        </div>`;
+      }
+    }).join('');
+
+    showScreen('screen-boolks-viewer');
+  };
 
   window.showDashScreen = () => showScreen('screen-dash');
 
