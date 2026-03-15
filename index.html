@@ -956,11 +956,26 @@
         <div class="section-link" onclick="showToast('📚 Ver todos os Boolks!')">Ver todos →</div>
       </div>
 
-      <div class="books-grid" id="home-books-grid">
-        <div class="book-card" style="opacity:0.5;pointer-events:none;">
-          <div class="book-cover" style="background:linear-gradient(135deg,#a78bfa30,#74c0fc30);">⏳</div>
-          <div class="book-name">Carregando...</div>
-          <div class="book-meta"><span>aguarde</span></div>
+      <div class="books-grid">
+        <div class="book-card" onclick="showToast('📚 Ciências – 7º ano — em breve!')">
+          <div class="book-cover" style="background:linear-gradient(135deg,#f7c94830,#ff6b6b30);">🔬</div>
+          <div class="book-name">Ciências – 7º ano</div>
+          <div class="book-meta"><span>15 questões</span><span class="dot"></span><span style="color:var(--accent)">⭐ Oficial</span></div>
+        </div>
+        <div class="book-card" onclick="showToast('📐 Matemática Básica — em breve!')">
+          <div class="book-cover" style="background:linear-gradient(135deg,#a78bfa30,#74c0fc30);">📐</div>
+          <div class="book-name">Matemática Básica</div>
+          <div class="book-meta"><span>15 questões</span><span class="dot"></span><span style="color:var(--accent)">⭐ Oficial</span></div>
+        </div>
+        <div class="book-card" onclick="showToast('🌎 Geografia Geral — em breve!')">
+          <div class="book-cover" style="background:linear-gradient(135deg,#5ce1c030,#a78bfa30);">🌎</div>
+          <div class="book-name">Geografia Geral</div>
+          <div class="book-meta"><span>15 questões</span><span class="dot"></span><span style="color:var(--accent)">⭐ Oficial</span></div>
+        </div>
+        <div class="book-card" onclick="showToast('📜 História do Brasil — em breve!')">
+          <div class="book-cover" style="background:linear-gradient(135deg,#74c0fc30,#ff9f4330);">📜</div>
+          <div class="book-name">História do Brasil</div>
+          <div class="book-meta"><span>15 questões</span><span class="dot"></span><span style="color:var(--accent)">⭐ Oficial</span></div>
         </div>
       </div>
     </main>
@@ -1493,7 +1508,7 @@
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       const snap = await getDoc(doc(db,'users',user.uid));
-      if (snap.exists()) { loadPlayer(snap.data()); showScreen('screen-dash'); loadHomeBoolks(); }
+      if (snap.exists()) { loadPlayer(snap.data()); showScreen('screen-dash'); }
       else { await signOut(auth); showScreen('screen-auth'); }
     } else { showScreen('screen-auth'); }
   });
