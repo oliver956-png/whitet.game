@@ -2049,38 +2049,35 @@
 
   function renderBlooksInventory(inventoryArr, equipped) {
     const grid = document.getElementById('blooks-inventory-grid');
-
-    // Count duplicates
     const counts = {};
     inventoryArr.forEach(id => { counts[id] = (counts[id] || 0) + 1; });
     const unique = [...new Set(inventoryArr)];
-
     const rarityLabel = { common:'⚪ Comum', uncommon:'🔵 Incomum', rare:'🟣 Raro', epic:'🟡 Épico', chroma:'🌈 Chroma' };
     const rarityClass = { common:'rarity-common', uncommon:'rarity-rare', rare:'rarity-epic', epic:'rarity-epic', chroma:'rarity-chroma' };
-    // sell price per rarity (pawnling = 0)
-    const sellPrice = { common:10, uncommon:10, rare:10, epic:10, chroma:10 };
-
+    const sellPrice   = { common:10, uncommon:10, rare:10, epic:10, chroma:10 };
     grid.innerHTML = unique.map(id => {
-      const blook = window.DEFAULT_BLOOKS.find(b => b.id === id) || { id, name: id, rarity:'common', img:'' };
+      const blook = window.DEFAULT_BLOOKS.find(b => b.id === id) || { id, name:id, rarity:'common', img:'' };
       const isEquipped = id === equipped;
       const qty = counts[id] || 1;
       const canSell = id !== 'pawnling';
       const price = sellPrice[blook.rarity] || 10;
       const rl = rarityLabel[blook.rarity] || '⚪ Comum';
       const rc = rarityClass[blook.rarity] || 'rarity-common';
-
-      return \`<div class="blook-inv-card \${isEquipped ? 'equipped' : ''}">
-        \${qty > 1 ? \`<span style="position:absolute;top:10px;left:10px;background:rgba(167,139,250,0.25);color:var(--accent4);font-family:'Fredoka One',cursive;font-size:12px;padding:2px 8px;border-radius:20px;">\${qty}x</span>\` : ''}
-        <img class="blook-inv-img" src="\${blook.img}" alt="\${blook.name}" />
-        <div class="blook-inv-name">\${blook.name}</div>
-        <span class="blook-inv-rarity \${rc}">\${rl}</span>
-        \${isEquipped
-          ? \`<button class="blook-inv-btn equipped-btn">✅ Equipado</button>\`
-          : \`<button class="blook-inv-btn equip" onclick="equipBlook('\${id}')">⚡ Equipar</button>\`
-        }
-        \${canSell && qty > 1 ? \`<button class="blook-inv-btn" style="margin-top:6px;background:rgba(247,201,72,0.12);color:var(--accent);border:1.5px solid rgba(247,201,72,0.3);" onclick="sellBlook('\${id}',\${price})">🪙 Vender 1x (\${price} tokens)</button>\` : ''}
-        \${canSell && qty === 1 && !isEquipped ? \`<button class="blook-inv-btn" style="margin-top:6px;background:rgba(255,107,107,0.08);color:var(--accent2);border:1.5px solid rgba(255,107,107,0.25);" onclick="sellBlook('\${id}',\${price})">🪙 Vender (\${price} tokens)</button>\` : ''}
-      </div>\`;
+      const qtyBadge   = qty > 1 ? `<span style="position:absolute;top:10px;left:10px;background:rgba(167,139,250,0.25);color:var(--accent4);font-family:'Fredoka One',cursive;font-size:12px;padding:2px 8px;border-radius:20px;">${qty}x</span>` : '';
+      const actionBtn  = isEquipped
+        ? `<button class="blook-inv-btn equipped-btn">✅ Equipado</button>`
+        : `<button class="blook-inv-btn equip" onclick="equipBlook('${id}')">⚡ Equipar</button>`;
+      const sellBtn    = canSell
+        ? `<button class="blook-inv-btn" style="margin-top:6px;background:rgba(247,201,72,0.12);color:var(--accent);border:1.5px solid rgba(247,201,72,0.3);" onclick="sellBlook('${id}',${price})">🪙 Vender (${price} tokens)</button>`
+        : '';
+      return `<div class="blook-inv-card ${isEquipped ? 'equipped' : ''}">
+        ${qtyBadge}
+        <img class="blook-inv-img" src="${blook.img}" alt="${blook.name}" />
+        <div class="blook-inv-name">${blook.name}</div>
+        <span class="blook-inv-rarity ${rc}">${rl}</span>
+        ${actionBtn}
+        ${sellBtn}
+      </div>`;
     }).join('');
   }
 
@@ -2102,131 +2099,14 @@
     let inventory = [...(data.blooks || ['pawnling'])];
     const idx = inventory.lastIndexOf(id);
     if (idx === -1) { showToast('❌ Blook não encontrado!'); return; }
-
-    // Prevent selling equipped blook if it's the only one
     const equipped = data.equippedBlook || 'pawnling';
     const countAfter = inventory.filter(b => b === id).length - 1;
     if (id === equipped && countAfter === 0) {
       showToast('⚠️ Equipe outro blook antes de vender este!'); return;
     }
-
     inventory.splice(idx, 1);
     const newTokens = (data.tokens || 0) + price;
-
-    await setDoc(doc(db, 'users', user.uid), {
-      blooks: inventory,
-      tokens: newTokens
-    }, { merge: true });
-
+    await setDoc(doc(db, 'users', user.uid), { blooks: inventory, tokens: newTokens }, { merge: true });
     renderBlooksInventory(inventory, equipped);
-    showToast(\`🪙 Blook vendido! +\${price} tokens\`);
+    showToast(`🪙 Blook vendido! +${price} tokens`);
   };
-
-  // ── Shop ──
-  window.showShopScreen = async function() {
-    const user = auth.currentUser;
-    if (user) {
-      const snap = await getDoc(doc(db, 'users', user.uid));
-      const data = snap.data() || {};
-      document.getElementById('shop-sidebar-username').textContent = data.username || 'Jogador';
-      document.getElementById('shop-token-count').textContent = data.tokens || 0;
-      renderShopBoxes(data.tokens || 0);
-    }
-    showScreen('screen-shop');
-  };
-
-  function renderShopBoxes(tokens) {
-    const grid = document.getElementById('shop-boxes-grid');
-    const rarityColors = { common:'#8b86b0', uncommon:'#74c0fc', rare:'#a78bfa', epic:'#f7c948', chroma:'#5ce1c0' };
-    const barColors    = { common:'#8b86b0', uncommon:'#74c0fc', rare:'#a78bfa', epic:'#f7c948', chroma:'#5ce1c0' };
-
-    grid.innerHTML = window.BOXES.map(box => {
-      const canBuy = tokens >= box.price;
-      const chancesHtml = box.items.map(item => `
-        <div class="box-chance-row">
-          <span style="color:${rarityColors[item.rarity]}">${item.name}</span>
-          <div class="box-chance-bar-wrap">
-            <div class="box-chance-bar" style="width:${item.chance}%;background:${barColors[item.rarity]};"></div>
-          </div>
-          <span class="box-chance-pct">${item.chance}%</span>
-        </div>`).join('');
-
-      return `<div class="shop-box-card fruit">
-        <div class="box-icon">${box.icon}</div>
-        <div class="box-name">${box.name}</div>
-        <div class="box-price">🪙 ${box.price} tokens</div>
-        <div class="box-chances">${chancesHtml}</div>
-        <button class="btn-open-box" style="background:${box.color};opacity:${canBuy?1:0.45};cursor:${canBuy?'pointer':'not-allowed'};"
-          onclick="${canBuy ? `openBox('${box.id}')` : `showToast('❌ Tokens insuficientes!')`}">
-          ${canBuy ? '📦 Abrir Box' : '🔒 Tokens insuficientes'}
-        </button>
-      </div>`;
-    }).join('');
-  }
-
-  window.openBox = async function(boxId) {
-    const user = auth.currentUser;
-    if (!user) return;
-    const snap = await getDoc(doc(db, 'users', user.uid));
-    const data = snap.data() || {};
-    const box = window.BOXES.find(b => b.id === boxId);
-    if (!box) return;
-    if ((data.tokens || 0) < box.price) { showToast('❌ Tokens insuficientes!'); return; }
-
-    // Roll the item
-    const roll = Math.random() * 100;
-    let cumulative = 0;
-    let won = box.items[box.items.length - 1];
-    for (const item of box.items) {
-      cumulative += item.chance;
-      if (roll < cumulative) { won = item; break; }
-    }
-
-    // Update user data
-    const newTokens = (data.tokens || 0) - box.price;
-    let inventory = data.blooks || ['pawnling'];
-    const isNew = !inventory.includes(won.id);
-    if (isNew) inventory = [...inventory, won.id];
-
-    await setDoc(doc(db, 'users', user.uid), {
-      tokens: newTokens,
-      blooks: inventory,
-      equippedBlook: data.equippedBlook || 'pawnling'
-    }, { merge: true });
-
-    // Update token display
-    document.getElementById('shop-token-count').textContent = newTokens;
-    renderShopBoxes(newTokens);
-
-    // Show result
-    const blookData = window.DEFAULT_BLOOKS.find(b => b.id === won.id) || won;
-    const rarityLabel = { common:'⚪ Comum', uncommon:'🔵 Incomum', rare:'🟣 Raro', epic:'🟡 Épico', chroma:'🌈 Chroma' }[won.rarity] || '⚪ Comum';
-    const rarityBg    = { common:'rgba(139,134,176,0.2)', uncommon:'rgba(116,192,252,0.2)', rare:'rgba(167,139,250,0.2)', epic:'rgba(247,201,72,0.2)', chroma:'rgba(92,225,192,0.2)' }[won.rarity];
-    const rarityColor = { common:'var(--muted)', uncommon:'var(--accent5)', rare:'var(--accent4)', epic:'var(--accent)', chroma:'var(--accent3)' }[won.rarity];
-
-    document.getElementById('result-blook-img').src = blookData.img || '';
-    document.getElementById('result-blook-name').textContent = won.name;
-    document.getElementById('result-rarity').textContent = rarityLabel;
-    document.getElementById('result-rarity').style.background = rarityBg;
-    document.getElementById('result-rarity').style.color = rarityColor;
-    document.getElementById('result-sparkle').textContent = isNew ? '🎉' : '🔄';
-    document.getElementById('result-badge').innerHTML = isNew
-      ? '<span class="result-new-badge">✨ NOVO!</span>'
-      : '<span class="result-dup-badge">🪙 Já possuído</span>';
-    document.getElementById('box-result-overlay').classList.add('open');
-  };
-
-  window.closeBoxResult = function() {
-    document.getElementById('box-result-overlay').classList.remove('open');
-  };
-
-
-
-  window.showToast = function(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg; t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2800);
-  };
-</script>
-</body>
-</html>
