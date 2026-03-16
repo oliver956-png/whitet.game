@@ -1816,7 +1816,19 @@
   async function seedDefaultBoolks() {
     try {
       const existing = await getDocs(query(collection(db,'boolks'), where('authorId','==','whitet_official')));
+      const expectedTitles = DEFAULT_BOOLKS_DATA.map(b => b.title);
       const existingTitles = existing.docs.map(d => d.data().title);
+
+      // Delete any official boolks whose title is no longer in DEFAULT_BOOLKS_DATA (outdated)
+      for (const d of existing.docs) {
+        if (!expectedTitles.includes(d.data().title)) {
+          const { deleteDoc: del, doc: docFn } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+          await del(docFn(db,'boolks',d.id));
+          console.log('Deleted outdated boolks:', d.data().title);
+        }
+      }
+
+      // Add any missing boolks
       let seeded = 0;
       for (const b of DEFAULT_BOOLKS_DATA) {
         if (!existingTitles.includes(b.title)) {
