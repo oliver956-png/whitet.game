@@ -787,6 +787,64 @@
     .viewer-vf-opt.hidden-ans { background:var(--surface2); border-color:var(--border); color:var(--text); }
     .viewer-answer-locked { margin-top:10px; font-size:12px; color:var(--muted); font-weight:700; font-style:italic; }
 
+    /* ── Play Screen ── */
+    #screen-play { min-height:100vh; position:relative; z-index:1; }
+    .play-join-main { flex:1; padding:36px 40px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+    .play-join-card { background:var(--surface); border:1.5px solid var(--border); border-radius:28px; padding:40px; width:100%; max-width:460px; text-align:center; box-shadow:0 20px 60px rgba(0,0,0,0.4); animation:fadeUp 0.4s ease both; }
+    .play-join-icon { font-size:56px; margin-bottom:12px; animation:bounce 2s ease-in-out infinite; }
+    .play-join-title { font-family:'Fredoka One',cursive; font-size:30px; margin-bottom:6px; }
+    .play-join-sub { font-size:14px; color:var(--muted); font-weight:600; margin-bottom:28px; }
+    .code-input-wrap { display:flex; gap:8px; margin-bottom:20px; justify-content:center; }
+    .code-digit { width:52px; height:64px; background:var(--input-bg); border:2px solid var(--border); border-radius:14px; font-family:'Fredoka One',cursive; font-size:28px; color:var(--text); text-align:center; outline:none; transition:all 0.2s; }
+    .code-digit:focus { border-color:var(--accent4); box-shadow:0 0 0 3px rgba(167,139,250,0.2); }
+    .btn-join-room { width:100%; padding:15px; background:linear-gradient(135deg,#f7c948,#ff9f43); border:none; border-radius:14px; font-family:'Fredoka One',cursive; font-size:20px; color:#1a0f00; cursor:pointer; transition:all 0.2s; box-shadow:0 4px 20px rgba(247,201,72,0.3); }
+    .btn-join-room:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(247,201,72,0.45); }
+
+    /* ── Host Lobby ── */
+    #screen-host-lobby { min-height:100vh; position:relative; z-index:1; }
+    .lobby-main { flex:1; padding:36px 40px; overflow-y:auto; }
+    .lobby-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:28px; animation:fadeUp 0.4s ease both; }
+    .lobby-header h1 { font-family:'Fredoka One',cursive; font-size:30px; line-height:1; }
+    .lobby-header p  { font-size:14px; color:var(--muted); font-weight:600; margin-top:4px; }
+    .lobby-code-box { background:linear-gradient(135deg,var(--accent4),var(--accent3)); border-radius:20px; padding:24px 32px; text-align:center; margin-bottom:24px; animation:fadeUp 0.4s 0.05s ease both; }
+    .lobby-code-label { font-size:13px; font-weight:800; color:rgba(255,255,255,0.7); text-transform:uppercase; letter-spacing:2px; margin-bottom:6px; }
+    .lobby-code-val { font-family:'Fredoka One',cursive; font-size:52px; color:#fff; letter-spacing:8px; line-height:1; }
+    .lobby-code-hint { font-size:12px; color:rgba(255,255,255,0.6); font-weight:600; margin-top:6px; }
+    .lobby-players-title { font-family:'Fredoka One',cursive; font-size:20px; margin-bottom:14px; animation:fadeUp 0.4s 0.1s ease both; }
+    .lobby-players-list { display:flex; flex-direction:column; gap:10px; margin-bottom:24px; animation:fadeUp 0.4s 0.12s ease both; }
+    .lobby-player-row { display:flex; align-items:center; gap:14px; background:var(--surface); border:1.5px solid var(--border); border-radius:14px; padding:14px 18px; }
+    .lobby-player-av { font-size:24px; }
+    .lobby-player-name { font-family:'Fredoka One',cursive; font-size:16px; flex:1; }
+    .lobby-player-host { font-size:11px; font-weight:900; background:rgba(247,201,72,0.15); color:var(--accent); padding:3px 10px; border-radius:20px; }
+    .btn-kick { background:rgba(255,107,107,0.1); border:1.5px solid rgba(255,107,107,0.3); border-radius:10px; color:var(--accent2); font-size:12px; font-weight:900; padding:6px 12px; cursor:pointer; transition:all 0.2s; font-family:'Fredoka One',cursive; }
+    .btn-kick:hover { background:rgba(255,107,107,0.2); }
+    .btn-start-game { width:100%; padding:16px; background:linear-gradient(135deg,#f7c948,#ff9f43); border:none; border-radius:14px; font-family:'Fredoka One',cursive; font-size:22px; color:#1a0f00; cursor:pointer; box-shadow:0 4px 20px rgba(247,201,72,0.3); transition:all 0.2s; margin-bottom:12px; }
+    .btn-start-game:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(247,201,72,0.45); }
+    .btn-close-room { width:100%; padding:14px; background:rgba(255,107,107,0.08); border:2px solid rgba(255,107,107,0.3); border-radius:14px; font-family:'Fredoka One',cursive; font-size:17px; color:var(--accent2); cursor:pointer; transition:all 0.2s; }
+    .btn-close-room:hover { background:rgba(255,107,107,0.16); }
+
+    /* ── Guest Lobby ── */
+    #screen-guest-lobby { min-height:100vh; position:relative; z-index:1; }
+    .guest-lobby-main { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px; }
+    .guest-lobby-card { background:var(--surface); border:1.5px solid var(--border); border-radius:28px; padding:40px; width:100%; max-width:500px; text-align:center; animation:fadeUp 0.4s ease both; }
+    .guest-waiting-icon { font-size:60px; margin-bottom:14px; animation:bounce 2s ease-in-out infinite; }
+    .guest-room-code { font-family:'Fredoka One',cursive; font-size:42px; color:var(--accent4); letter-spacing:6px; margin:10px 0; }
+    .guest-room-name { font-size:15px; color:var(--muted); font-weight:700; margin-bottom:20px; }
+    .guest-players-wrap { background:var(--surface2); border-radius:14px; padding:16px; margin-bottom:20px; text-align:left; }
+    .guest-players-label { font-size:11px; font-weight:800; color:var(--muted); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:10px; }
+    .guest-player-chip { display:inline-flex; align-items:center; gap:6px; background:var(--surface); border:1.5px solid var(--border); border-radius:50px; padding:5px 12px; font-size:13px; font-weight:700; margin:3px; }
+    .btn-leave-room { width:100%; padding:13px; background:rgba(255,107,107,0.08); border:2px solid rgba(255,107,107,0.3); border-radius:13px; font-family:'Fredoka One',cursive; font-size:17px; color:var(--accent2); cursor:pointer; transition:all 0.2s; }
+    .btn-leave-room:hover { background:rgba(255,107,107,0.16); }
+
+    /* Kicked overlay */
+    .kicked-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(12px); z-index:300; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.3s; }
+    .kicked-overlay.show { opacity:1; pointer-events:all; }
+    .kicked-card { background:var(--surface); border:2px solid var(--accent2); border-radius:28px; padding:40px; text-align:center; max-width:380px; animation:fadeUp 0.4s ease both; }
+    .kicked-icon { font-size:64px; margin-bottom:14px; }
+    .kicked-title { font-family:'Fredoka One',cursive; font-size:28px; color:var(--accent2); margin-bottom:8px; }
+    .kicked-sub { font-size:14px; color:var(--muted); font-weight:600; margin-bottom:24px; }
+    .btn-kicked-ok { width:100%; padding:14px; background:linear-gradient(135deg,var(--accent4),var(--accent3)); border:none; border-radius:13px; font-family:'Fredoka One',cursive; font-size:18px; color:#fff; cursor:pointer; }
+
     /* ── Toast ── */
     .toast {
       position:fixed; bottom:26px; left:50%;
@@ -922,7 +980,7 @@
           <span class="nb-icon">🏠</span>
           <span class="nb-label">Home</span>
         </div>
-        <div class="nav-btn" onclick="showToast('🎮 Entrando no Play!')">
+        <div class="nav-btn" onclick="showPlayScreen()">
           <span class="nb-icon">🎮</span>
           <span class="nb-label">Play</span>
           <span class="nb-badge">LIVE</span>
@@ -968,7 +1026,7 @@
         <p>Pronto pra aprender e se divertir hoje?</p>
       </div>
 
-      <div class="play-hero" onclick="showToast('🎮 Procurando partida...')">
+      <div class="play-hero" onclick="showPlayScreen()">
         <div class="play-text">
           <h2>🎮 Jogar Agora</h2>
           <p>Entre em uma sala com um código ou encontre uma partida pública!</p>
@@ -1028,7 +1086,7 @@
           <span class="nb-icon">🏠</span>
           <span class="nb-label">Home</span>
         </div>
-        <div class="nav-btn" onclick="showToast('🎮 Entrando no Play!')">
+        <div class="nav-btn" onclick="showPlayScreen()">
           <span class="nb-icon">🎮</span>
           <span class="nb-label">Play</span>
           <span class="nb-badge">LIVE</span>
@@ -1118,7 +1176,7 @@
       <div class="logo"><div class="logo-emoji">🐾</div><div class="logo-name">Whitet</div></div>
       <nav class="nav">
         <div class="nav-btn" onclick="showDashScreen()"><span class="nb-icon">🏠</span><span class="nb-label">Home</span></div>
-        <div class="nav-btn" onclick="showToast('🎮 Entrando no Play!')"><span class="nb-icon">🎮</span><span class="nb-label">Play</span><span class="nb-badge">LIVE</span></div>
+        <div class="nav-btn" onclick="showPlayScreen()"><span class="nb-icon">🎮</span><span class="nb-label">Play</span><span class="nb-badge">LIVE</span></div>
         <div class="nav-btn active"><span class="nb-icon">🌍</span><span class="nb-label">Community</span></div>
         <div class="nav-btn" onclick="showShopScreen()"><span class="nb-icon">🛍️</span><span class="nb-label">Shop</span></div>
         <div class="nav-btn" onclick="showYourBlooksScreen()"><span class="nb-icon">🐾</span><span class="nb-label">Your Blooks</span></div>
@@ -1171,7 +1229,7 @@
       <div class="logo"><div class="logo-emoji">🐾</div><div class="logo-name">Whitet</div></div>
       <nav class="nav">
         <div class="nav-btn" onclick="showDashScreen()"><span class="nb-icon">🏠</span><span class="nb-label">Home</span></div>
-        <div class="nav-btn" onclick="showToast('🎮 Entrando no Play!')"><span class="nb-icon">🎮</span><span class="nb-label">Play</span><span class="nb-badge">LIVE</span></div>
+        <div class="nav-btn" onclick="showPlayScreen()"><span class="nb-icon">🎮</span><span class="nb-label">Play</span><span class="nb-badge">LIVE</span></div>
         <div class="nav-btn" onclick="showCommunityScreen()"><span class="nb-icon">🌍</span><span class="nb-label">Community</span></div>
         <div class="nav-btn" onclick="showShopScreen()"><span class="nb-icon">🛍️</span><span class="nb-label">Shop</span></div>
         <div class="nav-btn" onclick="showYourBlooksScreen()"><span class="nb-icon">🐾</span><span class="nb-label">Your Blooks</span></div>
@@ -1214,7 +1272,7 @@
       <div class="logo"><div class="logo-emoji">🐾</div><div class="logo-name">Whitet</div></div>
       <nav class="nav">
         <div class="nav-btn" onclick="showDashScreen()"><span class="nb-icon">🏠</span><span class="nb-label">Home</span></div>
-        <div class="nav-btn" onclick="showToast('🎮 Entrando no Play!')"><span class="nb-icon">🎮</span><span class="nb-label">Play</span><span class="nb-badge">LIVE</span></div>
+        <div class="nav-btn" onclick="showPlayScreen()"><span class="nb-icon">🎮</span><span class="nb-label">Play</span><span class="nb-badge">LIVE</span></div>
         <div class="nav-btn" onclick="showCommunityScreen()"><span class="nb-icon">🌍</span><span class="nb-label">Community</span></div>
         <div class="nav-btn" onclick="showShopScreen()"><span class="nb-icon">🛍️</span><span class="nb-label">Shop</span></div>
         <div class="nav-btn" onclick="showYourBlooksScreen()"><span class="nb-icon">🐾</span><span class="nb-label">Your Blooks</span></div>
@@ -1278,7 +1336,7 @@
       <div class="logo"><div class="logo-emoji">🐾</div><div class="logo-name">Whitet</div></div>
       <nav class="nav">
         <div class="nav-btn" onclick="showDashScreen()"><span class="nb-icon">🏠</span><span class="nb-label">Home</span></div>
-        <div class="nav-btn" onclick="showToast('🎮 Entrando no Play!')"><span class="nb-icon">🎮</span><span class="nb-label">Play</span><span class="nb-badge">LIVE</span></div>
+        <div class="nav-btn" onclick="showPlayScreen()"><span class="nb-icon">🎮</span><span class="nb-label">Play</span><span class="nb-badge">LIVE</span></div>
         <div class="nav-btn" onclick="showCommunityScreen()"><span class="nb-icon">🌍</span><span class="nb-label">Community</span></div>
         <div class="nav-btn" onclick="showShopScreen()"><span class="nb-icon">🛍️</span><span class="nb-label">Shop</span></div>
         <div class="nav-btn active"><span class="nb-icon">🐾</span><span class="nb-label">Your Blooks</span></div>
@@ -1313,7 +1371,7 @@
       <div class="logo"><div class="logo-emoji">🐾</div><div class="logo-name">Whitet</div></div>
       <nav class="nav">
         <div class="nav-btn" onclick="showDashScreen()"><span class="nb-icon">🏠</span><span class="nb-label">Home</span></div>
-        <div class="nav-btn" onclick="showToast('🎮 Entrando no Play!')"><span class="nb-icon">🎮</span><span class="nb-label">Play</span><span class="nb-badge">LIVE</span></div>
+        <div class="nav-btn" onclick="showPlayScreen()"><span class="nb-icon">🎮</span><span class="nb-label">Play</span><span class="nb-badge">LIVE</span></div>
         <div class="nav-btn" onclick="showCommunityScreen()"><span class="nb-icon">🌍</span><span class="nb-label">Community</span></div>
         <div class="nav-btn active"><span class="nb-icon">🛍️</span><span class="nb-label">Shop</span></div>
         <div class="nav-btn" onclick="showYourBlooksScreen()"><span class="nb-icon">🐾</span><span class="nb-label">Your Blooks</span></div>
@@ -1374,7 +1432,7 @@
       <div class="logo"><div class="logo-emoji">🐾</div><div class="logo-name">Whitet</div></div>
       <nav class="nav">
         <div class="nav-btn" onclick="showDashScreen()"><span class="nb-icon">🏠</span><span class="nb-label">Home</span></div>
-        <div class="nav-btn" onclick="showToast('🎮 Entrando no Play!')"><span class="nb-icon">🎮</span><span class="nb-label">Play</span><span class="nb-badge">LIVE</span></div>
+        <div class="nav-btn" onclick="showPlayScreen()"><span class="nb-icon">🎮</span><span class="nb-label">Play</span><span class="nb-badge">LIVE</span></div>
         <div class="nav-btn" onclick="showCommunityScreen()"><span class="nb-icon">🌍</span><span class="nb-label">Community</span></div>
         <div class="nav-btn" onclick="showShopScreen()"><span class="nb-icon">🛍️</span><span class="nb-label">Shop</span></div>
         <div class="nav-btn" onclick="showYourBlooksScreen()"><span class="nb-icon">🐾</span><span class="nb-label">Your Blooks</span></div>
@@ -1496,17 +1554,26 @@
   </div>
 </div>
 
-<!-- Modal -->
+<!-- Create Room Modal -->
 <div class="overlay" id="overlay" onclick="closeOut(event)">
   <div class="modal">
     <div class="modal-header">
       <div class="modal-title">✨ Criar uma Sala</div>
       <div class="modal-close" onclick="closeModal()">✕</div>
     </div>
-    <div class="mf"><label>Nome da sala</label><input type="text" placeholder="Ex: Aula de Ciências – Turma A" /></div>
+    <div class="mf">
+      <label>Nome da sala</label>
+      <input type="text" id="room-name-input" placeholder="Ex: Aula de Ciências – Turma A" />
+    </div>
     <div class="mf">
       <label>Boolks</label>
-      <select><option>Ciências – 7º ano</option><option>Matemática Básica</option><option>Geografia Geral</option><option>História do Brasil</option></select>
+      <select id="room-boolks-select">
+        <option>Ciências – 7º ano</option>
+        <option>Matemática Básica</option>
+        <option>Geografia Geral</option>
+        <option>História do Brasil</option>
+        <option>Astronomia</option>
+      </select>
     </div>
     <div class="mf">
       <label>Modo de Jogo</label>
@@ -1518,9 +1585,135 @@
     </div>
     <div class="mf">
       <label>Máx. jogadores</label>
-      <select><option>5 jogadores</option><option>10 jogadores</option><option>20 jogadores</option><option>50 jogadores</option></select>
+      <select id="room-max-select">
+        <option value="5">5 jogadores</option>
+        <option value="10">10 jogadores</option>
+        <option value="20">20 jogadores</option>
+        <option value="50">50 jogadores</option>
+      </select>
     </div>
     <button class="btn-create" onclick="createRoom()">🚀 Criar Sala Agora</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════
+     PLAY SCREEN (join room)
+═══════════════════════════ -->
+<div id="screen-play" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="logo"><div class="logo-emoji">🐾</div><div class="logo-name">Whitet</div></div>
+      <nav class="nav">
+        <div class="nav-btn" onclick="showDashScreen()"><span class="nb-icon">🏠</span><span class="nb-label">Home</span></div>
+        <div class="nav-btn active"><span class="nb-icon">🎮</span><span class="nb-label">Play</span><span class="nb-badge">LIVE</span></div>
+        <div class="nav-btn" onclick="showCommunityScreen()"><span class="nb-icon">🌍</span><span class="nb-label">Community</span></div>
+        <div class="nav-btn" onclick="showShopScreen()"><span class="nb-icon">🛍️</span><span class="nb-label">Shop</span></div>
+        <div class="nav-btn" onclick="showYourBlooksScreen()"><span class="nb-icon">🐾</span><span class="nb-label">Your Blooks</span></div>
+        <div class="nav-btn" onclick="showBoolksScreen()"><span class="nb-icon">📚</span><span class="nb-label">Your Boolks</span></div>
+        <div class="nav-btn" onclick="showAccountScreen()"><span class="nb-icon">👤</span><span class="nb-label">Account</span></div>
+        <div class="sidebar-divider"></div>
+        <div class="nav-btn create" onclick="openModal()"><span class="nb-icon">✨</span><span class="nb-label">Create a Room</span></div>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="user-card"><div class="user-av">🦊</div><div class="user-name" id="play-sidebar-username">Jogador</div></div>
+    </aside>
+    <main class="play-join-main">
+      <div class="play-join-card">
+        <div class="play-join-icon">🎮</div>
+        <div class="play-join-title">Entrar em uma Sala</div>
+        <div class="play-join-sub">Digite o código de 6 dígitos para entrar!</div>
+        <div class="code-input-wrap" id="code-inputs">
+          <input class="code-digit" maxlength="1" id="cd0" oninput="codeInput(0)" onkeydown="codeKey(event,0)" />
+          <input class="code-digit" maxlength="1" id="cd1" oninput="codeInput(1)" onkeydown="codeKey(event,1)" />
+          <input class="code-digit" maxlength="1" id="cd2" oninput="codeInput(2)" onkeydown="codeKey(event,2)" />
+          <input class="code-digit" maxlength="1" id="cd3" oninput="codeInput(3)" onkeydown="codeKey(event,3)" />
+          <input class="code-digit" maxlength="1" id="cd4" oninput="codeInput(4)" onkeydown="codeKey(event,4)" />
+          <input class="code-digit" maxlength="1" id="cd5" oninput="codeInput(5)" onkeydown="codeKey(event,5)" />
+        </div>
+        <button class="btn-join-room" onclick="joinRoom()">🚀 Entrar na Sala</button>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ═══════════════════════════
+     HOST LOBBY SCREEN
+═══════════════════════════ -->
+<div id="screen-host-lobby" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="logo"><div class="logo-emoji">🐾</div><div class="logo-name">Whitet</div></div>
+      <nav class="nav">
+        <div class="nav-btn" onclick="showDashScreen()"><span class="nb-icon">🏠</span><span class="nb-label">Home</span></div>
+        <div class="nav-btn active"><span class="nb-icon">🎮</span><span class="nb-label">Play</span><span class="nb-badge">LIVE</span></div>
+        <div class="nav-btn" onclick="showCommunityScreen()"><span class="nb-icon">🌍</span><span class="nb-label">Community</span></div>
+        <div class="nav-btn" onclick="showShopScreen()"><span class="nb-icon">🛍️</span><span class="nb-label">Shop</span></div>
+        <div class="nav-btn" onclick="showYourBlooksScreen()"><span class="nb-icon">🐾</span><span class="nb-label">Your Blooks</span></div>
+        <div class="nav-btn" onclick="showBoolksScreen()"><span class="nb-icon">📚</span><span class="nb-label">Your Boolks</span></div>
+        <div class="nav-btn" onclick="showAccountScreen()"><span class="nb-icon">👤</span><span class="nb-label">Account</span></div>
+        <div class="sidebar-divider"></div>
+        <div class="nav-btn create" onclick="openModal()"><span class="nb-icon">✨</span><span class="nb-label">Create a Room</span></div>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="user-card"><div class="user-av">🦊</div><div class="user-name" id="host-sidebar-username">Jogador</div></div>
+    </aside>
+    <main class="lobby-main">
+      <div class="lobby-header">
+        <div>
+          <h1 id="lobby-room-name">Sala</h1>
+          <p id="lobby-room-info">Aguardando jogadores...</p>
+        </div>
+      </div>
+      <div class="lobby-code-box">
+        <div class="lobby-code-label">Código da Sala</div>
+        <div class="lobby-code-val" id="lobby-code-display">------</div>
+        <div class="lobby-code-hint">Compartilhe este código com os jogadores!</div>
+      </div>
+      <div class="lobby-players-title" id="lobby-player-count">👥 Jogadores (0)</div>
+      <div class="lobby-players-list" id="lobby-players-list"></div>
+      <button class="btn-start-game" onclick="startGame()">▶️ Iniciar Jogo</button>
+      <button class="btn-close-room" onclick="closeRoomHost()">🚪 Encerrar Sala</button>
+    </main>
+  </div>
+</div>
+
+<!-- ═══════════════════════════
+     GUEST LOBBY SCREEN
+═══════════════════════════ -->
+<div id="screen-guest-lobby" class="screen">
+  <div class="layout">
+    <aside class="sidebar">
+      <div class="logo"><div class="logo-emoji">🐾</div><div class="logo-name">Whitet</div></div>
+      <nav class="nav">
+        <div class="nav-btn" onclick="showDashScreen()"><span class="nb-icon">🏠</span><span class="nb-label">Home</span></div>
+        <div class="nav-btn active"><span class="nb-icon">🎮</span><span class="nb-label">Play</span><span class="nb-badge">LIVE</span></div>
+      </nav>
+      <div class="sidebar-spacer"></div>
+      <div class="user-card"><div class="user-av">🦊</div><div class="user-name" id="guest-sidebar-username">Jogador</div></div>
+    </aside>
+    <main class="guest-lobby-main">
+      <div class="guest-lobby-card">
+        <div class="guest-waiting-icon">⏳</div>
+        <div style="font-family:'Fredoka One',cursive;font-size:22px;margin-bottom:6px;">Aguardando o host...</div>
+        <div class="guest-room-code" id="guest-code-display">------</div>
+        <div class="guest-room-name" id="guest-room-name">Sala</div>
+        <div class="guest-players-wrap">
+          <div class="guest-players-label">👥 Jogadores na sala</div>
+          <div id="guest-players-chips"></div>
+        </div>
+        <button class="btn-leave-room" onclick="leaveRoom()">🚪 Sair da Sala</button>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Kicked overlay -->
+<div class="kicked-overlay" id="kicked-overlay">
+  <div class="kicked-card">
+    <div class="kicked-icon">🚫</div>
+    <div class="kicked-title">Você foi expulso!</div>
+    <div class="kicked-sub">O host removeu você desta sala.</div>
+    <button class="btn-kicked-ok" onclick="dismissKicked()">😔 Ok, entendi</button>
   </div>
 </div>
 
@@ -1535,7 +1728,7 @@
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
   import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, query, collection, where, getDocs, addDoc, orderBy }
+  import { getFirestore, doc, setDoc, getDoc, getDoc as getDocument, query, collection, where, getDocs, addDoc, orderBy, onSnapshot, deleteDoc, updateDoc, serverTimestamp }
     from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
   const firebaseConfig = {
@@ -2103,6 +2296,220 @@
   };
 
   window.closeBoxResult = () => document.getElementById('box-result-overlay').classList.remove('open');
+
+
+  // ── Room System ──
+  let currentRoomId = null;
+  let roomUnsubscribe = null;
+
+  function genRoomCode() {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  }
+
+  window.showPlayScreen = async function() {
+    const user = auth.currentUser;
+    if (user) {
+      const snap = await getDoc(doc(db,'users',user.uid));
+      document.getElementById('play-sidebar-username').textContent = snap.data()?.username || 'Jogador';
+    }
+    // Clear code inputs
+    for (let i = 0; i < 6; i++) document.getElementById('cd'+i).value = '';
+    showScreen('screen-play');
+    setTimeout(() => document.getElementById('cd0').focus(), 100);
+  };
+
+  window.codeInput = function(idx) {
+    const val = document.getElementById('cd'+idx).value;
+    if (val && idx < 5) document.getElementById('cd'+(idx+1)).focus();
+  };
+
+  window.codeKey = function(e, idx) {
+    if (e.key === 'Backspace' && !document.getElementById('cd'+idx).value && idx > 0)
+      document.getElementById('cd'+(idx-1)).focus();
+    if (e.key === 'Enter') joinRoom();
+  };
+
+  window.joinRoom = async function() {
+    const code = Array.from({length:6}, (_,i) => document.getElementById('cd'+i).value).join('').toUpperCase();
+    if (code.length < 6) { showToast('⚠️ Digite o código completo!'); return; }
+    showToast('⏳ Procurando sala...');
+    try {
+      const q = await getDocs(query(collection(db,'rooms'), where('code','==',code), where('status','==','waiting')));
+      if (q.empty) { showToast('❌ Sala não encontrada ou já iniciada!'); return; }
+      const roomDoc = q.docs[0];
+      const room = roomDoc.data();
+      const user = auth.currentUser;
+      const snap = await getDoc(doc(db,'users',user.uid));
+      const uname = snap.data()?.username || 'Jogador';
+
+      // Check if already in room
+      const players = room.players || [];
+      if (players.find(p => p.uid === user.uid)) {
+        currentRoomId = roomDoc.id;
+        listenGuestRoom(roomDoc.id, code, room.name);
+        return;
+      }
+      // Check max
+      if (players.length >= room.maxPlayers) { showToast('❌ Sala cheia!'); return; }
+
+      // Add player
+      const newPlayers = [...players, { uid: user.uid, name: uname, isHost: false }];
+      await updateDoc(doc(db,'rooms',roomDoc.id), { players: newPlayers });
+      currentRoomId = roomDoc.id;
+      listenGuestRoom(roomDoc.id, code, room.name);
+    } catch(e) { console.error(e); showToast('❌ Erro ao entrar na sala.'); }
+  };
+
+  function listenGuestRoom(roomId, code, roomName) {
+    if (roomUnsubscribe) roomUnsubscribe();
+    document.getElementById('guest-code-display').textContent = code;
+    document.getElementById('guest-room-name').textContent = roomName;
+    const user = auth.currentUser;
+
+    roomUnsubscribe = onSnapshot(doc(db,'rooms',roomId), (snap) => {
+      if (!snap.exists()) {
+        // Room deleted
+        if (roomUnsubscribe) roomUnsubscribe();
+        showToast('🚪 A sala foi encerrada pelo host.');
+        showDashScreen(); return;
+      }
+      const room = snap.data();
+
+      // Check if kicked
+      const stillIn = (room.players||[]).find(p => p.uid === user.uid);
+      if (!stillIn) {
+        if (roomUnsubscribe) roomUnsubscribe();
+        document.getElementById('kicked-overlay').classList.add('show');
+        return;
+      }
+
+      // Update players list
+      const chips = document.getElementById('guest-players-chips');
+      chips.innerHTML = (room.players||[]).map(p =>
+        `<span class="guest-player-chip">${p.isHost ? '👑' : '🎮'} ${p.name}</span>`
+      ).join('');
+
+      // Update sidebar
+      getDoc(doc(db,'users',user.uid)).then(s => {
+        document.getElementById('guest-sidebar-username').textContent = s.data()?.username || 'Jogador';
+      });
+    });
+    showScreen('screen-guest-lobby');
+  }
+
+  window.leaveRoom = async function() {
+    if (!currentRoomId) { showDashScreen(); return; }
+    try {
+      const user = auth.currentUser;
+      const snap = await getDoc(doc(db,'rooms',currentRoomId));
+      if (snap.exists()) {
+        const players = (snap.data().players||[]).filter(p => p.uid !== user.uid);
+        await updateDoc(doc(db,'rooms',currentRoomId), { players });
+      }
+    } catch(e) {}
+    if (roomUnsubscribe) { roomUnsubscribe(); roomUnsubscribe = null; }
+    currentRoomId = null;
+    showDashScreen();
+  };
+
+  window.dismissKicked = function() {
+    document.getElementById('kicked-overlay').classList.remove('show');
+    if (roomUnsubscribe) { roomUnsubscribe(); roomUnsubscribe = null; }
+    currentRoomId = null;
+    showDashScreen();
+  };
+
+  // ── Create Room ──
+  window.createRoom = async function() {
+    const name     = document.getElementById('room-name-input').value.trim() || 'Minha Sala';
+    const boolks   = document.getElementById('room-boolks-select').value;
+    const maxStr   = document.getElementById('room-max-select').value;
+    const maxPlayers = parseInt(maxStr) || 10;
+    const user = auth.currentUser;
+    if (!user) return;
+    const snap = await getDoc(doc(db,'users',user.uid));
+    const uname = snap.data()?.username || 'Jogador';
+
+    showToast('⏳ Criando sala...');
+    closeModal();
+
+    // Generate unique code
+    let code, exists = true;
+    while (exists) {
+      code = genRoomCode();
+      const q = await getDocs(query(collection(db,'rooms'), where('code','==',code)));
+      exists = !q.empty;
+    }
+
+    const roomRef = await addDoc(collection(db,'rooms'), {
+      code,
+      name,
+      boolks,
+      maxPlayers,
+      hostUid: user.uid,
+      status: 'waiting',
+      players: [{ uid: user.uid, name: uname, isHost: true }],
+      createdAt: new Date().toISOString()
+    });
+
+    currentRoomId = roomRef.id;
+    listenHostRoom(roomRef.id, code, name, uname);
+  };
+
+  function listenHostRoom(roomId, code, roomName, hostName) {
+    if (roomUnsubscribe) roomUnsubscribe();
+    document.getElementById('lobby-code-display').textContent = code;
+    document.getElementById('lobby-room-name').textContent = roomName;
+    document.getElementById('lobby-room-info').textContent = `Boolks: ${document.getElementById('room-boolks-select')?.value || ''}`;
+
+    const user = auth.currentUser;
+    getDoc(doc(db,'users',user.uid)).then(s => {
+      document.getElementById('host-sidebar-username').textContent = s.data()?.username || 'Jogador';
+    });
+
+    roomUnsubscribe = onSnapshot(doc(db,'rooms',roomId), (snap) => {
+      if (!snap.exists()) { showDashScreen(); return; }
+      const room = snap.data();
+      const players = room.players || [];
+
+      document.getElementById('lobby-player-count').textContent = `👥 Jogadores (${players.length}/${room.maxPlayers})`;
+      document.getElementById('lobby-room-info').textContent = `Boolks: ${room.boolks}`;
+
+      const list = document.getElementById('lobby-players-list');
+      list.innerHTML = players.map(p => `
+        <div class="lobby-player-row">
+          <span class="lobby-player-av">${p.isHost ? '👑' : '🎮'}</span>
+          <span class="lobby-player-name">${p.name}</span>
+          ${p.isHost
+            ? '<span class="lobby-player-host">Host</span>'
+            : `<button class="btn-kick" onclick="kickPlayer('${p.uid}','${p.name}')">🚫 Expulsar</button>`
+          }
+        </div>`).join('');
+    });
+    showScreen('screen-host-lobby');
+  }
+
+  window.kickPlayer = async function(uid, name) {
+    if (!currentRoomId) return;
+    const snap = await getDoc(doc(db,'rooms',currentRoomId));
+    if (!snap.exists()) return;
+    const players = (snap.data().players||[]).filter(p => p.uid !== uid);
+    await updateDoc(doc(db,'rooms',currentRoomId), { players });
+    showToast(`🚫 ${name} foi expulso da sala!`);
+  };
+
+  window.startGame = function() {
+    showToast('🎮 Em breve — modo de jogo chegando!');
+  };
+
+  window.closeRoomHost = async function() {
+    if (!currentRoomId) { showDashScreen(); return; }
+    try { await deleteDoc(doc(db,'rooms',currentRoomId)); } catch(e) {}
+    if (roomUnsubscribe) { roomUnsubscribe(); roomUnsubscribe = null; }
+    currentRoomId = null;
+    showDashScreen();
+    showToast('🚪 Sala encerrada!');
+  };
 
   window.showToast = function(msg) {
     const t=document.getElementById('toast');
