@@ -2347,10 +2347,10 @@
     {
       id:'fruit-box', name:'Fruit Box', price:20, icon:'🍎', color:'linear-gradient(135deg,#f7c948,#ff9f43)',
       items:[
-        { id:'apple',       name:'Apple',       rarity:'uncommon', chance:40.0 },
-        { id:'lemon',       name:'Lemon',       rarity:'rare',     chance:35.0 },
-        { id:'blueberry',   name:'Blueberry',   rarity:'epic',     chance:24.5 },
-        { id:'green_apple', name:'Green Apple', rarity:'chroma',   chance:0.5  }
+        { id:'apple',       name:'Apple',       rarity:'uncommon', chance:40.45 },
+        { id:'lemon',       name:'Lemon',       rarity:'rare',     chance:35.0  },
+        { id:'blueberry',   name:'Blueberry',   rarity:'epic',     chance:24.5  },
+        { id:'green_apple', name:'Green Apple', rarity:'chroma',   chance:0.05 }
       ]
     }
   ];
@@ -2380,7 +2380,14 @@
       const isEquipped=id===equipped, qty=counts[id]||1, canSell=id!=='pawnling', price=sp[blook.rarity]||10;
       const qtyBadge=qty>1?`<span style="position:absolute;top:10px;left:10px;background:rgba(167,139,250,0.25);color:var(--accent4);font-family:'Fredoka One',cursive;font-size:12px;padding:2px 8px;border-radius:20px;">${qty}x</span>`:'';
       const actionBtn=isEquipped?`<button class="blook-inv-btn equipped-btn">✅ Equipado</button>`:`<button class="blook-inv-btn equip" onclick="equipBlook('${id}')">⚡ Equipar</button>`;
-      const sellBtn=canSell?`<button class="blook-inv-btn" style="margin-top:6px;background:rgba(247,201,72,0.12);color:var(--accent);border:1.5px solid rgba(247,201,72,0.3);" onclick="sellBlook('${id}',${price})">🪙 Vender (${price} tokens)</button>`:'';
+      const dupCount = qty - 1;
+      let sellBtn = '';
+      if (canSell && qty === 1 && !isEquipped) {
+        sellBtn = `<button class="blook-inv-btn" style="margin-top:6px;background:rgba(247,201,72,0.12);color:var(--accent);border:1.5px solid rgba(247,201,72,0.3);" onclick="sellBlook('${id}',${price},1)">🪙 Vender (${price} tokens)</button>`;
+      } else if (canSell && qty > 1) {
+        sellBtn = `<button class="blook-inv-btn" style="margin-top:6px;background:rgba(247,201,72,0.12);color:var(--accent);border:1.5px solid rgba(247,201,72,0.3);" onclick="sellBlook('${id}',${price},1)">🪙 Vender 1x (${price} tokens)</button>
+          <button class="blook-inv-btn" style="margin-top:4px;background:rgba(255,107,107,0.1);color:var(--accent2);border:1.5px solid rgba(255,107,107,0.3);" onclick="sellBlook('${id}',${price},${dupCount})">🗑️ Vender todos repetidos (${dupCount}x = ${dupCount * price} tokens)</button>`;
+      }
       return `<div class="blook-inv-card ${isEquipped?'equipped':''}">
         ${qtyBadge}
         <img class="blook-inv-img" src="${blook.img}" alt="${blook.name}" />
@@ -2400,9 +2407,22 @@
     showToast('🐾 Blook equipado!');
   };
 
-  window.sellBlook = async function(id,price) {
+  window.sellBlook = async function(id, price, qty=1) {
     const user=auth.currentUser; if (!user) return;
     const snap=await getDoc(doc(db,'users',user.uid)); const data=snap.data()||{};
+    let inventory=[...(data.blooks||['pawnling'])];
+    const equipped=data.equippedBlook||'pawnling';
+    const owned=inventory.filter(b=>b===id).length;
+    const maxSell=(id===equipped)?owned-1:owned;
+    const actualQty=Math.min(qty,maxSell);
+    if (actualQty<=0) { showToast('⚠️ Equipe outro blook antes de vender este!'); return; }
+    let removed=0;
+    inventory=inventory.filter(b=>{ if(b===id&&removed<actualQty){removed++;return false;} return true; });
+    const earned=actualQty*price;
+    await setDoc(doc(db,'users',user.uid),{blooks:inventory,tokens:(data.tokens||0)+earned},{merge:true});
+    renderBlooksInventory(inventory,equipped);
+    showToast(`🪙 ${actualQty}x vendido${actualQty>1?'s':''}! +${earned} tokens`);
+  };
     let inventory=[...(data.blooks||['pawnling'])];
     const idx=inventory.lastIndexOf(id); if (idx===-1) { showToast('❌ Blook não encontrado!'); return; }
     const equipped=data.equippedBlook||'pawnling';
