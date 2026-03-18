@@ -2423,15 +2423,7 @@
     renderBlooksInventory(inventory,equipped);
     showToast(`🪙 ${actualQty}x vendido${actualQty>1?'s':''}! +${earned} tokens`);
   };
-    let inventory=[...(data.blooks||['pawnling'])];
-    const idx=inventory.lastIndexOf(id); if (idx===-1) { showToast('❌ Blook não encontrado!'); return; }
-    const equipped=data.equippedBlook||'pawnling';
-    if (id===equipped&&inventory.filter(b=>b===id).length-1===0) { showToast('⚠️ Equipe outro blook antes de vender este!'); return; }
-    inventory.splice(idx,1);
-    await setDoc(doc(db,'users',user.uid),{blooks:inventory,tokens:(data.tokens||0)+price},{merge:true});
-    renderBlooksInventory(inventory,equipped);
-    showToast(`🪙 Blook vendido! +${price} tokens`);
-  };
+
 
   // ── Shop ──
   window.showShopScreen = async function() {
