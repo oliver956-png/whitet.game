@@ -2351,6 +2351,13 @@
   window.closeModal = () => document.getElementById('overlay').classList.remove('open');
   window.closeOut   = (e) => { if(e.target===document.getElementById('overlay')) closeModal(); };
   window.selMode    = (el) => { document.querySelectorAll('.mode-opt').forEach(m=>m.classList.remove('sel')); el.classList.add('sel'); };
+  window.selMinigame = (id) => { document.getElementById('mg-'+id)?.classList.add('sel'); };
+  window.toggleBoxExtra = function(btn) {
+    const extra = btn.parentElement.nextElementSibling;
+    if (!extra) return;
+    const isOpen = extra.classList.toggle('expanded');
+    btn.textContent = isOpen ? '▴' : '▾';
+  };
   window.createRoom = () => { closeModal(); showToast('🎉 Sala criada! Compartilhe o código!'); };
 
   // ── Report ──
