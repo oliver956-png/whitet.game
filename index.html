@@ -991,6 +991,17 @@
     .box-open-btns { display:flex; flex-direction:column; gap:8px; }
     .btn-open-box-multi { width:100%; padding:10px; border:none; border-radius:11px; font-family:'Fredoka One',cursive; font-size:14px; cursor:pointer; transition:all 0.2s; opacity:0.85; }
     .btn-open-box-multi:hover { transform:scale(1.02); opacity:1; }
+    /* ── Box open toggle ── */
+    .box-open-btns { display:flex; flex-direction:column; gap:6px; }
+    .box-open-main { display:flex; gap:6px; }
+    .btn-open-box-1x { flex:1; padding:12px; border:none; border-radius:13px; font-family:'Fredoka One',cursive; font-size:17px; color:#1a0f00; cursor:pointer; transition:all 0.2s; }
+    .btn-open-box-1x:hover { transform:scale(1.02); }
+    .btn-open-box-toggle { width:44px; height:44px; border:none; border-radius:13px; font-size:18px; cursor:pointer; transition:all 0.2s; background:rgba(255,255,255,0.15); color:#1a0f00; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .btn-open-box-toggle:hover { background:rgba(255,255,255,0.25); }
+    .box-open-extra { display:none; flex-direction:column; gap:5px; overflow:hidden; }
+    .box-open-extra.expanded { display:flex; animation:fadeUp 0.2s ease both; }
+    .btn-open-box-multi { width:100%; padding:10px 14px; border:none; border-radius:11px; font-family:'Fredoka One',cursive; font-size:14px; cursor:pointer; transition:all 0.2s; text-align:left; display:flex; justify-content:space-between; align-items:center; }
+    .btn-open-box-multi:hover { transform:translateX(3px); }
     /* ── Toast ── */
     .toast {
       position:fixed; bottom:26px; left:50%;
@@ -2476,17 +2487,18 @@
     const rc={ common:'#8b86b0', uncommon:'#74c0fc', rare:'#a78bfa', epic:'#f7c948', chroma:'#5ce1c0' };
     grid.innerHTML=window.BOXES.map(box=>{
       const ch=box.items.map(item=>`<div class="box-chance-row"><span style="color:${rc[item.rarity]}">${item.name}</span><div class="box-chance-bar-wrap"><div class="box-chance-bar" style="width:${item.chance}%;background:${rc[item.rarity]};"></div></div><span class="box-chance-pct">${item.chance}%</span></div>`).join('');
+      const can1 = tokens >= box.price;
       const multis = [
-        { qty:1,  label:'📦 Abrir 1x',  total: box.price },
-        { qty:5,  label:'📦 Abrir 5x',  total: box.price*5  },
-        { qty:10, label:'📦 Abrir 10x', total: box.price*10 },
-        { qty:25, label:'📦 Abrir 25x', total: box.price*25 },
+        { qty:5,  label:'5x',  total: box.price*5  },
+        { qty:10, label:'10x', total: box.price*10 },
+        { qty:25, label:'25x', total: box.price*25 },
       ];
-      const btns = multis.map(m => {
+      const extraBtns = multis.map(m => {
         const can = tokens >= m.total;
         return `<button class="btn-open-box-multi" style="background:${box.color};opacity:${can?1:0.35};cursor:${can?'pointer':'not-allowed'};"
-          onclick="${can ? `openBox('${box.id}',${m.qty})` : `showToast('❌ Tokens insuficientes! Precisa de ${m.total} 🪙')`}">
-          ${m.label} <span style="opacity:0.75;font-size:12px;">— 🪙${m.total}</span>
+          onclick="${can ? `openBox('${box.id}',${m.qty})` : `showToast('❌ Precisa de 🪙${m.total} para abrir ${m.label}!')`}">
+          <span>📦 Abrir ${m.label}</span>
+          <span style="font-size:12px;opacity:0.75;">🪙 ${m.total}</span>
         </button>`;
       }).join('');
       return `<div class="shop-box-card fruit">
@@ -2494,7 +2506,18 @@
         <div class="box-name">${box.name}</div>
         <div class="box-price">🪙 ${box.price} tokens / box</div>
         <div class="box-chances">${ch}</div>
-        <div class="box-open-btns">${btns}</div>
+        <div class="box-open-btns">
+          <div class="box-open-main">
+            <button class="btn-open-box-1x" style="background:${box.color};opacity:${can1?1:0.45};cursor:${can1?'pointer':'not-allowed'};"
+              onclick="${can1 ? `openBox('${box.id}',1)` : `showToast('❌ Tokens insuficientes!')`}">
+              📦 Abrir 1x
+            </button>
+            <button class="btn-open-box-toggle" style="background:rgba(0,0,0,0.2);" onclick="toggleBoxExtra(this)" title="Mais opções">
+              ▾
+            </button>
+          </div>
+          <div class="box-open-extra">${extraBtns}</div>
+        </div>
       </div>`;
     }).join('');
   }
