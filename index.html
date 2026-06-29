@@ -970,6 +970,27 @@
     .gq-spin { animation:spin 1.5s linear infinite; display:inline-block; font-size:48px; margin-bottom:14px; }
     @keyframes spin { from{transform:rotate(0deg)} to{transform:rotate(360deg)} }
 
+    /* ── Multi Open Result ── */
+    .multi-result-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.85); backdrop-filter:blur(12px); z-index:200; display:flex; align-items:center; justify-content:center; opacity:0; pointer-events:none; transition:opacity 0.3s; }
+    .multi-result-overlay.open { opacity:1; pointer-events:all; }
+    .multi-result-modal { background:var(--surface); border:1.5px solid var(--border); border-radius:28px; padding:32px; width:100%; max-width:560px; max-height:85vh; overflow-y:auto; box-shadow:0 20px 60px rgba(0,0,0,0.6); transform:translateY(30px) scale(0.95); transition:all 0.35s cubic-bezier(.4,0,.2,1); }
+    .multi-result-overlay.open .multi-result-modal { transform:translateY(0) scale(1); }
+    .multi-result-title { font-family:'Fredoka One',cursive; font-size:26px; text-align:center; margin-bottom:4px; }
+    .multi-result-sub   { text-align:center; font-size:13px; color:var(--muted); font-weight:700; margin-bottom:20px; }
+    .multi-result-grid  { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-bottom:20px; }
+    .multi-result-item  { text-align:center; background:var(--surface2); border:1.5px solid var(--border); border-radius:14px; padding:10px 6px; }
+    .multi-result-item img { width:52px; height:52px; border-radius:10px; object-fit:cover; margin-bottom:6px; display:block; margin-left:auto; margin-right:auto; }
+    .multi-result-item .mri-name { font-size:11px; font-weight:800; line-height:1.2; margin-bottom:3px; }
+    .multi-result-item .mri-badge { font-size:10px; font-weight:900; padding:2px 7px; border-radius:20px; display:inline-block; }
+    .multi-result-item.new-item { border-color:var(--accent3); background:rgba(92,225,192,0.07); }
+    .multi-result-summary { display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-bottom:20px; }
+    .multi-summary-chip { display:inline-flex; align-items:center; gap:5px; padding:6px 14px; border-radius:50px; font-size:13px; font-weight:800; border:1.5px solid var(--border); background:var(--surface2); }
+    .btn-multi-close { width:100%; padding:13px; background:linear-gradient(135deg,var(--accent4),var(--accent3)); border:none; border-radius:13px; font-family:'Fredoka One',cursive; font-size:18px; color:#fff; cursor:pointer; transition:all 0.2s; }
+    .btn-multi-close:hover { transform:translateY(-2px); }
+    /* Multi open buttons */
+    .box-open-btns { display:flex; flex-direction:column; gap:8px; }
+    .btn-open-box-multi { width:100%; padding:10px; border:none; border-radius:11px; font-family:'Fredoka One',cursive; font-size:14px; cursor:pointer; transition:all 0.2s; opacity:0.85; }
+    .btn-open-box-multi:hover { transform:scale(1.02); opacity:1; }
     /* ── Toast ── */
     .toast {
       position:fixed; bottom:26px; left:50%;
@@ -1530,6 +1551,17 @@
 
       <div class="shop-boxes-grid" id="shop-boxes-grid"></div>
     </main>
+  </div>
+</div>
+
+<!-- Multi Open Result Modal -->
+<div class="multi-result-overlay" id="multi-result-overlay">
+  <div class="multi-result-modal">
+    <div class="multi-result-title" id="multi-result-title">📦 Resultados</div>
+    <div class="multi-result-sub"  id="multi-result-sub"></div>
+    <div class="multi-result-grid" id="multi-result-grid"></div>
+    <div class="multi-result-summary" id="multi-result-summary"></div>
+    <button class="btn-multi-close" onclick="closeMultiResult()">🎉 Incrível!</button>
   </div>
 </div>
 
@@ -2443,38 +2475,106 @@
     const grid=document.getElementById('shop-boxes-grid');
     const rc={ common:'#8b86b0', uncommon:'#74c0fc', rare:'#a78bfa', epic:'#f7c948', chroma:'#5ce1c0' };
     grid.innerHTML=window.BOXES.map(box=>{
-      const canBuy=tokens>=box.price;
       const ch=box.items.map(item=>`<div class="box-chance-row"><span style="color:${rc[item.rarity]}">${item.name}</span><div class="box-chance-bar-wrap"><div class="box-chance-bar" style="width:${item.chance}%;background:${rc[item.rarity]};"></div></div><span class="box-chance-pct">${item.chance}%</span></div>`).join('');
-      return `<div class="shop-box-card fruit"><div class="box-icon">${box.icon}</div><div class="box-name">${box.name}</div><div class="box-price">🪙 ${box.price} tokens</div><div class="box-chances">${ch}</div><button class="btn-open-box" style="background:${box.color};opacity:${canBuy?1:0.45};cursor:${canBuy?'pointer':'not-allowed'};" onclick="${canBuy?`openBox('${box.id}')`:`showToast('❌ Tokens insuficientes!')`}">${canBuy?'📦 Abrir Box':'🔒 Tokens insuficientes'}</button></div>`;
+      const multis = [
+        { qty:1,  label:'📦 Abrir 1x',  total: box.price },
+        { qty:5,  label:'📦 Abrir 5x',  total: box.price*5  },
+        { qty:10, label:'📦 Abrir 10x', total: box.price*10 },
+        { qty:25, label:'📦 Abrir 25x', total: box.price*25 },
+      ];
+      const btns = multis.map(m => {
+        const can = tokens >= m.total;
+        return `<button class="btn-open-box-multi" style="background:${box.color};opacity:${can?1:0.35};cursor:${can?'pointer':'not-allowed'};"
+          onclick="${can ? `openBox('${box.id}',${m.qty})` : `showToast('❌ Tokens insuficientes! Precisa de ${m.total} 🪙')`}">
+          ${m.label} <span style="opacity:0.75;font-size:12px;">— 🪙${m.total}</span>
+        </button>`;
+      }).join('');
+      return `<div class="shop-box-card fruit">
+        <div class="box-icon">${box.icon}</div>
+        <div class="box-name">${box.name}</div>
+        <div class="box-price">🪙 ${box.price} tokens / box</div>
+        <div class="box-chances">${ch}</div>
+        <div class="box-open-btns">${btns}</div>
+      </div>`;
     }).join('');
   }
 
-  window.openBox = async function(boxId) {
+  function rollBox(box) {
+    const roll=Math.random()*100; let cumulative=0, won=box.items[box.items.length-1];
+    for (const item of box.items) { cumulative+=item.chance; if(roll<cumulative){ won=item; break; } }
+    return won;
+  }
+
+  window.openBox = async function(boxId, qty=1) {
     const user=auth.currentUser; if (!user) return;
     const snap=await getDoc(doc(db,'users',user.uid)); const data=snap.data()||{};
     const box=window.BOXES.find(b=>b.id===boxId);
-    if (!box||(data.tokens||0)<box.price) { showToast('❌ Tokens insuficientes!'); return; }
-    const roll=Math.random()*100; let cumulative=0, won=box.items[box.items.length-1];
-    for (const item of box.items) { cumulative+=item.chance; if(roll<cumulative){ won=item; break; } }
-    const newTokens=(data.tokens||0)-box.price;
-    let inventory=data.blooks||['pawnling'];
-    const isNew=!inventory.includes(won.id);
-    inventory=[...inventory,won.id];
+    const totalCost = box.price * qty;
+    if (!box||(data.tokens||0)<totalCost) { showToast('❌ Tokens insuficientes!'); return; }
+
+    // Roll all at once
+    const results = Array.from({length:qty}, () => rollBox(box));
+    const newTokens = (data.tokens||0) - totalCost;
+    let inventory = [...(data.blooks||['pawnling'])];
+    const prevInventory = [...inventory];
+    results.forEach(won => inventory.push(won.id));
+
     await setDoc(doc(db,'users',user.uid),{tokens:newTokens,blooks:inventory,equippedBlook:data.equippedBlook||'pawnling'},{merge:true});
     document.getElementById('shop-token-count').textContent=newTokens;
     renderShopBoxes(newTokens);
-    const bd=window.DEFAULT_BLOOKS.find(b=>b.id===won.id)||won;
-    const rl={common:'⚪ Comum',uncommon:'🔵 Incomum',rare:'🟣 Raro',epic:'🟡 Épico',chroma:'🌈 Chroma'};
-    const rb={common:'rgba(139,134,176,0.2)',uncommon:'rgba(116,192,252,0.2)',rare:'rgba(167,139,250,0.2)',epic:'rgba(247,201,72,0.2)',chroma:'rgba(92,225,192,0.2)'};
-    const rcc={common:'var(--muted)',uncommon:'var(--accent5)',rare:'var(--accent4)',epic:'var(--accent)',chroma:'var(--accent3)'};
-    document.getElementById('result-blook-img').src=bd.img||'';
-    document.getElementById('result-blook-name').textContent=won.name;
-    document.getElementById('result-rarity').textContent=rl[won.rarity]||'⚪ Comum';
-    document.getElementById('result-rarity').style.background=rb[won.rarity];
-    document.getElementById('result-rarity').style.color=rcc[won.rarity];
-    document.getElementById('result-sparkle').textContent=isNew?'🎉':'🔄';
-    document.getElementById('result-badge').innerHTML=isNew?'<span class="result-new-badge">✨ NOVO!</span>':'<span class="result-dup-badge">🔄 Repetido</span>';
-    document.getElementById('box-result-overlay').classList.add('open');
+
+    if (qty === 1) {
+      // Single open — show original modal
+      const won=results[0], isNew=!prevInventory.includes(won.id);
+      const bd=window.DEFAULT_BLOOKS.find(b=>b.id===won.id)||won;
+      const rl={common:'⚪ Comum',uncommon:'🔵 Incomum',rare:'🟣 Raro',epic:'🟡 Épico',chroma:'🌈 Chroma'};
+      const rb={common:'rgba(139,134,176,0.2)',uncommon:'rgba(116,192,252,0.2)',rare:'rgba(167,139,250,0.2)',epic:'rgba(247,201,72,0.2)',chroma:'rgba(92,225,192,0.2)'};
+      const rcc={common:'var(--muted)',uncommon:'var(--accent5)',rare:'var(--accent4)',epic:'var(--accent)',chroma:'var(--accent3)'};
+      document.getElementById('result-blook-img').src=bd.img||'';
+      document.getElementById('result-blook-name').textContent=won.name;
+      document.getElementById('result-rarity').textContent=rl[won.rarity]||'⚪ Comum';
+      document.getElementById('result-rarity').style.background=rb[won.rarity];
+      document.getElementById('result-rarity').style.color=rcc[won.rarity];
+      document.getElementById('result-sparkle').textContent=isNew?'🎉':'🔄';
+      document.getElementById('result-badge').innerHTML=isNew?'<span class="result-new-badge">✨ NOVO!</span>':'<span class="result-dup-badge">🔄 Repetido</span>';
+      document.getElementById('box-result-overlay').classList.add('open');
+    } else {
+      // Multi open — show summary modal
+      const rl={common:'⚪ Comum',uncommon:'🔵 Incomum',rare:'🟣 Raro',epic:'🟡 Épico',chroma:'🌈 Chroma'};
+      const rc={common:'rgba(139,134,176,0.2)',uncommon:'rgba(116,192,252,0.2)',rare:'rgba(167,139,250,0.2)',epic:'rgba(247,201,72,0.2)',chroma:'rgba(92,225,192,0.2)'};
+      const rct={common:'var(--muted)',uncommon:'var(--accent5)',rare:'var(--accent4)',epic:'var(--accent)',chroma:'var(--accent3)'};
+
+      // Count by rarity
+      const counts={common:0,uncommon:0,rare:0,epic:0,chroma:0};
+      let newCount=0;
+      const itemsHtml = results.map(won => {
+        const bd=window.DEFAULT_BLOOKS.find(b=>b.id===won.id)||won;
+        const isNew=!prevInventory.includes(won.id);
+        if(isNew) newCount++;
+        counts[won.rarity]=(counts[won.rarity]||0)+1;
+        return `<div class="multi-result-item ${isNew?'new-item':''}">
+          <img src="${bd.img||''}" alt="${won.name}" />
+          <div class="mri-name">${won.name}</div>
+          <div class="mri-badge" style="background:${rc[won.rarity]};color:${rct[won.rarity]};">${rl[won.rarity]}</div>
+          ${isNew?'<div style="font-size:9px;color:var(--accent3);font-weight:900;margin-top:2px;">✨ NOVO</div>':''}
+        </div>`;
+      }).join('');
+
+      const summaryHtml = Object.entries(counts)
+        .filter(([,v])=>v>0)
+        .map(([r,v])=>`<div class="multi-summary-chip" style="border-color:${rct[r]};color:${rct[r]};">${rl[r]} × ${v}</div>`)
+        .join('');
+
+      document.getElementById('multi-result-title').textContent = `📦 ${qty}x ${box.name}`;
+      document.getElementById('multi-result-sub').textContent   = `${newCount} novo${newCount!==1?'s':''} · gastou 🪙${totalCost} tokens`;
+      document.getElementById('multi-result-grid').innerHTML    = itemsHtml;
+      document.getElementById('multi-result-summary').innerHTML = summaryHtml;
+      document.getElementById('multi-result-overlay').classList.add('open');
+    }
+  };
+
+  window.closeMultiResult = function() {
+    document.getElementById('multi-result-overlay').classList.remove('open');
   };
 
   window.closeBoxResult = () => document.getElementById('box-result-overlay').classList.remove('open');
