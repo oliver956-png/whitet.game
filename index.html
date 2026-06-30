@@ -855,6 +855,7 @@
     /* Stars BG */
     .gq-stars { position:absolute; inset:0; background-image: radial-gradient(circle, rgba(255,255,255,0.8) 1px, transparent 1px); background-size:40px 40px; opacity:0.25; pointer-events:none; animation:gqStarsDrift 60s linear infinite; }
     @keyframes gqStarsDrift { from{background-position:0 0} to{background-position:400px 400px} }
+    @keyframes freezePulse { 0%,100%{box-shadow:0 0 20px rgba(116,192,252,0.4)} 50%{box-shadow:0 0 50px rgba(116,192,252,0.9)} }
 
     /* Header bar */
     .gq-header { width:100%; max-width:900px; display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; z-index:2; flex-wrap:wrap; gap:10px; }
@@ -876,10 +877,16 @@
     /* Event banner */
     .gq-event-banner { width:100%; max-width:900px; border-radius:16px; padding:14px 22px; text-align:center; margin-bottom:16px; z-index:2; animation:fadeUp 0.4s ease both; display:none; }
     .gq-event-banner.show { display:block; }
-    .gq-event-banner.meteors  { background:linear-gradient(135deg,rgba(255,107,107,0.2),rgba(255,159,67,0.2)); border:1.5px solid rgba(255,107,107,0.4); }
-    .gq-event-banner.supernova { background:linear-gradient(135deg,rgba(247,201,72,0.2),rgba(255,107,107,0.2)); border:1.5px solid rgba(247,201,72,0.5); }
-    .gq-event-banner.blackhole { background:linear-gradient(135deg,rgba(167,139,250,0.2),rgba(116,192,252,0.2)); border:1.5px solid rgba(167,139,250,0.5); }
-    .gq-event-banner.aliens   { background:linear-gradient(135deg,rgba(92,225,192,0.2),rgba(116,192,252,0.2)); border:1.5px solid rgba(92,225,192,0.5); }
+    .gq-event-banner.meteors    { background:linear-gradient(135deg,rgba(255,107,107,0.2),rgba(255,159,67,0.2)); border:1.5px solid rgba(255,107,107,0.4); }
+    .gq-event-banner.supernova  { background:linear-gradient(135deg,rgba(247,201,72,0.2),rgba(255,107,107,0.2)); border:1.5px solid rgba(247,201,72,0.5); }
+    .gq-event-banner.blackhole  { background:linear-gradient(135deg,rgba(167,139,250,0.2),rgba(116,192,252,0.2)); border:1.5px solid rgba(167,139,250,0.5); }
+    .gq-event-banner.aliens     { background:linear-gradient(135deg,rgba(92,225,192,0.2),rgba(116,192,252,0.2)); border:1.5px solid rgba(92,225,192,0.5); }
+    .gq-event-banner.solarflare { background:linear-gradient(135deg,rgba(255,80,0,0.2),rgba(255,159,67,0.2)); border:1.5px solid rgba(255,100,0,0.5); }
+    .gq-event-banner.asteroid   { background:linear-gradient(135deg,rgba(139,134,176,0.2),rgba(167,139,250,0.15)); border:1.5px solid rgba(139,134,176,0.4); }
+    .gq-event-banner.wormhole   { background:linear-gradient(135deg,rgba(116,192,252,0.2),rgba(167,139,250,0.2)); border:1.5px solid rgba(116,192,252,0.5); }
+    .gq-event-banner.stardust   { background:linear-gradient(135deg,rgba(92,225,192,0.2),rgba(247,201,72,0.2)); border:1.5px solid rgba(92,225,192,0.5); }
+    .gq-event-banner.nebula     { background:linear-gradient(135deg,rgba(167,139,250,0.25),rgba(92,225,192,0.2)); border:1.5px solid rgba(167,139,250,0.6); }
+    .gq-event-banner.comet      { background:linear-gradient(135deg,rgba(247,201,72,0.2),rgba(116,192,252,0.2)); border:1.5px solid rgba(247,201,72,0.5); }
     .gq-event-title { font-family:'Fredoka One',cursive; font-size:18px; color:#fff; }
     .gq-event-desc  { font-size:13px; color:rgba(255,255,255,0.7); font-weight:600; margin-top:3px; }
 
@@ -2835,7 +2842,8 @@
       await updateDoc(doc(db,'rooms',currentRoomId), {
         status:'playing', gameMode:'galaxy_quiz', scores, stats,
         questions: JSON.stringify(questions), usedQuestionIdxs:[],
-        supernovaActive:false, gameStartedAt:new Date().toISOString(),
+        supernovaActive:false, frozenPlayers:{},
+        gameStartedAt:new Date().toISOString(),
         phase:'planet_pick', event:null, nextEventAt:Date.now()+30000,
       });
     })();
@@ -2867,10 +2875,16 @@
   ];
 
   const GQ_EVENTS = [
-    { id:'meteors',   emoji:'☄️',  title:'Chuva de Meteoros!',    desc:'Todos os jogadores perdem 20 space tokens!',       type:'meteors'  },
-    { id:'supernova', emoji:'🌟',  title:'Supernova!',             desc:'O próximo planeta vale o dobro de tokens!',        type:'supernova' },
-    { id:'blackhole', emoji:'🌀',  title:'Buraco Negro!',          desc:'Os space tokens de todos foram embaralhados!',     type:'blackhole' },
-    { id:'aliens',    emoji:'🛸',  title:'Invasão Alienígena!',    desc:'Todos os jogadores ganham 15 space tokens bônus!', type:'aliens'    },
+    { id:'meteors',    emoji:'☄️',  title:'Chuva de Meteoros!',        desc:'Todos os jogadores perdem 20 space tokens!',                   type:'meteors'    },
+    { id:'supernova',  emoji:'🌟',  title:'Supernova!',                 desc:'O próximo planeta vale o dobro de tokens!',                    type:'supernova'  },
+    { id:'blackhole',  emoji:'🌀',  title:'Buraco Negro!',              desc:'Os space tokens de todos foram embaralhados!',                 type:'blackhole'  },
+    { id:'aliens',     emoji:'🛸',  title:'Invasão Alienígena!',        desc:'Todos os jogadores ganham 15 space tokens bônus!',             type:'aliens'     },
+    { id:'solarflare', emoji:'🔥',  title:'Erupção Solar!',             desc:'O jogador com mais tokens perde 40 space tokens!',             type:'solarflare' },
+    { id:'asteroid',   emoji:'🪨',  title:'Campo de Asteroides!',       desc:'Ninguém ganha ou perde tokens nesta rodada!',                 type:'asteroid'   },
+    { id:'wormhole',   emoji:'🕳️', title:'Buraco de Minhoca!',         desc:'O último colocado troca pontuação com o primeiro!',           type:'wormhole'   },
+    { id:'stardust',   emoji:'✨',  title:'Poeira Estelar!',            desc:'Todos os jogadores ganham 30 space tokens bônus!',             type:'stardust'   },
+    { id:'nebula',     emoji:'🌌',  title:'Nebulosa Cósmica!',          desc:'Os tokens de todos são multiplicados por 1.5x!',              type:'nebula'     },
+    { id:'comet',      emoji:'💫',  title:'Passagem do Cometa!',        desc:'O jogador com menos tokens dobra sua pontuação!',              type:'comet'      },
   ];
 
   let gqState = {
@@ -2988,6 +3002,27 @@
       } else if (evt.id === 'blackhole') {
         const vals = Object.values(newScores).sort(() => Math.random()-0.5);
         Object.keys(newScores).forEach((uid,i) => { newScores[uid] = vals[i]; });
+      } else if (evt.id === 'solarflare') {
+        const maxUid = Object.keys(newScores).reduce((a,b) => (newScores[a]||0) >= (newScores[b]||0) ? a : b);
+        newScores[maxUid] = Math.max(0, (newScores[maxUid]||0) - 40);
+      } else if (evt.id === 'asteroid') {
+        // Neutro — sem mudança de pontos
+      } else if (evt.id === 'wormhole') {
+        const uids = Object.keys(newScores);
+        if (uids.length >= 2) {
+          const sorted = [...uids].sort((a,b) => (newScores[b]||0) - (newScores[a]||0));
+          const first = sorted[0], last = sorted[sorted.length - 1];
+          const tmp = newScores[first];
+          newScores[first] = newScores[last];
+          newScores[last]  = tmp;
+        }
+      } else if (evt.id === 'stardust') {
+        Object.keys(newScores).forEach(uid => { newScores[uid] = (newScores[uid]||0) + 30; });
+      } else if (evt.id === 'nebula') {
+        Object.keys(newScores).forEach(uid => { newScores[uid] = Math.round((newScores[uid]||0) * 1.5); });
+      } else if (evt.id === 'comet') {
+        const minUid = Object.keys(newScores).reduce((a,b) => (newScores[a]||0) <= (newScores[b]||0) ? a : b);
+        newScores[minUid] = (newScores[minUid]||0) * 2;
       }
 
       await updateDoc(doc(db,'rooms',gqState.roomId), {
@@ -3068,6 +3103,20 @@
     gqState.phase = 'planet_pick';
     gqState.supernovaActive = room.supernovaActive || false;
 
+    // Verifica se este jogador está congelado
+    const frozen = room.frozenPlayers || {};
+    if (frozen[gqState.myUid]) {
+      const area = document.getElementById('gq-main-area');
+      area.innerHTML = `<div class="gq-round-result" style="text-align:center;">
+        <div class="gq-result-icon">🧊</div>
+        <div class="gq-result-title" style="color:#74c0fc;">Você está congelado!</div>
+        <div class="gq-result-sub">Você foi congelado nesta rodada e não pode jogar. Aguarde a próxima!</div>
+        <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-top:10px;">O freeze se dissolve automaticamente na próxima rodada.</div>
+        <button class="gq-result-next" onclick="gqSkipFrozenRound()">⏩ Aguardar próxima rodada</button>
+      </div>`;
+      return;
+    }
+
     // Pick 3 random planets
     const shuffled = [...PLANETS].sort(() => Math.random()-0.5);
     const picks = shuffled.slice(0, 3);
@@ -3077,9 +3126,17 @@
     if (gqState.supernovaActive) planets.forEach(p => p.tokens = Math.min(100, p.tokens * 2));
     gqState.currentPlanets = planets;
 
-    // 35% chance of rocket replacing one slot
-    const rocketSlot = Math.random() < 0.35 ? Math.floor(Math.random()*3) : -1;
+    // Carta especial: Foguete 35% | Freeze 15% | Nenhuma 50%
+    const specialRoll = Math.random();
+    let rocketSlot = -1;
+    let freezeSlot = -1;
+    if (specialRoll < 0.35) {
+      rocketSlot = Math.floor(Math.random() * 3);
+    } else if (specialRoll < 0.50) {
+      freezeSlot = Math.floor(Math.random() * 3);
+    }
     gqState.hasRocket = rocketSlot >= 0;
+    gqState.hasFreeze = freezeSlot >= 0;
 
     const area = document.getElementById('gq-main-area');
     const supernovaTag = gqState.supernovaActive ? '<span style="background:rgba(247,201,72,0.2);color:#f7c948;font-size:12px;font-weight:900;padding:3px 10px;border-radius:20px;margin-left:8px;">🌟 SUPERNOVA</span>' : '';
@@ -3090,6 +3147,14 @@
           <span class="gq-planet-emoji">🚀</span>
           <div class="gq-planet-name" style="color:#ff6b6b;">Foguete!</div>
           <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:6px;font-weight:700;">Roube 50 tokens de um jogador</div>
+        </div>`;
+      }
+      if (i === freezeSlot) {
+        return `<div class="gq-rocket-card" style="background:linear-gradient(135deg,rgba(116,192,252,0.2),rgba(92,225,192,0.15));border:2px solid rgba(116,192,252,0.6);animation:freezePulse 2s ease-in-out infinite;" onclick="gqSelectFreeze()">
+          <span class="gq-planet-emoji">🧊</span>
+          <div class="gq-planet-name" style="color:#74c0fc;">Freeze!</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.6);margin-top:6px;font-weight:700;">Congele um jogador por 1 rodada</div>
+          <div style="font-size:10px;color:rgba(116,192,252,0.6);margin-top:4px;">⚠️ Carta rara!</div>
         </div>`;
       }
       const planetVisual = p.img
@@ -3269,6 +3334,53 @@
       <button class="gq-result-next" onclick="gqNextRound()">Próxima rodada →</button>
     </div>`;
   }
+
+  window.gqSkipFrozenRound = async function() {
+    const snap  = await getDoc(doc(db,'rooms',gqState.roomId));
+    const room  = snap.data();
+    const frozen = { ...(room.frozenPlayers||{}) };
+    delete frozen[gqState.myUid];
+    await updateDoc(doc(db,'rooms',gqState.roomId), { frozenPlayers: frozen });
+    gqState.phase = 'planet_pick';
+    const snap2 = await getDoc(doc(db,'rooms',gqState.roomId));
+    gqRenderPlanetPick(snap2.data());
+  };
+
+  window.gqSelectFreeze = async function() {
+    gqState.phase = 'rocket_pick';
+    const snap  = await getDoc(doc(db,'rooms',gqState.roomId));
+    const room  = snap.data();
+    const frozen = room.frozenPlayers || {};
+    const others = (room.players||[]).filter(p => p.uid !== gqState.myUid && !frozen[p.uid]);
+    const area = document.getElementById('gq-main-area');
+    if (!others.length) {
+      showToast('😅 Nenhum jogador disponível para congelar!');
+      gqState.phase = 'planet_pick';
+      gqRenderPlanetPick(room);
+      return;
+    }
+    area.innerHTML = `<div class="gq-rocket-picker">
+      <h2 style="color:#74c0fc;">🧊 Escolha quem congelar!</h2>
+      <p>O jogador escolhido perderá uma rodada inteira</p>
+      <div class="gq-target-list">
+        ${others.map(p => `<div class="gq-target-btn" style="border-color:rgba(116,192,252,0.5);background:rgba(116,192,252,0.1);" onclick="gqFreezePlayer('${p.uid}','${p.name}')">
+          🎮 ${p.name} <span style="color:#74c0fc;margin-left:8px;">🪙${(room.scores||{})[p.uid]||0}</span>
+        </div>`).join('')}
+      </div>
+    </div>`;
+  };
+
+  window.gqFreezePlayer = async function(targetUid, targetName) {
+    const snap  = await getDoc(doc(db,'rooms',gqState.roomId));
+    const room  = snap.data();
+    const frozen = { ...(room.frozenPlayers||{}) };
+    frozen[targetUid] = true;
+    const scores = { ...(room.scores||{}) };
+    scores[gqState.myUid] = (scores[gqState.myUid]||0) + 10;
+    await updateDoc(doc(db,'rooms',gqState.roomId), { frozenPlayers: frozen, scores });
+    gqState.phase = 'round_result';
+    gqShowRoundResult(true, 10, `🧊 ${targetName} foi congelado por 1 rodada! +10 tokens bônus!`, true);
+  };
 
   window.gqNextRound = async function() {
     gqState.phase = 'planet_pick';
