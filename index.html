@@ -2433,7 +2433,7 @@
     const unique=[...new Set(inventoryArr)];
     const rl={ common:'⚪ Comum', uncommon:'🔵 Incomum', rare:'🟣 Raro', epic:'🟡 Épico', chroma:'🌈 Chroma' };
     const rc={ common:'rarity-common', uncommon:'rarity-rare', rare:'rarity-epic', epic:'rarity-epic', chroma:'rarity-chroma' };
-    const sp={ common:5, uncommon:15, rare:40, epic:100, chroma:300 };
+    const sp={ common:2, uncommon:5, rare:10, epic:25, chroma:75 };
     grid.innerHTML=unique.map(id=>{
       const blook=window.DEFAULT_BLOOKS.find(b=>b.id===id)||{id,name:id,rarity:'common',img:''};
       const isEquipped=id===equipped, qty=counts[id]||1, canSell=id!=='pawnling', price=sp[blook.rarity]||10;
